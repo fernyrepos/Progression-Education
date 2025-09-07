@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="SchoolDesk"]/designationCategory</xpath>
+    <value>
+      <designationCategory>PE_Development</designationCategory>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/designationCategory</xpath>
+    <value>
+      <designationCategory>PE_Development</designationCategory>
+    </value>
+  </Operation>
+</Patch>

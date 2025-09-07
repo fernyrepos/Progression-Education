@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <MainButtonDef>
+    <defName>PE_Education</defName>
+    <label>education</label>
+    <description>Manage classrooms and classes.</description>
+    <tabWindowClass>ProgressionEducation.MainTabWindow_Education</tabWindowClass>
+    <order>100</order>
+    <validWithoutMap>false</validWithoutMap>
+  </MainButtonDef>
+</Defs>

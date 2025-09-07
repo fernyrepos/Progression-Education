@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Construction"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>CraftingSpot</li>
+        </requiredBuildings>
+        <requirementLabel>construction type workbenches</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Plants"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>PlantPot</li>
+          <li>HydroponicsBasin</li>
+        </requiredBuildings>
+        <requirementLabel>planting type workbenches</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Intellectual"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>SimpleResearchBench</li>
+          <li>HiTechResearchBench</li>
+        </requiredBuildings>
+        <requirementLabel>research type workbenches</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Mining"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>SchoolDesk</li>
+        </requiredBuildings>
+        <requirementLabel>school desks</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Social"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>SchoolDesk</li>
+        </requiredBuildings>
+        <requirementLabel>school desks</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Cooking"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>FueledStove</li>
+          <li>ElectricStove</li>
+        </requiredBuildings>
+        <requirementLabel>cooking type workbenches</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Medicine"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>DrugLab</li>
+        </requiredBuildings>
+        <requirementLabel>drug labs</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Artistic"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>TableSculpting</li>
+        </requiredBuildings>
+        <requirementLabel>sculpting type workbenches</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>

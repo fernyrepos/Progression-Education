@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+ <TraitDef>
+    <defName>PE_LowTechProficiency</defName>
+    <label>low-tech proficiency</label>
+    <description>This person is proficient with low-tech equipment.</description>
+    <degreeDatas>
+      <li>
+        <label>low-tech proficiency</label>
+        <description>This person is proficient with low-tech equipment.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_FirearmProficiency</defName>
+    <label>firearm proficiency</label>
+    <description>This person is proficient with firearm equipment.</description>
+    <degreeDatas>
+      <li>
+        <label>firearm proficiency</label>
+        <description>This person is proficient with firearm equipment.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_HighTechProficiency</defName>
+    <label>high-tech proficiency</label>
+    <description>This person is proficient with high-tech equipment.</description>
+    <degreeDatas>
+      <li>
+        <label>high-tech proficiency</label>
+        <description>This person is proficient with high-tech equipment.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+</Defs>

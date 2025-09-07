@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/comps</xpath>
+    <value>
+      <li Class="ProgressionEducation.CompProperties_LearningBoard">
+        <qualityBonuses>
+          <Awful>0.8</Awful>
+          <Poor>0.9</Poor>
+          <Normal>1</Normal>
+          <Good>1.1</Good>
+          <Excellent>1.2</Excellent>
+          <Masterwork>1.3</Masterwork>
+          <Legendary>1.5</Legendary>
+        </qualityBonuses>
+        <techBonuses>
+          <Undefined>1</Undefined>
+          <Animal>1</Animal>
+          <Neolithic>1</Neolithic>
+          <Medieval>1.1</Medieval>
+          <Industrial>1.2</Industrial>
+          <Spacer>1.3</Spacer>
+          <Ultra>1.4</Ultra>
+          <Archotech>1.5</Archotech>
+        </techBonuses>
+      </li>
+    </value>
+  </Operation>
+</Patch>

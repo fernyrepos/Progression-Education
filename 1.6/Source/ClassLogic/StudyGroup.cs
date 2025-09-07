@@ -1,0 +1,199 @@
+using RimWorld;
+using System.Collections.Generic;
+using Verse;
+using Verse.AI;
+
+namespace ProgressionEducation
+{
+    public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
+    {
+        public int id = -1;
+        public Pawn teacher;
+        public List<Pawn> students = [];
+        public string className;
+        public ClassSubjectLogic subjectLogic;
+        public int semesterGoal;
+        public int currentProgress;
+        public Classroom classroom;
+        public int startHour;
+        public int endHour;
+        public string timeAssignmentDefName;
+
+        public StudyGroup()
+        {
+            
+        }
+
+        public StudyGroup(Pawn teacher, List<Pawn> students, string className, int semesterGoal, int startHour, int endHour)
+        {
+            id = EducationManager.Instance.GetNextStudyGroupId();
+            this.teacher = teacher;
+            this.students = students;
+            this.className = className;
+            this.semesterGoal = semesterGoal;
+            currentProgress = 0;
+            classroom = null;
+            this.startHour = startHour;
+            this.endHour = endHour;
+            timeAssignmentDefName = TimeAssignmentUtility.DynamicClassPrefix + GetUniqueLoadID();
+        }
+
+        public AcceptanceReport IsValid()
+        {
+            if (string.IsNullOrEmpty(className))
+            {
+                return new AcceptanceReport("PE_EnterClassName".Translate());
+            }
+
+            if (teacher == null)
+            {
+                return new AcceptanceReport("PE_SelectTeacher".Translate());
+            }
+
+            if (students.NullOrEmpty())
+            {
+                return new AcceptanceReport("PE_SelectAtLeastOneStudent".Translate());
+            }
+
+            var prerequisitesMet = subjectLogic.ArePrerequisitesMet();
+            return !prerequisitesMet.Accepted ? prerequisitesMet : AcceptanceReport.WasAccepted;
+        }
+
+        public AcceptanceReport ArePrerequisitesMet()
+        {
+            var subjectPrerequisites = subjectLogic.ArePrerequisitesMet();
+            if (!subjectPrerequisites.Accepted)
+            {
+                return subjectPrerequisites;
+            }
+
+            if (classroom?.LearningBoard?.parent == null)
+            {
+                return new AcceptanceReport("PE_NoLearningBoard".Translate());
+            }
+
+            var room = GetRoom();
+            if (room == null)
+            {
+                return new AcceptanceReport("PE_NoLearningBoard".Translate());
+            }
+
+            int learningBoardCount = room.ContainedAndAdjacentThings.Count(t => t.TryGetComp<CompLearningBoard>() != null);
+            if (learningBoardCount < 1)
+            {
+                return new AcceptanceReport("PE_NoLearningBoard".Translate());
+            }
+
+            int bellCount = room.ContainedAndAdjacentThings.Count(t => t.TryGetComp<CompBell>() != null);
+            if (bellCount < 1)
+            {
+                return new AcceptanceReport("PE_NoBell".Translate());
+            }
+
+            foreach (var thing in room.ContainedAndAdjacentThings)
+            {
+                var bellComp = thing.TryGetComp<CompBell>();
+                if (bellComp != null)
+                {
+                    var powerComp = thing.TryGetComp<CompPowerTrader>();
+                    if (powerComp != null && !powerComp.PowerOn)
+                    {
+                        return new AcceptanceReport("PE_BellNotPowered".Translate());
+                    }
+                }
+            }
+
+            return AcceptanceReport.WasAccepted;
+        }
+
+        public void AddProgress(int amount)
+        {
+            currentProgress += amount;
+        }
+
+        public float ProgressPercentage => (float)currentProgress / semesterGoal;
+        public bool IsCompleted => currentProgress >= semesterGoal;
+
+        public float CalculateProgressPerTick()
+        {
+            return subjectLogic.CalculateProgressPerTick();
+        }
+        public void RemoveStudent(Pawn student)
+        {
+            if (students.Contains(student))
+            {
+                students.Remove(student);
+            }
+        }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref id, "id", -1);
+            Scribe_References.Look(ref teacher, "teacher");
+            Scribe_Collections.Look(ref students, "students", LookMode.Reference);
+            Scribe_Values.Look(ref className, "className");
+            Scribe_Deep.Look(ref subjectLogic, "subjectLogic", this);
+            Scribe_Values.Look(ref semesterGoal, "semesterGoal");
+            Scribe_Values.Look(ref currentProgress, "currentProgress");
+            Scribe_References.Look(ref classroom, "classroom");
+            Scribe_Values.Look(ref startHour, "startHour", 0);
+            Scribe_Values.Look(ref endHour, "endHour", 0);
+            Scribe_Values.Look(ref timeAssignmentDefName, "timeAssignmentDefName");
+        }
+
+        public string GetUniqueLoadID()
+        {
+            return "StudyGroup_" + id;
+        }
+
+        public string RenamableLabel
+        {
+            get => className;
+            set => className = value;
+        }
+
+        public string InspectLabel => className;
+
+        public string BaseLabel => className;
+
+        public TeacherRole GetTeacherRole()
+        {
+            return new TeacherRole(this);
+        }
+
+        public StudentRole GetStudentRole()
+        {
+            return new StudentRole(this);
+        }
+
+        public Room GetRoom()
+        {
+            return classroom?.LearningBoard?.parent?.GetRoom();
+        }
+
+        public bool AllStudentsAreGathered()
+        {
+            if (students.NullOrEmpty())
+            {
+                return false;
+            }
+            foreach (var student in students)
+            {
+                if (student.Dead || student.Downed)
+                {
+                    return false;
+                }
+                if (student.jobs?.curDriver is not JobDriver_AttendClass attendClassDriver)
+                {
+                    return false;
+                }
+
+                if (student.Position != JobDriver_AttendClass.DeskSpotStudent(attendClassDriver.job.GetTarget(TargetIndex.A).Thing))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+}
