@@ -240,18 +240,19 @@ namespace ProgressionEducation
                     Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_LearningBoard".Translate()}{learningBoardPresentText}");
                     GUI.color = Color.white;
                     curY += 25f;
-                    int bellCount = room.ContainedAndAdjacentThings.Count(t => t.TryGetComp<CompBell>() != null);
-                    string bellPresentText = "";
-                    if (bellCount < 1)
-                    {
-                        GUI.color = Color.red;
-                        bellPresentText = " " + "PE_Present".Translate(bellCount);
-                    }
-                    Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_Bell".Translate()}{bellPresentText}");
-                    GUI.color = Color.white;
-                    curY += 30f;
                 }
             }
+            if (!EducationUtility.HasBellOnMap(map, false))
+            {
+                GUI.color = Color.red;
+                Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_Bell".Translate()} ({"PE_NotPresent".Translate()})");
+                GUI.color = Color.white;
+            }
+            else
+            {
+                Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_Bell".Translate()}");
+            }
+            curY += 30f;
         }
 
         private void ValidateAndRemovePawns()

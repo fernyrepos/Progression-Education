@@ -14,46 +14,43 @@ namespace ProgressionEducation
             if (lord?.LordJob is LordJob_AttendClass attendClass)
             {
                 var studyGroup = attendClass.studyGroup;
-                var classroomRoom = studyGroup.GetRoom();
-
-                if (classroomRoom != null)
+                Thing bell = null;
+                float closestDist = float.MaxValue;
+                foreach (var bellComp in CompBell.AllBells)
                 {
-                    Thing bell = null;
-                    float closestDist = float.MaxValue;
-                    foreach (var thing in classroomRoom.ContainedAndAdjacentThings)
+                    if (bellComp.parent.Map == pawn.Map && !bellComp.ShouldRingAutomatically)
                     {
-                        var bellComp = thing.TryGetComp<CompBell>();
-                        if (bellComp != null && !bellComp.ShouldRingAutomatically)
+                        var bellThing = bellComp.parent;
+                        if (pawn.CanReserveAndReach(bellThing, PathEndMode.Touch, Danger.Some))
                         {
-                            if (pawn.CanReserveAndReach(thing, PathEndMode.Touch, Danger.Some))
+                            float dist = pawn.Position.DistanceTo(bellThing.Position);
+                            if (dist < closestDist)
                             {
-                                float dist = pawn.Position.DistanceTo(thing.Position);
-                                if (dist < closestDist)
-                                {
-                                    closestDist = dist;
-                                    bell = thing;
-                                }
+                                closestDist = dist;
+                                bell = bellThing;
                             }
                         }
                     }
-
-                    if (bell != null)
-                    {
-                        EducationLog.Message($"-> Found bell to ring in own classroom: {bell.Label}. Creating job.");
-                        return JobMaker.MakeJob(DefsOf.PE_RingBell, bell);
-                    }
-                    else
+                }
+                if (bell != null)
+                {
+                    EducationLog.Message($"-> Found bell to ring: {bell.Label}. Creating job.");
+                    return JobMaker.MakeJob(DefsOf.PE_RingBell, bell);
+                }
+                else
+                {
+                    var classroomRoom = studyGroup.GetRoom();
+                    if (classroomRoom != null)
                     {
                         var waypoints = ProficiencyUtility.GetWaypointsInFrontOfBoard(studyGroup.classroom.LearningBoard.parent, pawn);
                         if (waypoints.Any())
                         {
-                            EducationLog.Message($"-> Found classroom board. Creating job to go to it.");
+                            EducationLog.Message($"-> No bell found. Found classroom board. Creating job to go to it.");
                             return JobMaker.MakeJob(JobDefOf.GotoWander, waypoints.RandomElement());
                         }
                     }
                 }
             }
-
             return null;
         }
     }

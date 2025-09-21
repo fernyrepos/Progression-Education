@@ -84,23 +84,9 @@ namespace ProgressionEducation
                 return new AcceptanceReport("PE_NoLearningBoard".Translate());
             }
 
-            int bellCount = room.ContainedAndAdjacentThings.Count(t => t.TryGetComp<CompBell>() != null);
-            if (bellCount < 1)
+            if (!EducationUtility.HasBellOnMap(classroom.LearningBoard.parent.Map, false))
             {
                 return new AcceptanceReport("PE_NoBell".Translate());
-            }
-
-            foreach (var thing in room.ContainedAndAdjacentThings)
-            {
-                var bellComp = thing.TryGetComp<CompBell>();
-                if (bellComp != null)
-                {
-                    var powerComp = thing.TryGetComp<CompPowerTrader>();
-                    if (powerComp != null && !powerComp.PowerOn)
-                    {
-                        return new AcceptanceReport("PE_BellNotPowered".Translate());
-                    }
-                }
             }
 
             return AcceptanceReport.WasAccepted;

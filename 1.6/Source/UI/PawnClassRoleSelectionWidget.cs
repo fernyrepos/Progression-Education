@@ -5,7 +5,7 @@ using Verse;
 namespace ProgressionEducation
 {
     [StaticConstructorOnStartup]
-    public class PawnClassRoleSelectionWidget : PawnRoleSelectionWidgetBase<ClassRole>
+    public class PawnClassRoleSelectionWidget : PawnRoleSelectionWidgetBase_Fixed<ClassRole>
     {
         public StudyGroup studyGroup;
 
@@ -39,7 +39,7 @@ namespace ProgressionEducation
             return null;
         }
 
-        public override string ExtraTipContents(Pawn pawn)
+        protected override string ExtraTipContents(Pawn pawn)
         {
             if (studyGroup == null)
             {

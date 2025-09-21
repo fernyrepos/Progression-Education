@@ -141,25 +141,28 @@ namespace ProgressionEducation
 
             var room = studyGroup.GetRoom();
 
-            var requirement = skillFocus?.GetModExtension<SkillBuildingRequirement>();
-            if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
+            if (room != null)
             {
-                int count = studyGroup.students.Count;
-                string label = !string.IsNullOrEmpty(requirement.requirementLabel) ? requirement.requirementLabel : requirement.requiredBuildings.Select(b => b.label).ToCommaList();
-                int benchCount = room.ContainedAndAdjacentThings.Count(t => requirement.requiredBuildings.Contains(t.def));
-                string presentText = "";
-                if (benchCount < count || benchCount < 1)
+                var requirement = skillFocus?.GetModExtension<SkillBuildingRequirement>();
+                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
                 {
-                    GUI.color = Color.red;
-                    presentText = " " + "PE_Present".Translate(benchCount);
+                    int count = studyGroup.students.Count;
+                    string label = !string.IsNullOrEmpty(requirement.requirementLabel) ? requirement.requirementLabel : requirement.requiredBuildings.Select(b => b.label).ToCommaList();
+                    int benchCount = room.ContainedAndAdjacentThings.Count(t => requirement.requiredBuildings.Contains(t.def));
+                    string presentText = "";
+                    if (benchCount < count || benchCount < 1)
+                    {
+                        GUI.color = Color.red;
+                        presentText = " " + "PE_Present".Translate(benchCount);
+                    }
+                    if (benchCount < 1 && count < 1)
+                    {
+                        count = 1;
+                    }
+                    Widgets.Label(new Rect(rect.x + 10f, curY, 300f, 25f), $"{count}x {label}{presentText}");
+                    GUI.color = Color.white;
+                    curY += 25f;
                 }
-                if (benchCount < 1 && count < 1)
-                {
-                    count = 1;
-                }
-                Widgets.Label(new Rect(rect.x + 10f, curY, 300f, 25f), $"{count}x {label}{presentText}");
-                GUI.color = Color.white;
-                curY += 25f;
             }
         }
 

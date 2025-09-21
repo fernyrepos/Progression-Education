@@ -32,6 +32,7 @@
   <PE_SchoolDesks>school desks</PE_SchoolDesks>
   <PE_ClassHours>Class hours:</PE_ClassHours>
   <PE_Present>({0} present)</PE_Present>
+  <PE_PresentOnMap>({0} present on map)</PE_PresentOnMap>
   <PE_StartHour>Start hour</PE_StartHour>
   <PE_EndHour>End hour</PE_EndHour>
   <PE_Classroom>Classroom:</PE_Classroom>
@@ -88,6 +89,10 @@
   <PE_TrainingSkill>Training {0} skill</PE_TrainingSkill>
   <PE_TeacherNotQualifiedSkill>{0}'s {1} skill is too low to teach (must be at least 5).</PE_TeacherNotQualifiedSkill>
   <PE_StudentSkillDisabled>{0}'s {1} skill is disabled and cannot be trained.</PE_StudentSkillDisabled>
+
+  <!-- Job Reports -->
+  <PE_JobReport_WaitingForStudents>Waiting for students</PE_JobReport_WaitingForStudents>
+  <PE_JobReport_WaitingForClass>Waiting for class to start</PE_JobReport_WaitingForClass>
 
   <!-- Mod Settings -->
   <PE_GlobalLearningSpeed>Global learning speed</PE_GlobalLearningSpeed>

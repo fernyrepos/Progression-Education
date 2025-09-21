@@ -128,30 +128,6 @@ namespace ProgressionEducation
             }
         }
 
-        private bool HasBellInClassroom(Classroom classroom)
-        {
-            if (classroom.LearningBoard?.parent == null)
-            {
-                return false;
-            }
-
-            var room = classroom.LearningBoard.parent.GetRoom();
-            foreach (var thing in room.ContainedAndAdjacentThings)
-            {
-                var bellComp = thing.TryGetComp<CompBell>();
-                if (bellComp != null)
-                {
-                    var powerComp = thing.TryGetComp<CompPowerTrader>();
-                    if (powerComp != null && !powerComp.PowerOn)
-                    {
-                        continue;
-                    }
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         public void ApplyScheduleToPawns(StudyGroup studyGroup)
         {
@@ -194,10 +170,9 @@ namespace ProgressionEducation
                 return;
             }
 
-            var classroom = studyGroup.classroom;
-            if (!HasBellInClassroom(classroom))
+            if (!EducationUtility.HasBellOnMap(classroomMap, true))
             {
-                EducationLog.Message($"No bell found in classroom '{classroom.name}' for class '{studyGroup.className}'. Cannot initiate class.");
+                EducationLog.Message($"No bell found on map for class '{studyGroup.className}'. Cannot initiate class.");
                 return;
             }
             var teacherRole = studyGroup.GetTeacherRole();

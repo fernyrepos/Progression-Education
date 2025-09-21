@@ -8,6 +8,14 @@ namespace ProgressionEducation
 {
     public class JobDriver_AttendClass : JobDriver
     {
+        public override string GetReport()
+        {
+            if (pawn.GetLord()?.LordJob is LordJob_AttendClass lordJob && !lordJob.studyGroup.AllStudentsAreGathered())
+            {
+                return "PE_JobReport_WaitingForClass".Translate();
+            }
+            return base.GetReport();
+        }
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             return pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed) && pawn.ReserveSittableOrSpot(DeskSpotStudent(TargetA.Thing), job, errorOnFailed);

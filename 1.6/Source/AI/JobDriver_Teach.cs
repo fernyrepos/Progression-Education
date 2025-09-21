@@ -21,6 +21,14 @@ namespace ProgressionEducation
             }
         }
 
+        public override string GetReport()
+        {
+            if (!(StudyGroup?.AllStudentsAreGathered() ?? true))
+            {
+                return "PE_JobReport_WaitingForStudents".Translate();
+            }
+            return base.GetReport();
+        }
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             return pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed);

@@ -39,15 +39,13 @@ namespace ProgressionEducation
         {
             if (!bellRung && lord.ticksInToil % 60 == 0)
             {
-                var room = studyGroup.GetRoom();
-                foreach (var thing in room.ContainedAndAdjacentThings)
+                foreach (var bellComp in CompBell.AllBells)
                 {
-                    var bellComp = thing.TryGetComp<CompBell>();
-                    if (bellComp != null && bellComp.ShouldRingAutomatically)
+                    if (bellComp.parent.Map == lord.Map && bellComp.ShouldRingAutomatically)
                     {
                         bellComp.RingBell();
                         bellRung = true;
-                        EducationLog.Message($"Automatic bell '{thing.Label}' rang for class '{studyGroup.className}'. Sending BellRung memo.");
+                        EducationLog.Message($"Automatic bell '{bellComp.parent.Label}' rang for class '{studyGroup.className}'. Sending BellRung memo.");
                         lord.ReceiveMemo("BellRung");
                         return;
                     }
