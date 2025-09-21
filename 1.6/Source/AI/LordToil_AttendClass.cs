@@ -50,8 +50,6 @@ namespace ProgressionEducation
                 }
 
                 text += "\n\n" + "PE_ClassGraduates".Translate(graduates);
-                text += "\n\n" + studyGroup.subjectLogic.Description;
-
                 Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.PositiveEvent);
                 EducationManager.Instance.RemoveStudyGroup(studyGroup);
                 lord.ReceiveMemo("ClassCompleted");

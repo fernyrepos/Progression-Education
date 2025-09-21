@@ -4,7 +4,7 @@
   <!-- General UI -->
   <PE_Create>Create</PE_Create>
   <PE_Select>Select</PE_Select>
-  <PE_PasteHex>Paste Hex</PE_PasteHex>
+  <PE_PasteHex>Paste hex</PE_PasteHex>
 
   <!-- Main Education Tab -->
   <PE_Classes>Classes</PE_Classes>
@@ -18,29 +18,29 @@
   <PE_PerHour>/hour</PE_PerHour>
 
   <!-- Create Class Dialog -->
-  <PE_CreateClass>Create Class</PE_CreateClass>
+  <PE_CreateClass>Create class</PE_CreateClass>
   <PE_CreateClassDesc>Set up a new class session with a teacher and students.</PE_CreateClassDesc>
-  <PE_ClassName>Class Name</PE_ClassName>
+  <PE_ClassName>Class name</PE_ClassName>
   <PE_Subject>Subject</PE_Subject>
-  <PE_SkillFocus>Skill Focus</PE_SkillFocus>
-  <PE_ProficiencyFocus>Proficiency Focus</PE_ProficiencyFocus>
-  <PE_SemesterGoal>Semester Goal</PE_SemesterGoal>
+  <PE_SkillFocus>Skill focus</PE_SkillFocus>
+  <PE_ProficiencyFocus>Proficiency focus</PE_ProficiencyFocus>
+  <PE_SemesterGoal>Semester goal</PE_SemesterGoal>
   <PE_StudyTimeNeeded>Study time needed: {0}</PE_StudyTimeNeeded>
   <PE_Requirements>Requirements:</PE_Requirements>
   <PE_LearningBoard>learning board</PE_LearningBoard>
   <PE_Bell>bell</PE_Bell>
   <PE_SchoolDesks>school desks</PE_SchoolDesks>
-  <PE_ClassHours>Class Hours:</PE_ClassHours>
+  <PE_ClassHours>Class hours:</PE_ClassHours>
   <PE_Present>({0} present)</PE_Present>
-  <PE_StartHour>Start Hour</PE_StartHour>
-  <PE_EndHour>End Hour</PE_EndHour>
+  <PE_StartHour>Start hour</PE_StartHour>
+  <PE_EndHour>End hour</PE_EndHour>
   <PE_Classroom>Classroom:</PE_Classroom>
-  <PE_SelectClassroom>Select Classroom</PE_SelectClassroom>
+  <PE_SelectClassroom>Select classroom</PE_SelectClassroom>
   <PE_NoClassroomsAvailable>No classrooms available.</PE_NoClassroomsAvailable>
   <PE_NotEnoughBenches>Not enough {0} available. Required: {1}, Have: {2}.</PE_NotEnoughBenches>
   <PE_SubjectSkill>Skill</PE_SubjectSkill>
   <PE_SubjectProficiency>Proficiency</PE_SubjectProficiency>
-  <PE_RescheduleClass>Reschedule Class</PE_RescheduleClass>
+  <PE_RescheduleClass>Reschedule class</PE_RescheduleClass>
 
   <!-- Manage Students Dialog -->
   <PE_ManageStudents>Manage students</PE_ManageStudents>
@@ -49,24 +49,24 @@
   <PE_ConfirmRemoveStudent>Are you sure you want to remove {0} from this class? They cannot be added back.</PE_ConfirmRemoveStudent>
 
   <!-- Classroom Management -->
-  <PE_EditClassroom>Edit Classroom</PE_EditClassroom>
-  <PE_ChangeColor>Change Color</PE_ChangeColor>
-  <PE_NewClassroomCreated>New Classroom</PE_NewClassroomCreated>
+  <PE_EditClassroom>Edit classroom</PE_EditClassroom>
+  <PE_ChangeColor>Change color</PE_ChangeColor>
+  <PE_NewClassroomCreated>New classroom</PE_NewClassroomCreated>
   <PE_NewClassroomCreatedDesc>You have created a classroom. Classes can be managed in the classrooms menu on the bottom bar.</PE_NewClassroomCreatedDesc>
 
   <!-- Pawn Roles -->
   <PE_Spectators>Spectators</PE_Spectators>
-  <PE_NotParticipating>Not Participating</PE_NotParticipating>
+  <PE_NotParticipating>Not participating</PE_NotParticipating>
   <PE_TeacherRole>teacher</PE_TeacherRole>
   <PE_StudentRole>Student</PE_StudentRole>
   <PE_TeacherRoleOnlyForAdults>Only adults can be teachers.</PE_TeacherRoleOnlyForAdults>
   <PE_TeacherRoleRequiresSocialSkill>Teachers must have social skills enabled.</PE_TeacherRoleRequiresSocialSkill>
 
   <!-- In-Game Events & Letters -->
-  <PE_ClassCancelled>Class Cancelled: {0}</PE_ClassCancelled>
+  <PE_ClassCancelled>Class cancelled: {0}</PE_ClassCancelled>
   <PE_ClassCancelledDesc>The class "{0}" has been cancelled because not all students could make it to class in time.</PE_ClassCancelledDesc>
   <PE_MissingStudents>Missing students: {0}</PE_MissingStudents>
-  <PE_ClassCompleted>Class Completed: {0}</PE_ClassCompleted>
+  <PE_ClassCompleted>Class completed: {0}</PE_ClassCompleted>
   <PE_ClassCompletedDesc>The class "{0}" has successfully completed its semester.</PE_ClassCompletedDesc>
   <PE_ClassGraduates>Graduates: {0}</PE_ClassGraduates>
 
@@ -90,11 +90,11 @@
   <PE_StudentSkillDisabled>{0}'s {1} skill is disabled and cannot be trained.</PE_StudentSkillDisabled>
 
   <!-- Mod Settings -->
-  <PE_GlobalLearningSpeed>Global Learning Speed</PE_GlobalLearningSpeed>
-  <PE_SkillClassesLearningSpeed>Skill Classes Learning Speed</PE_SkillClassesLearningSpeed>
-  <PE_ProficiencyClassesLearningSpeed>Proficiency Classes Learning Speed</PE_ProficiencyClassesLearningSpeed>
-  <PE_EnableProficiencySystem>Enable Proficiency System</PE_EnableProficiencySystem>
-  <PE_EnableDebugMode>Enable Debug Mode</PE_EnableDebugMode>
+  <PE_GlobalLearningSpeed>Global learning speed</PE_GlobalLearningSpeed>
+  <PE_SkillClassesLearningSpeed>Skill classes learning speed</PE_SkillClassesLearningSpeed>
+  <PE_ProficiencyClassesLearningSpeed>Proficiency classes learning speed</PE_ProficiencyClassesLearningSpeed>
+  <PE_EnableProficiencySystem>Enable proficiency system</PE_EnableProficiencySystem>
+  <PE_EnableDebugMode>Enable debug mode</PE_EnableDebugMode>
 
   <!-- Validation Messages -->
   <PE_EnterClassName>Enter a class name</PE_EnterClassName>
