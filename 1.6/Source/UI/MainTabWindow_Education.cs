@@ -65,10 +65,11 @@ namespace ProgressionEducation
 
         private void DrawClassRow(Rect rect, StudyGroup studyGroup)
         {
-            Widgets.DrawWindowBackground(rect);
-
             var bgColor = studyGroup.classroom.color;
-            Widgets.DrawBoxSolid(rect, bgColor);
+            var borderColor = bgColor;
+            bgColor = Color.Lerp(bgColor, Color.black, 0.5f);
+            
+            Widgets.DrawBoxSolidWithOutline(rect, bgColor, borderColor);
 
             if (Mouse.IsOver(rect))
             {
