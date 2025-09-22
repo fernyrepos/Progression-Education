@@ -32,7 +32,7 @@
   <PE_SchoolDesks>school desks</PE_SchoolDesks>
   <PE_ClassHours>Class hours:</PE_ClassHours>
   <PE_Present>({0} present)</PE_Present>
-  <PE_NotPresent>(not present on map)</PE_NotPresent>
+  <PE_NotPresent>not present on map</PE_NotPresent>
   <PE_StartHour>Start hour</PE_StartHour>
   <PE_EndHour>End hour</PE_EndHour>
   <PE_Classroom>Classroom:</PE_Classroom>
