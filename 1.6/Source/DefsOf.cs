@@ -18,6 +18,8 @@ namespace ProgressionEducation
         public static ThingDef PE_SchoolBell;
         public static ThingDef PE_ElectricSchoolBell;
 
+        [DefAlias("PE_SchoolBell")] public static SoundDef PE_SchoolBellSound;
+
         public static TraitDef PE_LowTechProficiency;
         public static TraitDef PE_FirearmProficiency;
         public static TraitDef PE_HighTechProficiency;

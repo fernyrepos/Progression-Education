@@ -5,7 +5,7 @@
     <label>education</label>
     <description>Manage classrooms and classes.</description>
     <tabWindowClass>ProgressionEducation.MainTabWindow_Education</tabWindowClass>
-    <order>100</order>
+    <order>35</order>
     <validWithoutMap>false</validWithoutMap>
   </MainButtonDef>
 </Defs>

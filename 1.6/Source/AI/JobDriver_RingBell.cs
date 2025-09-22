@@ -9,8 +9,6 @@ namespace ProgressionEducation
 {
     public class JobDriver_RingBell : JobDriver
     {
-        private Thing bell;
-
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             return true;
@@ -27,24 +25,36 @@ namespace ProgressionEducation
                 }
                 return true;
             });
-            bell = job.targetA.Thing;
             yield return Toils_Reserve.Reserve(TargetIndex.A);
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             Toil ringBell = new()
             {
                 initAction = delegate
                 {
-                    SoundDefOf.TinyBell.PlayOneShot(new TargetInfo(bell.Position, bell.Map));
+                    var bell = job.targetA.Thing;
+                    var bellComp = bell.TryGetComp<CompBell>();
+                    bellComp.RingBell();
                 },
-                defaultDuration = 60,
                 handlingFacing = true
             };
-            ringBell.AddFinishAction(delegate
+            yield return ringBell;
+            
+            Toil waitAtBell = new()
+            {
+                initAction = delegate
+                {
+                    pawn.rotationTracker.FaceTarget(job.targetA.Thing);
+                },
+                defaultDuration = 600,
+                defaultCompleteMode = ToilCompleteMode.Delay,
+                handlingFacing = true
+            };
+            waitAtBell.AddFinishAction(delegate
             {
                 EducationLog.Message($"Pawn {pawn.LabelShort} finished ringing bell. Sending 'BellRung' memo to lord.");
                 pawn.GetLord().ReceiveMemo(LordJob_AttendClass.MemoBellRung);
             });
-            yield return ringBell;
+            yield return waitAtBell;
         }
     }
 }

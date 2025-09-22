@@ -29,7 +29,8 @@ namespace ProgressionEducation
             float teacherSocial = teacher.skills.GetSkill(SkillDefOf.Social).Level;
             float relevantSkill = teacher.skills.GetSkill(skillFocus).Level;
             float teacherIntelligence = teacher.skills.GetSkill(SkillDefOf.Intellectual).Level;
-            return (teacherSocial * 0.4f) + (relevantSkill * 0.3f) + (teacherIntelligence * 0.3f);
+            var score = (teacherSocial * 0.4f) + (relevantSkill * 0.3f) + (teacherIntelligence * 0.3f);
+            return score * 0.05f;
         }
 
         public override float CalculateProgressPerTick()
@@ -79,12 +80,8 @@ namespace ProgressionEducation
         public override void ApplyLearningTick(Pawn student)
         {
             base.ApplyLearningTick(student);
-            var classroom = studyGroup.classroom;
-            float boardModifier = classroom.CalculateLearningModifier();
-            float modMultiplier = EducationSettings.Instance.skillClassesLearningSpeedModifier;
-            float xpGain = 1f;
-            float finalXpGain = xpGain * boardModifier * modMultiplier * EducationSettings.Instance.globalLearningSpeedModifier;
-            student.skills.Learn(skillFocus, finalXpGain, false);
+            float xpGain = CalculateProgressPerTick();
+            student.skills.Learn(skillFocus, xpGain, false);
         }
 
         public override void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog)

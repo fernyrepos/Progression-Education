@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <SoundDef>
+    <defName>PE_SchoolBell</defName>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <onCamera>True</onCamera>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>SchoolBell</clipPath>
+          </li>
+        </grains>
+        <volumeRange>9~9</volumeRange>
+        <pitchRange>0.85~1.15</pitchRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+</Defs>

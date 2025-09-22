@@ -108,7 +108,7 @@ namespace ProgressionEducation
             {
                 classroom = new Classroom(parent);
                 EducationLog.Message($"Learning board '{parent.Label}' spawned in a new room. Creating new classroom: '{classroom.name}'.");
-                Find.LetterStack.ReceiveLetter("PE_NewClassroomCreated".Translate(), "PE_NewClassroomCreatedDesc".Translate(classroom.name), LetterDefOf.NeutralEvent);
+                Find.WindowStack.Add(new Dialog_RenameClassroom(classroom, true));
             }
         }
     }

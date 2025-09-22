@@ -47,7 +47,7 @@ namespace ProgressionEducation
 
         public void RingBell()
         {
-            SoundDefOf.TinyBell.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
+            DefsOf.PE_SchoolBellSound.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
         }
     }
 }
