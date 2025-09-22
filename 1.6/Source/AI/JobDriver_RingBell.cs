@@ -37,8 +37,13 @@ namespace ProgressionEducation
                 },
                 handlingFacing = true
             };
+            ringBell.AddFinishAction(delegate
+            {
+                EducationLog.Message($"Pawn {pawn.LabelShort} finished ringing bell. Sending 'BellRung' memo to lord.");
+                pawn.GetLord().ReceiveMemo(LordJob_AttendClass.MemoBellRung);
+            });
             yield return ringBell;
-            
+
             Toil waitAtBell = new()
             {
                 initAction = delegate
@@ -49,11 +54,6 @@ namespace ProgressionEducation
                 defaultCompleteMode = ToilCompleteMode.Delay,
                 handlingFacing = true
             };
-            waitAtBell.AddFinishAction(delegate
-            {
-                EducationLog.Message($"Pawn {pawn.LabelShort} finished ringing bell. Sending 'BellRung' memo to lord.");
-                pawn.GetLord().ReceiveMemo(LordJob_AttendClass.MemoBellRung);
-            });
             yield return waitAtBell;
         }
     }

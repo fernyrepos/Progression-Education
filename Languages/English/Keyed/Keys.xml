@@ -52,6 +52,7 @@
   <!-- Classroom Management -->
   <PE_EditClassroom>Edit classroom</PE_EditClassroom>
   <PE_ChangeColor>Change color</PE_ChangeColor>
+  <PE_NameClassroom>Name classroom</PE_NameClassroom>
   <PE_NewClassroomCreated>New classroom: {0}</PE_NewClassroomCreated>
   <PE_NewClassroomCreatedDesc>You have created a classroom. Classes can be managed in the classrooms menu on the bottom bar.</PE_NewClassroomCreatedDesc>
 
