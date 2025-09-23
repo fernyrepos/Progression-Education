@@ -93,7 +93,7 @@ namespace ProgressionEducation
             var studyGroup = StudyGroup;
             PawnUtility.GainComfortFromCellIfPossible(pawn, 1, true);
             float semesterProgress = studyGroup.CalculateProgressPerTick();
-            studyGroup.AddProgress((int)semesterProgress);
+            studyGroup.AddProgress(semesterProgress);
             if (pawn.IsHashIntervalTick(900))
             {
                 //var student = studyGroup.students.RandomElement();
