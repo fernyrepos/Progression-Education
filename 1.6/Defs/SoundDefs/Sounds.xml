@@ -11,7 +11,7 @@
             <clipPath>SchoolBell</clipPath>
           </li>
         </grains>
-        <volumeRange>9~9</volumeRange>
+        <volumeRange>15~15</volumeRange>
         <pitchRange>0.85~1.15</pitchRange>
       </li>
     </subSounds>
