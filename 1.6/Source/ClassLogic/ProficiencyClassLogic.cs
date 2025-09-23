@@ -212,5 +212,19 @@ namespace ProgressionEducation
             base.ExposeData();
             Scribe_Values.Look(ref proficiencyFocus, "proficiencyFocus");
         }
+
+        public override AcceptanceReport ArePrerequisitesMet()
+        {
+            var room = studyGroup.GetRoom();
+            if (room != null)
+            {
+                int benchCount = room.ContainedAndAdjacentThings.Count(t => t.def.HasComp(typeof(RimWorld.CompStatEntrySchoolDesk)));
+                if (benchCount < studyGroup.students.Count)
+                {
+                    return new AcceptanceReport("PE_NotEnoughBenches".Translate("PE_SchoolDesks".Translate(), studyGroup.students.Count, benchCount));
+                }
+            }
+            return AcceptanceReport.WasAccepted;
+        }
     }
 }
