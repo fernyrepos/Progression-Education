@@ -1,4 +1,5 @@
 using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace ProgressionEducation
@@ -12,6 +13,11 @@ namespace ProgressionEducation
                 return false;
             }
             return CompBell.AllBells.Any(b => b.parent.Map == map && (!checkForPower || !b.Props.isAutomatic || b.IsPowered));
+        }
+
+        public static bool IsSchoolDesk(this Thing t)
+        {
+            return t.def == ThingDefOf.SchoolDesk;
         }
     }
 }

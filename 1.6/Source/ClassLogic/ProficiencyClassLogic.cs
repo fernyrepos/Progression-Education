@@ -18,6 +18,10 @@ namespace ProgressionEducation
 
         public override string Description => "PE_TrainingProficiency".Translate(proficiencyFocus.ToStringHuman());
 
+        public override int BenchCount => studyGroup.GetRoom()?.ContainedAndAdjacentThings.Count(t => t.IsSchoolDesk()) ?? 0;
+
+        public override string BenchLabel => "PE_SchoolDesks".Translate();
+
         public override void GrantCompletionRewards()
         {
             TraitDef traitDef = null;
@@ -101,19 +105,6 @@ namespace ProgressionEducation
                 : AcceptanceReport.WasAccepted;
         }
 
-        public override void AutoAssignStudents(Dialog_CreateClass createClassDialog)
-        {
-            if (studyGroup.classroom?.LearningBoard != null)
-            {
-                var room = studyGroup.GetRoom();
-                int benchCount = room.ContainedAndAdjacentThings.Count(t => t.def.HasComp(typeof(RimWorld.CompStatEntrySchoolDesk)));
-                UnassignUnqualifiedPawns(createClassDialog);
-                AssignBestTeacher(createClassDialog);
-                HandleRoleAutoAssignment(createClassDialog, createClassDialog.StudentRole, benchCount);
-                Log.Message($"Auto-assigned students and teacher for class '{studyGroup.className}'");
-            }
-        }
-
         public override AcceptanceReport IsStudentQualified(Pawn student)
         {
             bool isQualified = false;
@@ -159,29 +150,7 @@ namespace ProgressionEducation
             }
             curY += 30f;
 
-            Widgets.Label(new Rect(rect.x, curY, 200f, 25f), "PE_Requirements".Translate());
-            curY += 25f;
-
-            var room = studyGroup.GetRoom();
-            if (room != null)
-            {
-                int count = studyGroup.students.Count;
-                int benchCount = room.ContainedAndAdjacentThings.Count(t => t.def.HasComp(typeof(RimWorld.CompStatEntrySchoolDesk)));
-                string label = "PE_SchoolDesks".Translate();
-                string presentText = "";
-                if (benchCount < count || benchCount < 1)
-                {
-                    GUI.color = Color.red;
-                    presentText = " " + "PE_Present".Translate(benchCount);
-                }
-                if (benchCount < 1 && count < 1)
-                {
-                    count = 1;
-                }
-                Widgets.Label(new Rect(rect.x + 10f, curY, 300f, 25f), $"{count}x {label}{presentText}");
-                GUI.color = Color.white;
-                curY += 25f;
-            }
+            DrawBenchRequirementUI(rect, ref curY);
         }
 
         public override string TeacherTooltipFor(Pawn pawn)
@@ -213,18 +182,5 @@ namespace ProgressionEducation
             Scribe_Values.Look(ref proficiencyFocus, "proficiencyFocus");
         }
 
-        public override AcceptanceReport ArePrerequisitesMet()
-        {
-            var room = studyGroup.GetRoom();
-            if (room != null)
-            {
-                int benchCount = room.ContainedAndAdjacentThings.Count(t => t.def.HasComp(typeof(RimWorld.CompStatEntrySchoolDesk)));
-                if (benchCount < studyGroup.students.Count)
-                {
-                    return new AcceptanceReport("PE_NotEnoughBenches".Translate("PE_SchoolDesks".Translate(), studyGroup.students.Count, benchCount));
-                }
-            }
-            return AcceptanceReport.WasAccepted;
-        }
     }
 }

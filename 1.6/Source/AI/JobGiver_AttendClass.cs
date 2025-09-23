@@ -54,7 +54,7 @@ namespace ProgressionEducation
             else
             {
                 EducationLog.Message($"-> This is not a skill class, using default desk finding logic.");
-                desk = FindUnoccupiedThing(room, pawn, thing => thing.def.HasComp(typeof(RimWorld.CompStatEntrySchoolDesk)));
+                desk = FindUnoccupiedThing(room, pawn, thing => thing.IsSchoolDesk());
             }
 
             if (desk != null)

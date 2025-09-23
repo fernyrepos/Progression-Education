@@ -13,6 +13,8 @@ namespace ProgressionEducation
         public ClassSubjectLogic(StudyGroup parent) { studyGroup = parent; }
 
         public abstract string Description { get; }
+        public virtual int BenchCount => 0;
+        public virtual string BenchLabel => null;
         public abstract void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog);
         public abstract float CalculateProgressPerTick();
         public abstract void GrantCompletionRewards();
@@ -51,7 +53,23 @@ namespace ProgressionEducation
             }
         }
         public abstract float CalculateTeacherScore(Pawn p);
-        public virtual void AutoAssignStudents(Dialog_CreateClass createClassDialog) { }
+
+        public virtual bool CanAutoAssign => studyGroup.classroom?.LearningBoard != null;
+
+        public virtual void AutoAssignStudents(Dialog_CreateClass createClassDialog)
+        {
+            if (!CanAutoAssign)
+            {
+                return;
+            }
+            UnassignUnqualifiedPawns(createClassDialog);
+            if (!string.IsNullOrEmpty(BenchLabel))
+            {
+                AssignBestTeacher(createClassDialog);
+                HandleRoleAutoAssignment(createClassDialog, createClassDialog.StudentRole, BenchCount);
+                Log.Message($"Auto-assigned students and teacher for class '{studyGroup.className}'");
+            }
+        }
         public abstract string TeacherTooltipFor(Pawn pawn);
         public abstract string StudentTooltipFor(Pawn pawn);
 
@@ -71,6 +89,32 @@ namespace ProgressionEducation
                     }
                 }
             }
+        }
+
+        protected void DrawBenchRequirementUI(Rect rect, ref float curY)
+        {
+            string label = BenchLabel;
+            if (string.IsNullOrEmpty(label))
+            {
+                return;
+            }
+            Widgets.Label(new Rect(rect.x, curY, 200f, 25f), "PE_Requirements".Translate());
+            curY += 25f;
+            int count = studyGroup.students.Count;
+            int benchCount = BenchCount;
+            string presentText = "";
+            if (benchCount < count || benchCount < 1)
+            {
+                GUI.color = Color.red;
+                presentText = " " + "PE_Present".Translate(benchCount);
+            }
+            if (benchCount < 1 && count < 1)
+            {
+                count = 1;
+            }
+            Widgets.Label(new Rect(rect.x + 10f, curY, 300f, 25f), $"{count}x {label}{presentText}");
+            GUI.color = Color.white;
+            curY += 25f;
         }
 
         protected void HandleRoleAutoAssignment(Dialog_CreateClass createClassDialog, ClassRole role, int maxCount)
@@ -98,6 +142,11 @@ namespace ProgressionEducation
 
         public virtual AcceptanceReport ArePrerequisitesMet()
         {
+            string benchLabel = BenchLabel;
+            if (!string.IsNullOrEmpty(benchLabel) && BenchCount < studyGroup.students.Count)
+            {
+                return new AcceptanceReport("PE_NotEnoughBenches".Translate(benchLabel, studyGroup.students.Count, BenchCount));
+            }
             return AcceptanceReport.WasAccepted;
         }
 

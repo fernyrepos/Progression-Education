@@ -16,6 +16,36 @@ namespace ProgressionEducation
 
         public override string Description => "PE_TrainingSkill".Translate(skillFocus.label);
 
+        public override int BenchCount
+        {
+            get
+            {
+                var requirement = skillFocus?.GetModExtension<SkillBuildingRequirement>();
+                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
+                {
+                    var room = studyGroup.GetRoom();
+                    if (room != null)
+                    {
+                        return room.ContainedAndAdjacentThings.Count(t => requirement.requiredBuildings.Contains(t.def));
+                    }
+                }
+                return 0;
+            }
+        }
+
+        public override string BenchLabel
+        {
+            get
+            {
+                var requirement = skillFocus?.GetModExtension<SkillBuildingRequirement>();
+                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
+                {
+                    return !string.IsNullOrEmpty(requirement.requirementLabel) ? requirement.requirementLabel : requirement.requiredBuildings.Select(b => b.label).ToCommaList();
+                }
+                return null;
+            }
+        }
+
         public override void GrantCompletionRewards()
         {
         }
@@ -60,22 +90,7 @@ namespace ProgressionEducation
                 : AcceptanceReport.WasAccepted;
         }
 
-        public override void AutoAssignStudents(Dialog_CreateClass createClassDialog)
-        {
-            if (studyGroup.classroom?.LearningBoard != null && skillFocus != null)
-            {
-                UnassignUnqualifiedPawns(createClassDialog);
-
-                var requirement = skillFocus.GetModExtension<SkillBuildingRequirement>();
-                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
-                {
-                    var room = studyGroup.GetRoom();
-                    int benchCount = room.ContainedAndAdjacentThings.Count(t => requirement.requiredBuildings.Contains(t.def));
-                    HandleRoleAutoAssignment(createClassDialog, createClassDialog.StudentRole, benchCount);
-                    AssignBestTeacher(createClassDialog);
-                }
-            }
-        }
+        public override bool CanAutoAssign => base.CanAutoAssign && skillFocus != null;
 
         public override void ApplyLearningTick(Pawn student)
         {
@@ -133,34 +148,7 @@ namespace ProgressionEducation
                 }
             }
 
-            Widgets.Label(new Rect(rect.x, curY, 200f, 25f), "PE_Requirements".Translate());
-            curY += 25f;
-
-            var room = studyGroup.GetRoom();
-
-            if (room != null)
-            {
-                var requirement = skillFocus?.GetModExtension<SkillBuildingRequirement>();
-                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
-                {
-                    int count = studyGroup.students.Count;
-                    string label = !string.IsNullOrEmpty(requirement.requirementLabel) ? requirement.requirementLabel : requirement.requiredBuildings.Select(b => b.label).ToCommaList();
-                    int benchCount = room.ContainedAndAdjacentThings.Count(t => requirement.requiredBuildings.Contains(t.def));
-                    string presentText = "";
-                    if (benchCount < count || benchCount < 1)
-                    {
-                        GUI.color = Color.red;
-                        presentText = " " + "PE_Present".Translate(benchCount);
-                    }
-                    if (benchCount < 1 && count < 1)
-                    {
-                        count = 1;
-                    }
-                    Widgets.Label(new Rect(rect.x + 10f, curY, 300f, 25f), $"{count}x {label}{presentText}");
-                    GUI.color = Color.white;
-                    curY += 25f;
-                }
-            }
+            DrawBenchRequirementUI(rect, ref curY);
         }
 
         public override string TeacherTooltipFor(Pawn pawn)
@@ -201,22 +189,5 @@ namespace ProgressionEducation
             Scribe_Defs.Look(ref skillFocus, "skillFocus");
         }
 
-        public override AcceptanceReport ArePrerequisitesMet()
-        {
-            var requirement = skillFocus.GetModExtension<SkillBuildingRequirement>();
-            if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
-            {
-                var room = studyGroup.GetRoom();
-                if (room != null)
-                {
-                    int benchCount = room.ContainedAndAdjacentThings.Count(t => requirement.requiredBuildings.Contains(t.def));
-                    if (benchCount < studyGroup.students.Count)
-                    {
-                        return new AcceptanceReport("PE_NotEnoughBenches".Translate(requirement.requiredBuildings.Select(b => b.label).ToCommaList(), studyGroup.students.Count, benchCount));
-                    }
-                }
-            }
-            return AcceptanceReport.WasAccepted;
-        }
     }
 }
