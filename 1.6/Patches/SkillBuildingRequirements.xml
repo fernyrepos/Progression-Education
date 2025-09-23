@@ -44,14 +44,12 @@
     <value>
       <li Class="ProgressionEducation.SkillBuildingRequirement">
         <requiredBuildings>
-          <li>SchoolDesk</li>
+          <li>DeepDrill</li>
         </requiredBuildings>
-        <requirementLabel>school desks</requirementLabel>
+        <requirementLabel>mining stations</requirementLabel>
       </li>
     </value>
   </Operation>
-
-
 
   <Operation Class="PatchOperationAddModExtension">
     <xpath>Defs/SkillDef[defName="Social"]</xpath>
@@ -73,7 +71,7 @@
           <li>FueledStove</li>
           <li>ElectricStove</li>
         </requiredBuildings>
-        <requirementLabel>cooking type workbenches</requirementLabel>
+        <requirementLabel>cooking workstations</requirementLabel>
       </li>
     </value>
   </Operation>
