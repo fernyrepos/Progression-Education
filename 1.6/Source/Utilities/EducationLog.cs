@@ -11,6 +11,7 @@ namespace ProgressionEducation
             if (EducationSettings.Instance.debugMode)
             {
                 Log.Message(Prefix + text);
+                Log.ResetMessageCount();
             }
         }
 

@@ -1,5 +1,7 @@
 using HarmonyLib;
 using RimWorld;
+using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace ProgressionEducation
@@ -8,6 +10,71 @@ namespace ProgressionEducation
     [ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Out, ArgumentType.Normal])]
     public static class EquipmentUtility_CanEquip_Patch
     {
+        private static Dictionary<ThingDef, TechLevel> cachedTechLevelValues = new Dictionary<ThingDef, TechLevel>();
+        private static Dictionary<ThingDef, TechLevel> thingsByTechLevels = new Dictionary<ThingDef, TechLevel>();
+
+        public static TechLevel GetTechLevelFor(ThingDef thingDef)
+        {
+            if (!cachedTechLevelValues.TryGetValue(thingDef, out TechLevel techLevel))
+            {
+                cachedTechLevelValues[thingDef] = techLevel = GetTechLevelForInt(thingDef);
+            }
+            return techLevel;
+        }
+
+        private static TechLevel GetTechLevelForInt(ThingDef thingDef)
+        {
+            List<TechLevel> techLevelSources = new List<TechLevel>();
+            if (thingDef.GetCompProperties<CompProperties_Techprint>() != null)
+            {
+                EducationLog.Message("1 Result: " + thingDef.GetCompProperties<CompProperties_Techprint>().project.techLevel + " - " + thingDef);
+                techLevelSources.Add(thingDef.GetCompProperties<CompProperties_Techprint>().project.techLevel);
+            }
+
+            if (thingsByTechLevels.TryGetValue(thingDef, out var level))
+            {
+                EducationLog.Message("2 Result: " + level + " - " + thingDef);
+                techLevelSources.Add(level);
+            }
+
+            if (thingDef.recipeMaker != null)
+            {
+                if (thingDef.recipeMaker.researchPrerequisite != null)
+                {
+                    var techLevel = thingDef.recipeMaker.researchPrerequisite.techLevel;
+                    if (techLevel != TechLevel.Undefined)
+                    {
+                        EducationLog.Message("3 Result: " + techLevel + " - " + thingDef);
+                        techLevelSources.Add(techLevel);
+                    }
+                }
+                if (thingDef.recipeMaker.researchPrerequisites?.Any() ?? false)
+                {
+                    var num = thingDef.recipeMaker.researchPrerequisites.MaxBy(x => (int)x.techLevel).techLevel;
+                    var techLevel = (TechLevel)num;
+                    if (techLevel != TechLevel.Undefined)
+                    {
+                        EducationLog.Message("4 Result: " + techLevel + " - " + thingDef);
+                        techLevelSources.Add(techLevel);
+                    }
+                }
+            }
+            if (thingDef.researchPrerequisites?.Any() ?? false)
+            {
+                var num = thingDef.researchPrerequisites.MaxBy(x => (int)x.techLevel).techLevel;
+                var techLevel = (TechLevel)num;
+                if (techLevel != TechLevel.Undefined)
+                {
+                    EducationLog.Message("5 Result: " + techLevel + " - " + thingDef);
+                    techLevelSources.Add(techLevel);
+                }
+            }
+            EducationLog.Message("6 Result: " + thingDef.techLevel + " - " + thingDef);
+            techLevelSources.Add(thingDef.techLevel);
+            EducationLog.Message(thingDef + " - FINAL: " + techLevelSources.MaxBy(x => (int)x));
+            return techLevelSources.MaxBy(x => (int)x);
+        }
+
         private static void Postfix(ref bool __result, Thing thing, Pawn pawn, ref string cantReason, bool checkBonded = true)
         {
             if (!__result)
@@ -28,18 +95,8 @@ namespace ProgressionEducation
             TraitDef requiredProficiency = null;
             if (proficiencyRequirement == null || proficiencyRequirement.requiredProficiency == null)
             {
-                if (thing.def.researchPrerequisites != null && thing.def.researchPrerequisites.Count > 0)
-                {
-                    var highestTechLevel = TechLevel.Undefined;
-                    foreach (var researchProject in thing.def.researchPrerequisites)
-                    {
-                        if (researchProject.techLevel > highestTechLevel)
-                        {
-                            highestTechLevel = researchProject.techLevel;
-                        }
-                    }
-                    requiredProficiency = ProficiencyUtility.GetProficiencyForTechLevel(highestTechLevel);
-                }
+                var techLevel = GetTechLevelFor(thing.def);
+                requiredProficiency = ProficiencyUtility.GetProficiencyForTechLevel(techLevel);
             }
             else
             {
@@ -68,7 +125,7 @@ namespace ProgressionEducation
                 {
                     __result = false;
                     var proficiencyLevel = ProficiencyUtility.TraitDefToProficiencyLevel(requiredProficiency);
-                    cantReason = "PE_CannotEquipItem".Translate(proficiencyLevel.ToStringHuman());
+                    cantReason = "PE_CannotEquipItem".Translate(proficiencyLevel.ToStringHuman().ToLower());
                     EducationLog.Message($"EquipmentUtility_CanEquip blocked {pawn.LabelShort} from equipping {thing.LabelCap} due to missing proficiency: {requiredProficiency.label}.");
                 }
             }
