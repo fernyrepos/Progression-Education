@@ -9,8 +9,8 @@ namespace ProgressionEducation
     [HotSwappable]
     public class ProficiencyClassLogic : ClassSubjectLogic
     {
-        public const int FirearmTeachingDuration = 6000;
-        public const int HighTechTeachingDuration = 12000;
+        public const int FirearmTeachingDuration = 60000;
+        public const int HighTechTeachingDuration = 120000;
         public ProficiencyLevel proficiencyFocus = ProficiencyLevel.Firearm;
 
         public ProficiencyClassLogic() : base() { }
@@ -71,7 +71,7 @@ namespace ProgressionEducation
                 }
             }
             techTraitModifier = Mathf.Max(0.1f, techTraitModifier);
-            return progress * techTraitModifier;
+            return progress * techTraitModifier * 0.05f;
         }
 
         public override float CalculateProgressPerTick()
