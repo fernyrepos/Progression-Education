@@ -13,7 +13,7 @@ namespace ProgressionEducation
         public string className;
         public ClassSubjectLogic subjectLogic;
         public int semesterGoal;
-        public int currentProgress;
+        public float currentProgress;
         public Classroom classroom;
         public int startHour;
         public int endHour;
@@ -92,7 +92,7 @@ namespace ProgressionEducation
             return AcceptanceReport.WasAccepted;
         }
 
-        public void AddProgress(int amount)
+        public void AddProgress(float amount)
         {
             currentProgress += amount;
         }
