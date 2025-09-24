@@ -67,7 +67,7 @@ namespace ProgressionEducation
         {
             var bgColor = studyGroup.classroom.color;
             var borderColor = bgColor;
-            bgColor = Color.Lerp(bgColor, Color.black, 0.5f);
+            bgColor = Color.Lerp(bgColor, Color.black, 0.65f);
             
             Widgets.DrawBoxSolidWithOutline(rect, bgColor, borderColor);
 
