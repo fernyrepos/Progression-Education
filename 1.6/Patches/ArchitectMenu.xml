@@ -3,14 +3,14 @@
   <Operation Class="PatchOperationReplace">
     <xpath>/Defs/ThingDef[defName="SchoolDesk"]/designationCategory</xpath>
     <value>
-      <designationCategory>Ferny_Education</designationCategory>
+      <designationCategory>Education</designationCategory>
     </value>
   </Operation>
 
   <Operation Class="PatchOperationReplace">
     <xpath>/Defs/ThingDef[defName="Blackboard"]/designationCategory</xpath>
     <value>
-      <designationCategory>Ferny_Education</designationCategory>
+      <designationCategory>Education</designationCategory>
     </value>
   </Operation>
 </Patch>

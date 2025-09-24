@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <DesignationCategoryDef>
-    <defName>PE_Development</defName>
-    <label>development</label>
+    <defName>Ferny_Education</defName>
+    <label>Education</label>
     <order>150</order>
     <specialDesignatorClasses>
       <li>Designator_Cancel</li>
