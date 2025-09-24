@@ -39,15 +39,11 @@ namespace ProgressionEducation
                 }
                 else
                 {
-                    var classroomRoom = studyGroup.GetRoom();
-                    if (classroomRoom != null)
+                    var waypoints = ProficiencyUtility.GetWaypointsInFrontOfBoard(studyGroup.classroom.LearningBoard.parent, pawn);
+                    if (waypoints.Any())
                     {
-                        var waypoints = ProficiencyUtility.GetWaypointsInFrontOfBoard(studyGroup.classroom.LearningBoard.parent, pawn);
-                        if (waypoints.Any())
-                        {
-                            EducationLog.Message($"-> No bell found. Found classroom board. Creating job to go to it.");
-                            return JobMaker.MakeJob(JobDefOf.GotoWander, waypoints.RandomElement());
-                        }
+                        EducationLog.Message($"-> No bell found. Found classroom board. Creating job to go to it.");
+                        return JobMaker.MakeJob(JobDefOf.GotoWander, waypoints.RandomElement());
                     }
                 }
             }

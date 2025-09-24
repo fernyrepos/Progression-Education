@@ -23,10 +23,10 @@ namespace ProgressionEducation
                 var requirement = skillFocus?.GetModExtension<SkillBuildingRequirement>();
                 if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
                 {
-                    var room = studyGroup.GetRoom();
-                    if (room != null)
+                    var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
+                    if (facility != null)
                     {
-                        return room.ContainedAndAdjacentThings.Count(t => requirement.requiredBuildings.Contains(t.def));
+                        return facility.LinkedBuildings.Count(t => requirement.requiredBuildings.Contains(t.def));
                     }
                 }
                 return 0;
@@ -161,7 +161,7 @@ namespace ProgressionEducation
             {
                 text += $"\n{relevantSkill.def.LabelCap}: {relevantSkill.Level}";
             }
-            var map = studyGroup.GetRoom()?.Map;
+            var map = studyGroup.Map;
             if (studyGroup.classroom != null && map != null)
             {
                 float progressPerTick = CalculateProgressPerTick();

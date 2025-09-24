@@ -18,20 +18,7 @@ namespace ProgressionEducation
             }
 
             var studyGroup = lordJob.studyGroup;
-            var room = studyGroup.GetRoom();
-            EducationLog.Message($"-> Got room: {room?.ID}");
-            Thing learningBoard = null;
-
-            EducationLog.Message($"-> Searching for learning board in room.");
-            foreach (var thing in room.ContainedAndAdjacentThings)
-            {
-                if (thing.TryGetComp<CompLearningBoard>() != null)
-                {
-                    learningBoard = thing;
-                    EducationLog.Message($"-> Found learning board: {learningBoard.Label}");
-                    break;
-                }
-            }
+            Thing learningBoard = studyGroup.classroom.LearningBoard.parent;
 
             if (learningBoard != null)
             {

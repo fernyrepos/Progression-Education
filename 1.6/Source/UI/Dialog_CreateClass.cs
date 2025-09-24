@@ -227,20 +227,16 @@ namespace ProgressionEducation
         {
             if (studyGroup.classroom != null)
             {
-                var room = studyGroup.GetRoom();
-                if (room != null)
+                int learningBoardCount = studyGroup.classroom.LearningBoard != null ? 1 : 0;
+                string learningBoardPresentText = "";
+                if (learningBoardCount < 1)
                 {
-                    int learningBoardCount = room.ContainedAndAdjacentThings.Count(t => t.TryGetComp<CompLearningBoard>() != null);
-                    string learningBoardPresentText = "";
-                    if (learningBoardCount < 1)
-                    {
-                        GUI.color = Color.red;
-                        learningBoardPresentText = " " + "PE_Present".Translate(learningBoardCount);
-                    }
-                    Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_LearningBoard".Translate()}{learningBoardPresentText}");
-                    GUI.color = Color.white;
-                    curY += 25f;
+                    GUI.color = Color.red;
+                    learningBoardPresentText = " " + "PE_Present".Translate(learningBoardCount);
                 }
+                Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_LearningBoard".Translate()}{learningBoardPresentText}");
+                GUI.color = Color.white;
+                curY += 25f;
             }
             if (!EducationUtility.HasBellOnMap(map, false))
             {

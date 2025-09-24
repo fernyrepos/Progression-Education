@@ -18,7 +18,18 @@ namespace ProgressionEducation
 
         public override string Description => "PE_TrainingProficiency".Translate(proficiencyFocus.ToStringHuman());
 
-        public override int BenchCount => studyGroup.GetRoom()?.ContainedAndAdjacentThings.Count(t => t.IsSchoolDesk()) ?? 0;
+        public override int BenchCount
+        {
+            get
+            {
+                var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
+                if (facility != null)
+                {
+                    return facility.LinkedBuildings.Count(t => t.IsSchoolDesk());
+                }
+                return 0;
+            }
+        }
 
         public override string BenchLabel => "PE_SchoolDesks".Translate();
 
@@ -158,7 +169,7 @@ namespace ProgressionEducation
             var social = pawn.skills.GetSkill(SkillDefOf.Social);
             var intellectual = pawn.skills.GetSkill(SkillDefOf.Intellectual);
             string text = $"{social.def.LabelCap}: {social.Level}\n{intellectual.def.LabelCap}: {intellectual.Level}";
-            var map = studyGroup.GetRoom()?.Map;
+            var map = studyGroup.Map;
             if (studyGroup.classroom != null && map != null && studyGroup.semesterGoal > 0)
             {
                 float progressPerTick = CalculateProgressPerTick();

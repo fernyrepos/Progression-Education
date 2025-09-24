@@ -36,42 +36,27 @@ namespace ProgressionEducation
 
         public float CalculateLearningModifier()
         {
-            var room = learningBoardThing.GetRoom();
-            FindEducationalFacilities(room, out var learningBoards, out var projectors);
+            FindEducationalFacilities(out var learningBoards, out var projectors);
             float bestBoardBonus = CalculateBestBoardBonus(learningBoards);
             float totalProjectorBonus = CalculateTotalProjectorBonus(projectors);
             return bestBoardBonus * (1f + totalProjectorBonus);
         }
 
-        private void FindEducationalFacilities(Room room, out List<Thing> boards, out List<CompProjector> projectors)
+        private void FindEducationalFacilities(out List<Thing> boards, out List<CompProjector> projectors)
         {
-            boards = [];
+            boards = [learningBoardThing];
             projectors = [];
 
-            foreach (var thing in room.ContainedAndAdjacentThings)
+            var facilities = learningBoardThing.TryGetComp<CompAffectedByFacilities>();
+            if (facilities != null)
             {
-                var learningBoardComp = thing.TryGetComp<CompLearningBoard>();
-                if (learningBoardComp != null)
+                foreach (var facility in facilities.LinkedFacilitiesListForReading)
                 {
-                    boards.Add(thing);
-                    var facilities = thing.TryGetComp<CompAffectedByFacilities>();
-                    if (facilities != null)
+                    var projector = facility.TryGetComp<CompProjector>();
+                    if (projector != null)
                     {
-                        foreach (var facility in facilities.LinkedFacilitiesListForReading)
-                        {
-                            var projector = facility.TryGetComp<CompProjector>();
-                            if (projector != null)
-                            {
-                                projectors.Add(projector);
-                            }
-                        }
+                        projectors.Add(projector);
                     }
-                    continue;
-                }
-                var standaloneProjector = thing.TryGetComp<CompProjector>();
-                if (standaloneProjector != null)
-                {
-                    projectors.Add(standaloneProjector);
                 }
             }
         }

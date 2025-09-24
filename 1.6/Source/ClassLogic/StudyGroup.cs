@@ -72,18 +72,6 @@ namespace ProgressionEducation
                 return new AcceptanceReport("PE_NoLearningBoard".Translate());
             }
 
-            var room = GetRoom();
-            if (room == null)
-            {
-                return new AcceptanceReport("PE_NoLearningBoard".Translate());
-            }
-
-            int learningBoardCount = room.ContainedAndAdjacentThings.Count(t => t.TryGetComp<CompLearningBoard>() != null);
-            if (learningBoardCount < 1)
-            {
-                return new AcceptanceReport("PE_NoLearningBoard".Translate());
-            }
-
             if (!EducationUtility.HasBellOnMap(classroom.LearningBoard.parent.Map, false))
             {
                 return new AcceptanceReport("PE_NoBell".Translate());
@@ -152,10 +140,7 @@ namespace ProgressionEducation
             return new StudentRole(this);
         }
 
-        public Room GetRoom()
-        {
-            return classroom?.LearningBoard?.parent?.GetRoom();
-        }
+        public Map Map => classroom?.LearningBoard?.parent?.Map;
 
         public bool AllStudentsAreGathered()
         {

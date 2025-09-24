@@ -1,4 +1,5 @@
 using RimWorld;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI;
@@ -21,20 +22,13 @@ namespace ProgressionEducation
 
             var studyGroup = lordJob.studyGroup;
             EducationLog.Message($"-> Got study group: {studyGroup?.className}");
-            var room = studyGroup.GetRoom();
-            EducationLog.Message($"-> Got room: {room?.ID}");
-            Thing desk = null;
-            Thing learningBoard = null;
-            EducationLog.Message($"-> Searching for learning board in room.");
-            foreach (var thing in room.ContainedAndAdjacentThings)
+            var learningBoard = studyGroup.classroom.LearningBoard.parent;
+            if (learningBoard.TryGetComp<CompFacility>() is not CompFacility facility)
             {
-                if (thing.TryGetComp<CompLearningBoard>() != null)
-                {
-                    learningBoard = thing;
-                    EducationLog.Message($"-> Found learning board: {learningBoard.Label}");
-                    break;
-                }
+                return null;
             }
+
+            Thing desk = null;
 
             EducationLog.Message($"JobGiver_AttendClass for student {pawn.LabelShort}: Searching for a desk.");
             if (studyGroup.subjectLogic is SkillClassLogic skillLogic)
@@ -44,7 +38,7 @@ namespace ProgressionEducation
                 if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
                 {
                     EducationLog.Message($"-> Found requirement with {requirement.requiredBuildings.Count} required buildings.");
-                    desk = FindUnoccupiedThing(room, pawn, thing => requirement.requiredBuildings.Contains(thing.def));
+                    desk = FindUnoccupiedThing(facility.LinkedBuildings, pawn, thing => requirement.requiredBuildings.Contains(thing.def));
                 }
                 else
                 {
@@ -54,7 +48,7 @@ namespace ProgressionEducation
             else
             {
                 EducationLog.Message($"-> This is not a skill class, using default desk finding logic.");
-                desk = FindUnoccupiedThing(room, pawn, thing => thing.IsSchoolDesk());
+                desk = FindUnoccupiedThing(facility.LinkedBuildings, pawn, thing => thing.IsSchoolDesk());
             }
 
             if (desk != null)
@@ -78,10 +72,10 @@ namespace ProgressionEducation
             }
         }
 
-        private Thing FindUnoccupiedThing(Room room, Pawn pawn, System.Predicate<Thing> thingValidator)
+        private Thing FindUnoccupiedThing(List<Thing> things, Pawn pawn, System.Predicate<Thing> thingValidator)
         {
             EducationLog.Message($"-> FindUnoccupiedThing called for pawn {pawn.LabelShort}");
-            foreach (var thing in room.ContainedAndAdjacentThings)
+            foreach (var thing in things)
             {
                 if (thingValidator(thing))
                 {
