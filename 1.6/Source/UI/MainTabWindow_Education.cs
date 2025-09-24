@@ -11,7 +11,7 @@ namespace ProgressionEducation
         private Vector2 classScrollPosition = Vector2.zero;
         private Vector2 classroomScrollPosition = Vector2.zero;
 
-        private const float ClassRowHeight = 75f;
+        private const float ClassRowHeight = 90f;
         private const float ClassroomRowHeight = 38f;
         private const float WindowPadding = 12f;
         private const float HeaderHeight = 35f;
@@ -67,7 +67,7 @@ namespace ProgressionEducation
         {
             var bgColor = studyGroup.classroom.color;
             var borderColor = bgColor;
-            bgColor = Color.Lerp(bgColor, Color.black, 0.5f);
+            bgColor = Color.Lerp(bgColor, Color.black, 0.65f);
             
             Widgets.DrawBoxSolidWithOutline(rect, bgColor, borderColor);
 
@@ -79,7 +79,7 @@ namespace ProgressionEducation
             var innerRect = rect.ContractedBy(WindowPadding / 2f);
 
             Text.Font = GameFont.Medium;
-            var nameRect = new Rect(innerRect.x, innerRect.y, innerRect.width * 0.7f, 25f);
+            var nameRect = new Rect(innerRect.x, innerRect.y, innerRect.width * 0.7f, 30f);
             Widgets.Label(nameRect, studyGroup.className);
             Text.Font = GameFont.Small;
 
@@ -92,7 +92,7 @@ namespace ProgressionEducation
             Text.Anchor = TextAnchor.UpperLeft;
 
             string description = studyGroup.subjectLogic.Description;
-            var descriptionRect = new Rect(innerRect.x, innerRect.y + 24f, innerRect.width, 20f);
+            var descriptionRect = new Rect(innerRect.x, nameRect.yMax, innerRect.width, 24f);
             Widgets.Label(descriptionRect, description);
 
             if (studyGroup.subjectLogic is SkillClassLogic)
