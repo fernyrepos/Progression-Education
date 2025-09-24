@@ -11,8 +11,6 @@ namespace ProgressionEducation
     public static class EquipmentUtility_CanEquip_Patch
     {
         private static Dictionary<ThingDef, TechLevel> cachedTechLevelValues = new Dictionary<ThingDef, TechLevel>();
-        private static Dictionary<ThingDef, TechLevel> thingsByTechLevels = new Dictionary<ThingDef, TechLevel>();
-
         public static TechLevel GetTechLevelFor(ThingDef thingDef)
         {
             if (!cachedTechLevelValues.TryGetValue(thingDef, out TechLevel techLevel))
@@ -31,12 +29,6 @@ namespace ProgressionEducation
                 techLevelSources.Add(thingDef.GetCompProperties<CompProperties_Techprint>().project.techLevel);
             }
 
-            if (thingsByTechLevels.TryGetValue(thingDef, out var level))
-            {
-                EducationLog.Message("2 Result: " + level + " - " + thingDef);
-                techLevelSources.Add(level);
-            }
-
             if (thingDef.recipeMaker != null)
             {
                 if (thingDef.recipeMaker.researchPrerequisite != null)
@@ -44,7 +36,7 @@ namespace ProgressionEducation
                     var techLevel = thingDef.recipeMaker.researchPrerequisite.techLevel;
                     if (techLevel != TechLevel.Undefined)
                     {
-                        EducationLog.Message("3 Result: " + techLevel + " - " + thingDef);
+                        EducationLog.Message("2 Result: " + techLevel + " - " + thingDef);
                         techLevelSources.Add(techLevel);
                     }
                 }
@@ -54,7 +46,7 @@ namespace ProgressionEducation
                     var techLevel = (TechLevel)num;
                     if (techLevel != TechLevel.Undefined)
                     {
-                        EducationLog.Message("4 Result: " + techLevel + " - " + thingDef);
+                        EducationLog.Message("3 Result: " + techLevel + " - " + thingDef);
                         techLevelSources.Add(techLevel);
                     }
                 }
@@ -65,11 +57,11 @@ namespace ProgressionEducation
                 var techLevel = (TechLevel)num;
                 if (techLevel != TechLevel.Undefined)
                 {
-                    EducationLog.Message("5 Result: " + techLevel + " - " + thingDef);
+                    EducationLog.Message("4 Result: " + techLevel + " - " + thingDef);
                     techLevelSources.Add(techLevel);
                 }
             }
-            EducationLog.Message("6 Result: " + thingDef.techLevel + " - " + thingDef);
+            EducationLog.Message("5 Result: " + thingDef.techLevel + " - " + thingDef);
             techLevelSources.Add(thingDef.techLevel);
             EducationLog.Message(thingDef + " - FINAL: " + techLevelSources.MaxBy(x => (int)x));
             return techLevelSources.MaxBy(x => (int)x);

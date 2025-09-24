@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -65,6 +65,8 @@ namespace ProgressionEducation
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
+            if (this.parent.BeingTransportedOnGravship) return;
+            
             if (!respawningAfterLoad)
             {
                 InitializeClassroom();
@@ -75,6 +77,8 @@ namespace ProgressionEducation
         public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             base.PostDeSpawn(map, mode);
+            if (this.parent.BeingTransportedOnGravship) return;
+
             var room = parent.Position.GetRoom(map);
             var otherBoard = room.ContainedThings(parent.def)
                                  .Select(t => t.TryGetComp<CompLearningBoard>())
