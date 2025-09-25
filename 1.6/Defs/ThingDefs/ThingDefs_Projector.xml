@@ -27,7 +27,7 @@
     <building>
       <isEdifice>false</isEdifice>
     </building>
-    <designationCategory>PE_Development</designationCategory>
+    <designationCategory>Ferny_Education</designationCategory>
     <minifiedDef>MinifiedThing</minifiedDef>
     <thingCategories>
       <li>BuildingsMisc</li>
