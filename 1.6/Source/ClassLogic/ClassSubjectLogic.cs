@@ -13,6 +13,7 @@ namespace ProgressionEducation
         public ClassSubjectLogic(StudyGroup parent) { studyGroup = parent; }
 
         public abstract string Description { get; }
+        public virtual bool IsInfinite => false;
         public virtual int BenchCount => 0;
         public virtual string BenchLabel => null;
         public abstract void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog);
@@ -27,6 +28,10 @@ namespace ProgressionEducation
                 float growthPointsPerTick = student.ageTracker.GrowthPointsPerDay / 60000f;
                 student.ageTracker.growthPoints += growthPointsPerTick;
             }
+        }
+
+        public virtual void ApplyTeachingTick(Pawn student, JobDriver_Teach jobDriver)
+        {
         }
         public void AssignBestTeacher(Dialog_CreateClass createClassDialog)
         {
@@ -150,6 +155,10 @@ namespace ProgressionEducation
             return AcceptanceReport.WasAccepted;
         }
 
-        public virtual void ExposeData() { Scribe_References.Look(ref studyGroup, "studyGroup"); }
+        public virtual void ExposeData()
+        {
+            Scribe_References.Look(ref studyGroup, "studyGroup");
+        }
+        public virtual void HandleStudentLifecycleEvents() { }
     }
 }

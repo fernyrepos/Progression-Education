@@ -86,7 +86,7 @@ namespace ProgressionEducation
         }
 
         public float ProgressPercentage => (float)currentProgress / semesterGoal;
-        public bool IsCompleted => currentProgress >= semesterGoal;
+        public bool IsCompleted => !subjectLogic.IsInfinite && currentProgress >= semesterGoal;
 
         public float CalculateProgressPerTick()
         {
@@ -107,6 +107,10 @@ namespace ProgressionEducation
             Scribe_Collections.Look(ref students, "students", LookMode.Reference);
             Scribe_Values.Look(ref className, "className");
             Scribe_Deep.Look(ref subjectLogic, "subjectLogic", this);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && subjectLogic == null)
+            {
+                subjectLogic = new SkillClassLogic(this);
+            }
             Scribe_Values.Look(ref semesterGoal, "semesterGoal");
             Scribe_Values.Look(ref currentProgress, "currentProgress");
             Scribe_References.Look(ref classroom, "classroom");

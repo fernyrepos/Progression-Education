@@ -1,5 +1,6 @@
 using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -9,6 +10,8 @@ namespace ProgressionEducation
     [HotSwappable]
     public class JobDriver_Teach : JobDriver
     {
+        public SkillDef taughtSkill;
+
         private StudyGroup StudyGroup
         {
             get
@@ -92,15 +95,20 @@ namespace ProgressionEducation
         {
             var studyGroup = StudyGroup;
             PawnUtility.GainComfortFromCellIfPossible(pawn, 1, true);
-            float semesterProgress = studyGroup.CalculateProgressPerTick();
-            studyGroup.AddProgress(semesterProgress);
-            if (pawn.IsHashIntervalTick(900))
-            {
-                //var student = studyGroup.students.RandomElement();
-                //pawn.interactions.TryInteractWith(student, interaction); // maybe we could add an interaction def?
-            }
             pawn.skills.Learn(SkillDefOf.Social, 0.1f);
+
+            if (studyGroup.subjectLogic.IsInfinite is false)
+            {
+                float semesterProgress = studyGroup.CalculateProgressPerTick();
+                studyGroup.AddProgress(semesterProgress);                
+            }
+
+            foreach (var student in studyGroup.students)
+            {
+                studyGroup.subjectLogic.ApplyTeachingTick(student, this);
+            }
         }
+        
         public override void Notify_Starting()
         {
             base.Notify_Starting();
@@ -111,6 +119,12 @@ namespace ProgressionEducation
             {
                 pawn.jobs.curJob.targetB = waypoints[0];
             }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Defs.Look(ref taughtSkill, "taughtSkill");
         }
     }
 }

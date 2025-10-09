@@ -18,6 +18,7 @@ namespace ProgressionEducation
         private readonly PawnClassRoleSelectionWidget participantsDrawer;
         private readonly SkillClassLogic skillClassLogic;
         private readonly ProficiencyClassLogic proficiencyClassLogic;
+        private readonly DaycareClassLogic daycareClassLogic;
         public ClassAssignmentsManager AssignmentsManager => assignmentsManager;
         public TeacherRole TeacherRole => teacherRole;
         public StudentRole StudentRole => studentRole;
@@ -44,6 +45,7 @@ namespace ProgressionEducation
             };
             skillClassLogic = new SkillClassLogic(studyGroup);
             proficiencyClassLogic = new ProficiencyClassLogic(studyGroup);
+            daycareClassLogic = new DaycareClassLogic(studyGroup);
             studyGroup.subjectLogic = skillClassLogic;
 
             var educationManager = EducationManager.Instance;
@@ -131,6 +133,10 @@ namespace ProgressionEducation
             {
                 subjectLabel = "PE_SubjectProficiency".Translate();
             }
+            else if (studyGroup.subjectLogic is DaycareClassLogic)
+            {
+                subjectLabel = "PE_SubjectDaycare".Translate();
+            }
             if (Widgets.ButtonText(new Rect(viewRect.x + 160f, curY, 200f, 25f), subjectLabel))
             {
                 List<FloatMenuOption> options =
@@ -152,6 +158,15 @@ namespace ProgressionEducation
                         studyGroup.subjectLogic.AutoAssignStudents(this);
                     }),
                 ];
+                if (ModsConfig.BiotechActive)
+                {
+                    options.Add(
+                    new FloatMenuOption("PE_SubjectDaycare".Translate(), () =>
+                    {
+                        studyGroup.subjectLogic = daycareClassLogic;
+                        studyGroup.subjectLogic.AutoAssignStudents(this);
+                    }));
+                }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
             curY += 30f;
