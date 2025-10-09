@@ -42,7 +42,7 @@ namespace ProgressionEducation
                 .Where(p => teacherRole.CanAcceptPawn(p).Accepted)
                 .OrderByDescending(p => CalculateTeacherScore(p))
                 .FirstOrDefault();
-
+            
             if (bestTeacher != null)
             {
                 var existingTeacher = studyGroup.teacher;
@@ -51,10 +51,30 @@ namespace ProgressionEducation
                     assignmentsManager.Unassign(existingTeacher, teacherRole);
                     if (createClassDialog.StudentRole.CanAcceptPawn(existingTeacher).Accepted)
                     {
-                        assignmentsManager.TryAssign(existingTeacher, createClassDialog.StudentRole, out _);
+                        bool assigned = assignmentsManager.TryAssign(existingTeacher, createClassDialog.StudentRole, out _);
+                        if (assigned)
+                        {
+                            Log.Message($"Reassigned previous teacher {existingTeacher} to student role in class '{studyGroup.className}'");
+                        }
+                        else
+                        {
+                            Log.Warning($"Failed to reassign previous teacher {existingTeacher} to student role in class '{studyGroup.className}'");
+                        }
+                    }
+                    else
+                    {
+                        Log.Message($"Unassigning previous teacher {existingTeacher} from class '{studyGroup.className}' because they are no longer qualified as a student.");
                     }
                 }
+                else
+                {
+                    Log.Message($"No existing teacher assigned for class '{studyGroup.className}'");
+                }
                 assignmentsManager.TryAssign(bestTeacher, teacherRole, out _);
+            }
+            else
+            {
+                Log.Warning($"No qualified teacher found for class '{studyGroup.className}'");
             }
         }
         public abstract float CalculateTeacherScore(Pawn p);
@@ -65,15 +85,15 @@ namespace ProgressionEducation
         {
             if (!CanAutoAssign)
             {
+                Log.Warning($"Cannot auto-assign students for class '{studyGroup.className}' because it lacks a learning board.");
                 return;
             }
+            Log.Message($"Auto-assigning students and teacher for class '{studyGroup.className}'");
+            
             UnassignUnqualifiedPawns(createClassDialog);
-            if (!string.IsNullOrEmpty(BenchLabel))
-            {
-                AssignBestTeacher(createClassDialog);
-                HandleRoleAutoAssignment(createClassDialog, createClassDialog.StudentRole, BenchCount);
-                Log.Message($"Auto-assigned students and teacher for class '{studyGroup.className}'");
-            }
+            AssignBestTeacher(createClassDialog);
+            HandleRoleAutoAssignment(createClassDialog, createClassDialog.StudentRole, BenchCount);
+            Log.Message($"Auto-assigned students and teacher for class '{studyGroup.className}'");
         }
         public abstract string TeacherTooltipFor(Pawn pawn);
         public abstract string StudentTooltipFor(Pawn pawn);
@@ -159,6 +179,7 @@ namespace ProgressionEducation
         {
             Scribe_References.Look(ref studyGroup, "studyGroup");
         }
+        public virtual JobDef LearningJob => DefsOf.PE_AttendClass;
         public virtual void HandleStudentLifecycleEvents() { }
     }
 }

@@ -57,7 +57,7 @@ namespace ProgressionEducation
                 if (learningBoard != null)
                 {
                     EducationLog.Message($"-> Found learning board: {learningBoard.Label}. Creating job.");
-                    return JobMaker.MakeJob(DefsOf.PE_AttendClass, desk, learningBoard);
+                    return JobMaker.MakeJob(studyGroup.subjectLogic.LearningJob, desk, learningBoard);
                 }
                 else
                 {

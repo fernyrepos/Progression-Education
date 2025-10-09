@@ -1,5 +1,6 @@
 using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 using Verse.AI;
 
@@ -162,8 +163,16 @@ namespace ProgressionEducation
                 {
                     return false;
                 }
-
-                if (student.Position != JobDriver_AttendClass.DeskSpotStudent(attendClassDriver.job.GetTarget(TargetIndex.A).Thing))
+                
+                if (attendClassDriver is JobDriver_AttendMeleeClass)
+                {
+                    // Melee class students can be anywhere adjacent to the desk
+                    if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing).Contains(student.Position))
+                    {
+                        return false;
+                    }
+                }
+                else if (student.Position != JobDriver_AttendClass.DeskSpotStudent(attendClassDriver.job.GetTarget(TargetIndex.A).Thing))
                 {
                     return false;
                 }

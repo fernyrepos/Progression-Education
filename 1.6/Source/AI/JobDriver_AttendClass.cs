@@ -34,7 +34,12 @@ namespace ProgressionEducation
                 return true;
             });
             yield return Toils_Goto.GotoCell(DeskSpotStudent(TargetA.Thing), PathEndMode.OnCell);
-            Toil waitToil = new()
+            yield return MakeLearningToil();
+        }
+
+        protected virtual Toil MakeLearningToil()
+        {
+            return new Toil()
             {
                 tickAction = delegate
                 {
@@ -51,7 +56,6 @@ namespace ProgressionEducation
                 socialMode = RandomSocialMode.Off,
                 handlingFacing = true
             };
-            yield return waitToil;
         }
         public static IntVec3 DeskSpotStudent(Thing desk)
         {

@@ -100,4 +100,16 @@
     </value>
   </Operation>
 
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Melee"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>PE_StrikingBoard</li>
+        </requiredBuildings>
+        <requirementLabel>striking boards</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
 </Patch>
