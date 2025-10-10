@@ -19,6 +19,7 @@ namespace ProgressionEducation
         private static readonly Texture2D ParticipantIcon = ContentFinder<Texture2D>.Get("UI/RemoveStudent");
         private static readonly Texture2D RenameIcon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename");
         private static readonly Texture2D ResheduleIcon = ContentFinder<Texture2D>.Get("UI/Reschedule");
+        private static readonly Texture2D GearIcon = ContentFinder<Texture2D>.Get("UI/GearIcon");
 
         private static readonly Texture2D DeleteIcon = TexButton.Delete;
         private static readonly Texture2D ProgressBarFillTexture = SolidColorMaterials.NewSolidColorTexture(new Color(0.34f, 0.72f, 0.33f));
@@ -205,12 +206,19 @@ namespace ProgressionEducation
                 Widgets.Label(nameRect, classroom.name);
                 Text.Anchor = TextAnchor.UpperLeft;
 
-                var renameButtonRect = new Rect(classroomRect.xMax - 36f, classroomRect.y + ((ClassroomRowHeight - 32f) / 2f), 32f, 32f);
+                var renameButtonRect = new Rect(classroomRect.xMax - 72f, classroomRect.y + ((ClassroomRowHeight - 32f) / 2f), 32f, 32f);
                 if (Widgets.ButtonImage(renameButtonRect, RenameIcon))
                 {
                     Find.WindowStack.Add(new Dialog_RenameClassroom(classroom));
                 }
                 TooltipHandler.TipRegion(renameButtonRect, "Rename".Translate());
+
+                var settingsButtonRect = new Rect(classroomRect.xMax - 36f, classroomRect.y + ((ClassroomRowHeight - 32f) / 2f), 32f, 32f);
+                if (Widgets.ButtonImage(settingsButtonRect, GearIcon))
+                {
+                    Find.WindowStack.Add(new Dialog_ClassroomSettings(classroom));
+                }
+                TooltipHandler.TipRegion(settingsButtonRect, "PE_ClassroomSettings".Translate());
 
                 curY += ClassroomRowHeight + WindowPadding;
             }

@@ -128,7 +128,6 @@ namespace ProgressionEducation
             }
         }
 
-
         public void ApplyScheduleToPawns(StudyGroup studyGroup)
         {
             List<Pawn> allParticipants = [studyGroup.teacher, .. studyGroup.students];
@@ -168,12 +167,12 @@ namespace ProgressionEducation
                 return;
             }
 
-            if (Classrooms.Count == 0)
+            if (studyGroup.classroom is null || studyGroup.classroom.LearningBoard?.parent == null || studyGroup.classroom.LearningBoard.parent.Map == null)
             {
-                EducationLog.Message("No classrooms available. Cannot initiate class.");
+                EducationLog.Message($"Classroom or learning board is null for class '{studyGroup.className}'. Cannot initiate class.");
                 return;
             }
-
+            
             if (!EducationUtility.HasBellOnMap(classroomMap, true))
             {
                 EducationLog.Message($"No bell found on map for class '{studyGroup.className}'. Cannot initiate class.");
@@ -220,7 +219,54 @@ namespace ProgressionEducation
             }
             EducationLog.Message($"Initiating class '{studyGroup.className}' with teacher {studyGroup.teacher.LabelShort} and {qualifiedStudents.Count} qualified students.");
 
+            if (studyGroup.classroom.restrictReservationsDuringClass)
+            {
+                InterruptPawnsUsingLearningBenches(studyGroup, classroomMap);
+            }
+
             LordMaker.MakeNewLord(Faction.OfPlayer, lordJob, classroomMap, initialPawns);
+        }
+
+        private void InterruptPawnsUsingLearningBenches(StudyGroup studyGroup, Map map)
+        {
+            var validBenches = studyGroup.subjectLogic.GetValidLearningBenches();
+            if (validBenches == null || !validBenches.Any())
+            {
+                return;
+            }
+
+            var classroomRoom = studyGroup.classroom.LearningBoard.parent.GetRoom();
+            if (classroomRoom == null)
+            {
+                return;
+            }
+
+            var pawnsInRoom = classroomRoom.ContainedThings<Pawn>().ToList();
+            foreach (var pawn in pawnsInRoom)
+            {
+                var curJob = pawn.CurJob;
+                if (curJob != null)
+                {
+                    bool shouldInterrupt = false;
+                    var targets = new[] { curJob.targetA, curJob.targetB };
+                    foreach (var target in targets)
+                    {
+                        if (!target.HasThing) continue;
+
+                        if (validBenches.Contains(target.Thing.def))
+                        {
+                            shouldInterrupt = true;
+                            break;
+                        }
+                    }
+
+                    if (shouldInterrupt)
+                    {
+                        pawn.jobs?.EndCurrentJob(Verse.AI.JobCondition.InterruptForced);
+                        EducationLog.Message($"Interrupted pawn {pawn.LabelShort} who was using a learning bench during class initiation.");
+                    }
+                }
+            }
         }
 
         private void ApplyProficiencyTraitsToHumanlikePawns()

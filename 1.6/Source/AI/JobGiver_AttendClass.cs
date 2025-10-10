@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -31,25 +31,8 @@ namespace ProgressionEducation
             Thing desk = null;
 
             EducationLog.Message($"JobGiver_AttendClass for student {pawn.LabelShort}: Searching for a desk.");
-            if (studyGroup.subjectLogic is SkillClassLogic skillLogic)
-            {
-                EducationLog.Message($"-> This is a skill class.");
-                var requirement = skillLogic.skillFocus.GetModExtension<SkillBuildingRequirement>();
-                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
-                {
-                    EducationLog.Message($"-> Found requirement with {requirement.requiredBuildings.Count} required buildings.");
-                    desk = FindUnoccupiedThing(facility.LinkedBuildings, pawn, thing => requirement.requiredBuildings.Contains(thing.def));
-                }
-                else
-                {
-                    EducationLog.Message($"-> No requirement found or requiredBuildings is empty.");
-                }
-            }
-            else
-            {
-                EducationLog.Message($"-> This is not a skill class, using default desk finding logic.");
-                desk = FindUnoccupiedThing(facility.LinkedBuildings, pawn, thing => thing.IsSchoolDesk());
-            }
+            var validBenches = studyGroup.subjectLogic.GetValidLearningBenches();
+            desk = FindUnoccupiedThing(facility.LinkedBuildings, pawn, thing => validBenches.Contains(thing.def));
 
             if (desk != null)
             {

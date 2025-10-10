@@ -14,6 +14,7 @@ namespace ProgressionEducation
         private Thing learningBoardThing;
         public CompLearningBoard LearningBoard => learningBoardThing.TryGetComp<CompLearningBoard>();
         public int participantCount;
+        public bool restrictReservationsDuringClass = true;
 
         public Classroom()
         {
@@ -103,6 +104,7 @@ namespace ProgressionEducation
             Scribe_Values.Look(ref color, "color");
             Scribe_References.Look(ref learningBoardThing, "learningBoard");
             Scribe_Values.Look(ref participantCount, "participantCount");
+            Scribe_Values.Look(ref restrictReservationsDuringClass, "restrictReservationsDuringClass", true);
         }
 
         public string GetUniqueLoadID()

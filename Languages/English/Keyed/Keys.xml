@@ -118,4 +118,9 @@
   <PE_BellNotPowered>Bell is not powered</PE_BellNotPowered>
   <PE_StudentUnqualified>{0} cannot participate in class: {1}</PE_StudentUnqualified>
 
+  <!-- Classroom Settings -->
+  <PE_ClassroomSettings>Classroom settings</PE_ClassroomSettings>
+  <PE_RestrictReservationsDuringClass>Disallow traditional work during class</PE_RestrictReservationsDuringClass>
+  <PE_RestrictReservationsDuringClass_Desc>If enabled, pawns will not be able to use classroom furniture (desks, etc.) during scheduled class times.</PE_RestrictReservationsDuringClass_Desc>
+
 </LanguageData>

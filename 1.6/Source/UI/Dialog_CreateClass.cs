@@ -97,7 +97,7 @@ namespace ProgressionEducation
                 Messages.Message(validity.Reason, MessageTypeDefOf.RejectInput);
                 return;
             }
-            if (studyGroup.subjectLogic is SkillClassLogic skillLogic && skillLogic.skillFocus == null)
+            if (studyGroup.subjectLogic is SkillClassLogic skillLogic && skillLogic.SkillFocus == null)
             {
                 Messages.Message("PE_SkillFocusMissing".Translate(), MessageTypeDefOf.RejectInput);
                 return;
@@ -199,7 +199,8 @@ namespace ProgressionEducation
             Widgets.Label(new Rect(viewRect.x, curY, 150f, 25f), "PE_ClassHours".Translate());
             if (Widgets.ButtonText(new Rect(viewRect.x + 160f, curY, 90f, 25f), studyGroup.startHour.ToString()))
             {
-                var options = GenerateHourSelectionOptions(hour => {
+                var options = GenerateHourSelectionOptions(hour =>
+                {
                     studyGroup.startHour = hour;
                     ValidateAndRemovePawns();
                 });
@@ -207,7 +208,8 @@ namespace ProgressionEducation
             }
             if (Widgets.ButtonText(new Rect(viewRect.x + 270f, curY, 90f, 25f), studyGroup.endHour.ToString()))
             {
-                var options = GenerateHourSelectionOptions(hour => {
+                var options = GenerateHourSelectionOptions(hour =>
+                {
                     studyGroup.endHour = hour;
                     ValidateAndRemovePawns();
                 });

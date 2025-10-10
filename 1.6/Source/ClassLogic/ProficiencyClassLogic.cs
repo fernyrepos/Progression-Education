@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,7 +11,19 @@ namespace ProgressionEducation
     {
         public const int FirearmTeachingDuration = 60000;
         public const int HighTechTeachingDuration = 120000;
-        public ProficiencyLevel proficiencyFocus = ProficiencyLevel.Firearm;
+        private ProficiencyLevel _proficiencyFocus = ProficiencyLevel.Firearm;
+        public ProficiencyLevel proficiencyFocus
+        {
+            get => _proficiencyFocus;
+            set
+            {
+                if (_proficiencyFocus != value)
+                {
+                    _proficiencyFocus = value;
+                    _validLearningBenches = null;
+                }
+            }
+        }
 
         public ProficiencyClassLogic() : base() { }
         public ProficiencyClassLogic(StudyGroup parent) : base(parent) { }
@@ -25,13 +37,12 @@ namespace ProgressionEducation
                 var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
                 if (facility != null)
                 {
-                    return facility.LinkedBuildings.Count(t => t.IsSchoolDesk());
+                    var validBenches = GetValidLearningBenches();
+                    return facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
                 }
                 return 0;
             }
         }
-
-        public override string BenchLabel => "PE_SchoolDesks".Translate();
 
         public override void GrantCompletionRewards()
         {
@@ -190,7 +201,24 @@ namespace ProgressionEducation
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref proficiencyFocus, "proficiencyFocus");
+            Scribe_Values.Look(ref _proficiencyFocus, "proficiencyFocus");
+        }
+
+        public override HashSet<ThingDef> GetValidLearningBenches()
+        {
+            if (_validLearningBenches == null)
+            {
+                _validLearningBenches = [];
+                var allDefs = DefDatabase<ThingDef>.AllDefsListForReading;
+                foreach (var def in allDefs)
+                {
+                    if (def.IsSchoolDesk())
+                    {
+                        _validLearningBenches.Add(def);
+                    }
+                }
+            }
+            return _validLearningBenches;
         }
 
     }

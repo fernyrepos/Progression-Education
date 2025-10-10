@@ -19,10 +19,5 @@ namespace ProgressionEducation
         {
             return def.HasComp(typeof(CompSchoolDesk));
         }
-
-        public static bool IsSchoolDesk(this Thing t)
-        {
-            return t.HasComp<CompSchoolDesk>();
-        }
     }
 }

@@ -9,25 +9,34 @@ namespace ProgressionEducation
     [HotSwappable]
     public class SkillClassLogic : ClassSubjectLogic
     {
-        public SkillDef skillFocus;
+        private SkillDef _skillFocus;
+        public SkillDef SkillFocus
+        {
+            get => _skillFocus;
+            set
+            {
+                if (_skillFocus != value)
+                {
+                    _skillFocus = value;
+                    _validLearningBenches = null;
+                }
+            }
+        }
 
         public SkillClassLogic() : base() { }
         public SkillClassLogic(StudyGroup studyGroup) : base(studyGroup) { }
 
-        public override string Description => "PE_TrainingSkill".Translate(skillFocus.label);
+        public override string Description => "PE_TrainingSkill".Translate(SkillFocus.label);
 
         public override int BenchCount
         {
             get
             {
-                var requirement = skillFocus?.GetModExtension<SkillBuildingRequirement>();
-                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
+                var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
+                if (facility != null)
                 {
-                    var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
-                    if (facility != null)
-                    {
-                        return facility.LinkedBuildings.Count(t => requirement.requiredBuildings.Contains(t.def));
-                    }
+                    var validBenches = GetValidLearningBenches();
+                    return facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
                 }
                 return 0;
             }
@@ -37,10 +46,10 @@ namespace ProgressionEducation
         {
             get
             {
-                var requirement = skillFocus?.GetModExtension<SkillBuildingRequirement>();
-                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
+                var validBenches = GetValidLearningBenches();
+                if (validBenches != null && validBenches.Any())
                 {
-                    return !string.IsNullOrEmpty(requirement.requirementLabel) ? requirement.requirementLabel : requirement.requiredBuildings.Select(b => b.label).ToCommaList();
+                    return validBenches.Select(b => b.label).ToCommaList();
                 }
                 return null;
             }
@@ -52,12 +61,12 @@ namespace ProgressionEducation
 
         public override float CalculateTeacherScore(Pawn teacher)
         {
-            if (skillFocus == null)
+            if (SkillFocus == null)
             {
                 return 0f;
             }
             float teacherSocial = teacher.skills.GetSkill(SkillDefOf.Social).Level;
-            float relevantSkill = teacher.skills.GetSkill(skillFocus).Level;
+            float relevantSkill = teacher.skills.GetSkill(SkillFocus).Level;
             float teacherIntelligence = teacher.skills.GetSkill(SkillDefOf.Intellectual).Level;
             var score = (teacherSocial * 0.4f) + (relevantSkill * 0.3f) + (teacherIntelligence * 0.3f);
             return score * 0.05f;
@@ -65,7 +74,7 @@ namespace ProgressionEducation
 
         public override float CalculateProgressPerTick()
         {
-            if (skillFocus == null || studyGroup.teacher == null)
+            if (SkillFocus == null || studyGroup.teacher == null)
             {
                 return 0f;
             }
@@ -78,38 +87,38 @@ namespace ProgressionEducation
 
         public override AcceptanceReport IsTeacherQualified(Pawn teacher)
         {
-            return skillFocus != null && teacher.skills.GetSkill(skillFocus).Level < 5
-                ? new AcceptanceReport("PE_TeacherNotQualifiedSkill".Translate(teacher.LabelShort, skillFocus.LabelCap))
+            return SkillFocus != null && teacher.skills.GetSkill(SkillFocus).Level < 5
+                ? new AcceptanceReport("PE_TeacherNotQualifiedSkill".Translate(teacher.LabelShort, SkillFocus.LabelCap))
                 : AcceptanceReport.WasAccepted;
         }
 
         public override AcceptanceReport IsStudentQualified(Pawn student)
         {
-            return skillFocus != null && student.skills.GetSkill(skillFocus).TotallyDisabled
-                ? new AcceptanceReport("PE_StudentSkillDisabled".Translate(student.LabelShort, skillFocus.LabelCap))
+            return SkillFocus != null && student.skills.GetSkill(SkillFocus).TotallyDisabled
+                ? new AcceptanceReport("PE_StudentSkillDisabled".Translate(student.LabelShort, SkillFocus.LabelCap))
                 : AcceptanceReport.WasAccepted;
         }
 
-        public override bool CanAutoAssign => base.CanAutoAssign && skillFocus != null;
+        public override bool CanAutoAssign => base.CanAutoAssign && SkillFocus != null;
 
         public override void ApplyLearningTick(Pawn student)
         {
             base.ApplyLearningTick(student);
             float xpGain = CalculateProgressPerTick();
-            student.skills.Learn(skillFocus, xpGain, false);
+            student.skills.Learn(SkillFocus, xpGain, false);
         }
 
         public override void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog)
         {
             Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_SkillFocus".Translate());
-            if (Widgets.ButtonText(new Rect(rect.x + 160f, curY, 200f, 25f), skillFocus?.LabelCap ?? "PE_Select".Translate()))
+            if (Widgets.ButtonText(new Rect(rect.x + 160f, curY, 200f, 25f), SkillFocus?.LabelCap ?? "PE_Select".Translate()))
             {
                 List<FloatMenuOption> options = [];
                 foreach (var skillDef in DefDatabase<SkillDef>.AllDefs)
                 {
                     options.Add(new FloatMenuOption(skillDef.LabelCap, () =>
                     {
-                        skillFocus = skillDef;
+                        SkillFocus = skillDef;
                         studyGroup.subjectLogic.AutoAssignStudents(createClassDialog);
                     }));
                 }
@@ -155,7 +164,7 @@ namespace ProgressionEducation
         {
             var social = pawn.skills.GetSkill(SkillDefOf.Social);
             var intellectual = pawn.skills.GetSkill(SkillDefOf.Intellectual);
-            var relevantSkill = skillFocus != null ? pawn.skills.GetSkill(skillFocus) : null;
+            var relevantSkill = SkillFocus != null ? pawn.skills.GetSkill(SkillFocus) : null;
             string text = $"{social.def.LabelCap}: {social.Level}\n{intellectual.def.LabelCap}: {intellectual.Level}";
             if (relevantSkill != null && relevantSkill != social && relevantSkill != intellectual)
             {
@@ -176,9 +185,9 @@ namespace ProgressionEducation
 
         public override string StudentTooltipFor(Pawn pawn)
         {
-            if (skillFocus != null)
+            if (SkillFocus != null)
             {
-                return $"{skillFocus.LabelCap}: {pawn.skills.GetSkill(skillFocus).Level}";
+                return $"{SkillFocus.LabelCap}: {pawn.skills.GetSkill(SkillFocus).Level}";
             }
             return null;
         }
@@ -187,11 +196,11 @@ namespace ProgressionEducation
         {
             get
             {
-                if (skillFocus == SkillDefOf.Melee)
+                if (SkillFocus == SkillDefOf.Melee)
                 {
                     return DefsOf.PE_AttendMeleeClass;
                 }
-                if (skillFocus == SkillDefOf.Shooting)
+                if (SkillFocus == SkillDefOf.Shooting)
                 {
                     return DefsOf.PE_AttendShootingClass;
                 }
@@ -202,8 +211,21 @@ namespace ProgressionEducation
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Defs.Look(ref skillFocus, "skillFocus");
+            Scribe_Defs.Look(ref _skillFocus, "skillFocus");
         }
 
+        public override HashSet<ThingDef> GetValidLearningBenches()
+        {
+            if (_validLearningBenches == null)
+            {
+                _validLearningBenches = [];
+                var requirement = SkillFocus?.GetModExtension<SkillBuildingRequirement>();
+                if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
+                {
+                    _validLearningBenches.UnionWith(requirement.requiredBuildings);
+                }
+            }
+            return _validLearningBenches;
+        }
     }
 }
