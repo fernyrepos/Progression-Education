@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- AUR patches -->
+
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Crafting"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>AM_AncientDismantlingWorkbench</li>
+  </value>
+</Operation>
+
+
+</Patch>

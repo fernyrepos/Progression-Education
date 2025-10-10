@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- MO patches -->
+
+<!-- CRAFTING -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Crafting"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>DankPyon_Workbench</li>
+    <li>DankPyon_JewelryBench</li>
+    <li>DankPyon_Anvil</li>
+    <li>DankPyon_StonecuttingSpot</li>
+    <li>DankPyon_Trestle</li>
+    <li>DankPyon_SawTable</li>
+    <li>DankPyon_MendingBench</li>
+  </value>
+</Operation>
+
+<!-- COOKING -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Cooking"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>DankPyon_StoneOven</li>
+  </value>
+</Operation>
+
+<!-- PLANTS -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Plants"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>DankPyon_GardeningBox</li>
+  </value>
+</Operation>
+
+
+
+
+</Patch>

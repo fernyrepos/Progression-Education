@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- VE gravships patches -->
+
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Crafting"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VGE_CompactMachiningTable</li>
+    <li>VGE_CompactSmithy</li>
+    <li>VGE_CompactTailor</li>
+    <li>VGE_CompactFabBench</li>
+  </value>
+</Operation>
+
+<!-- COOKING -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Cooking"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VGE_CompactStove</li>
+  </value>
+</Operation>
+
+</Patch>

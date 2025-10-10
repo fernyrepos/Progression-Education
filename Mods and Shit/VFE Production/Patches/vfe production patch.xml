@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- VFE production patches -->
+
+<!-- CRAFTING -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Crafting"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VFE_TableMachiningLarge</li>
+    <li>VFE_TableSmithyLarge</li>
+    <li>VFE_TableTailorLarge</li>
+    <li>VFE_ComponentFabricationBench</li>
+    <li>VFE_FueledSmelter</li>
+    <li>VFE_TableStonecutterElectric</li>
+  </value>
+</Operation>
+
+<!-- COOKING -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Cooking"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VFE_TableStoveLarge</li>
+  </value>
+</Operation>
+
+
+
+
+</Patch>

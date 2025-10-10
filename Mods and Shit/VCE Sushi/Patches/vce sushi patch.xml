@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- VCE SUSHI PATCHES -->
+
+<!-- COOKING -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Cooking"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VCE_SushiPrepTable</li>
+  </value>
+</Operation>
+
+</Patch>

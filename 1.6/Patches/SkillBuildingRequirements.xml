@@ -70,6 +70,7 @@
         <requiredBuildings>
           <li>FueledStove</li>
           <li>ElectricStove</li>
+          <li>Brewery</li>
         </requiredBuildings>
         <requirementLabel>cooking workstations</requirementLabel>
       </li>
@@ -108,6 +109,25 @@
           <li>PE_StrikingBoard</li>
         </requiredBuildings>
         <requirementLabel>melee stations</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Crafting"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>CraftingSpot</li>
+          <li>HandTailoringBench</li>
+          <li>ElectricTailoringBench</li>
+          <li>FueledSmithy</li>
+          <li>ElectricSmithy</li>
+          <li>TableMachining</li>
+          <li>TableStonecutter</li>
+          <li>ElectricSmelter</li>
+        </requiredBuildings>
+        <requirementLabel>crafting workstations</requirementLabel>
       </li>
     </value>
   </Operation>

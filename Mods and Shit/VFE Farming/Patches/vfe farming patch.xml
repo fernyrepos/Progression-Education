@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- VFE farming patches -->
+
+<!-- Plants -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Plants"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VFE_Ecosystem</li>
+    <li>VFE_Ecosystem_Tilable</li>
+    <li>VFE_Hydroponics_Tilable</li>
+    <li>VFE_PlanterBox_Tilable</li>
+    <li>VFE_PlanterBox</li>
+  </value>
+</Operation>
+
+
+
+</Patch>
