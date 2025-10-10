@@ -1,24 +1,15 @@
 <loadFolders>
-  <v1.4>
+  <v1.6>
     <li>/</li>
-    <li IfModActive="sarg.alphamechs">Mods and Shit/Alpha Mechs</li>
-    <li IfModActive="ludeon.rimworld.ideology">Mods and Shit/Ideology</li>
-    <li IfModActive="vanillaexpanded.recycling">Mods and Shit/VE Recycling</li>
-    <li IfModActive="vanillaracesexpanded.waster">Mods and Shit/VRE Wasters</li>
-    <li IfModActive="Harkon.BiotechAddOn.MedievalDeathrestCoffin">Mods and Shit/Medieval Deathrest</li>
-    <li IfModActive="vanillaexpanded.vfemedical">Mods and Shit/VFE Medical</li>
-    <li IfModActive="heremeus.medicaldissection">Mods and Shit/Medical Dissection</li>
-    <li IfModActive="sbz.cryogenictank">Mods and Shit/Cryogenic Tank</li>
-  </v1.4>
-  <v1.5>
-    <li>/</li>
-    <li IfModActive="sarg.alphamechs">Mods and Shit/Alpha Mechs</li>
-    <li IfModActive="ludeon.rimworld.ideology">Mods and Shit/Ideology</li>
-    <li IfModActive="vanillaexpanded.recycling">Mods and Shit/VE Recycling</li>
-    <li IfModActive="vanillaracesexpanded.waster">Mods and Shit/VRE Wasters</li>
-    <li IfModActive="Harkon.BiotechAddOn.MedievalDeathrestCoffin">Mods and Shit/Medieval Deathrest</li>
-    <li IfModActive="vanillaexpanded.vfemedical">Mods and Shit/VFE Medical</li>
-    <li IfModActive="heremeus.medicaldissection">Mods and Shit/Medical Dissection</li>
-    <li IfModActive="sbz.cryogenictank">Mods and Shit/Cryogenic Tank</li>
-  </v1.5>
+    <li IfModActive="xmb.ancienturbanruins.mo">Mods and Shit/Ancient Urban Ruins</li>
+    <li IfModActive="van.foodfamine">Mods and Shit/Famine Food</li>
+    <li IfModActive="dankpyon.medieval.overhaul">Mods and Shit/Medieval Overhaul</li>
+    <li IfModActive="vanillaexpanded.vcookehaute">Mods and Shit/VCE Haute</li>
+    <li IfModActive="vanillaexpanded.vcookesushi">Mods and Shit/VCE Sushi</li>
+    <li IfModActive="vanillaexpanded.vbrewe">Mods and Shit/VE Brewing</li>
+    <li IfModActive="vanillaexpanded.vcooke">Mods and Shit/VE Cooking</li>
+    <li IfModActive="vanillaexpanded.gravship">Mods and Shit/VE Gravships</li>
+    <li IfModActive="vanillaexpanded.vfefarming">Mods and Shit/VFE Farming</li>
+    <li IfModActive="vanillaexpanded.vfeproduction">Mods and Shit/VFE Production</li>
+  </v1.6>
 </loadFolders>
