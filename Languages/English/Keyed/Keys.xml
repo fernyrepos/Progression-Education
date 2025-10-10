@@ -7,18 +7,18 @@
   <PE_PasteHex>Paste hex</PE_PasteHex>
 
   <!-- Main Education Tab -->
-  <PE_Classes>Classes</PE_Classes>
-  <PE_Classrooms>Classrooms</PE_Classrooms>
+  <PE_Classes>Active classes</PE_Classes>
+  <PE_Classrooms>List of classrooms</PE_Classrooms>
   <PE_Participants>Participants</PE_Participants>
   <PE_ProgressFormat>{0} / {1}</PE_ProgressFormat>
   <PE_Reschedule>Reschedule</PE_Reschedule>
-  <PE_ClassScheduling>Class scheduling</PE_ClassScheduling>
+  <PE_ClassScheduling>View schedule</PE_ClassScheduling>
   <PE_EstimatedHourlyProgress>Est. hourly progress</PE_EstimatedHourlyProgress>
   <PE_XpPerHour>xp/hour</PE_XpPerHour>
   <PE_PerHour>/hour</PE_PerHour>
 
   <!-- Create Class Dialog -->
-  <PE_CreateClass>Create class</PE_CreateClass>
+  <PE_CreateClass>Create a class</PE_CreateClass>
   <PE_CreateClassDesc>Set up a new class session with a teacher and students.</PE_CreateClassDesc>
   <PE_ClassName>Class name</PE_ClassName>
   <PE_Subject>Subject</PE_Subject>
