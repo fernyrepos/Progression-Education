@@ -148,20 +148,16 @@ namespace ProgressionEducation
             {
                 if (classroom.restrictReservationsDuringClass && classroom.LearningBoard.parent.GetRoom() == room)
                 {
-                    int currentHour = GenLocalDate.HourOfDay(pawn);
                     var studyGroupsInClassroom = EducationManager.Instance.StudyGroups.Where(sg => sg.classroom == classroom);
                     foreach (var studyGroup in studyGroupsInClassroom)
                     {
-                        if (IsHourInSchedule(currentHour, studyGroup.startHour, studyGroup.endHour))
+                        var validBenches = studyGroup.subjectLogic.GetValidLearningBenches();
+                        if (validBenches.Contains(building.def))
                         {
-                            var validBenches = studyGroup.subjectLogic.GetValidLearningBenches();
-                            if (validBenches.Contains(building.def))
+                            var assignment = pawn.timetable?.CurrentAssignment;
+                            if (assignment is null || assignment.defName != studyGroup.timeAssignmentDefName)
                             {
-                                var assignment = pawn.timetable?.CurrentAssignment;
-                                if (assignment is null || assignment.defName != studyGroup.timeAssignmentDefName)
-                                {
-                                    return false;
-                                }
+                                return false;
                             }
                         }
                     }
