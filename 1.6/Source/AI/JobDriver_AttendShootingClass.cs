@@ -56,7 +56,8 @@ namespace ProgressionEducation
                     {
                         weapon = ThingMaker.MakeThing(DefsOf.PE_Gun_AssaultRifleTraining, GenStuff.DefaultStuffFor(DefsOf.PE_Gun_AssaultRifleTraining));
                     }
-                    FireProjectile(pawn, weapon, TargetA.Cell);
+                    var cell = TargetA.Thing.OccupiedRect().OrderByDescending(c => c.DistanceToSquared(pawn.Position)).FirstOrDefault();
+                    FireProjectile(pawn, weapon, cell);
                     ticksUntilNextAction = Rand.Range(60, 120);
                 }
             };

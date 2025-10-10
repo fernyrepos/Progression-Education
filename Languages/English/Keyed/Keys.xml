@@ -15,6 +15,7 @@
   <PE_ClassScheduling>View schedule</PE_ClassScheduling>
   <PE_EstimatedHourlyProgress>Est. hourly progress</PE_EstimatedHourlyProgress>
   <PE_XpPerHour>xp/hour</PE_XpPerHour>
+  <PE_Xp>{0} xp</PE_Xp>
   <PE_PerHour>/hour</PE_PerHour>
   <PE_ClassroomsDescription>Classrooms will appear here as you build them in your colony.</PE_ClassroomsDescription>
 

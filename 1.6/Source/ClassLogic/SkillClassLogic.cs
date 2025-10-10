@@ -132,7 +132,7 @@ namespace ProgressionEducation
             curY += 30f;
 
             var sliderRect = new Rect(rect.x, curY, 360f, 25f);
-            int newSemesterGoal = (int)Widgets.HorizontalSlider(sliderRect, studyGroup.semesterGoal, 1000, 100000, false, null, "1,000 xp", "100,000 xp", 100);
+            int newSemesterGoal = (int)Widgets.HorizontalSlider(sliderRect, studyGroup.semesterGoal, 1000, 100000, false, null, "PE_Xp".Translate(1000.ToString("N0")), "PE_Xp".Translate(100000.ToString("N0")), 100);
             if (newSemesterGoal != studyGroup.semesterGoal)
             {
                 studyGroup.semesterGoal = newSemesterGoal;
@@ -140,7 +140,7 @@ namespace ProgressionEducation
             curY += 30f;
 
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(rect.x, curY - 15f, 360f, 25f), studyGroup.semesterGoal.ToString("N0") + " xp");
+            Widgets.Label(new Rect(rect.x, curY - 15f, 360f, 25f), "PE_Xp".Translate(studyGroup.semesterGoal.ToString("N0")));
             Text.Anchor = TextAnchor.UpperLeft;
             curY += 20f;
 
