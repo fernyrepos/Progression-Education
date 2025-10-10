@@ -62,15 +62,20 @@
         <pathCost>42</pathCost>
         <fillPercent>0.4</fillPercent>
         <hasInteractionCell>True</hasInteractionCell>
-        <interactionCellOffset>(0,0,5)</interactionCellOffset>
+        <interactionCellOffset>(0,0,-2)</interactionCellOffset>
         <designationCategory>Ferny_Education</designationCategory>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
         </placeWorkers>
+        <size>(1,5)</size>
         <graphicData>
             <texPath>Things/Building/Production/ShootingTarget</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
             <drawSize>(1,1)</drawSize>
+            <drawOffsetNorth>(0, 0, 2)</drawOffsetNorth>
+            <drawOffsetSouth>(0, 0, -2)</drawOffsetSouth>
+            <drawOffsetEast>(2, 0, 0)</drawOffsetEast>
+            <drawOffsetWest>(-2, 0, 0)</drawOffsetWest>
             <damageData>
                 <cornerTL>Damage/Corner</cornerTL>
                 <cornerTR>Damage/Corner</cornerTR>
@@ -214,7 +219,7 @@
         <graphicData>
             <texPath>Buildings/LessonBoards/Lessonstone</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
-            <shaderType>CutoutComplex</shaderType>
+            <shaderType>Cutout</shaderType>
             <drawSize>1.9</drawSize>
             <damageData>
                 <rectN>(0.1, 0.3, 1.8, 0.5)</rectN>

@@ -16,5 +16,6 @@
         <li>Ludeon.RimWorld.Odyssey</li>
         <li>brrainz.harmony</li>
 		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
+        <li>vanillaexpanded.vcooke</li>
     </loadAfter>
 </ModMetaData>

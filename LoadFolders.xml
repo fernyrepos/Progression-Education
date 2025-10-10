@@ -1,7 +1,6 @@
 <loadFolders>
   <v1.6>
     <li>/</li>
-    <li>1.6</li>
     <li IfModActive="xmb.ancienturbanruins.mo">Mods and Shit/Ancient Urban Ruins</li>
     <li IfModActive="van.foodfamine">Mods and Shit/Famine Food</li>
     <li IfModActive="dankpyon.medieval.overhaul">Mods and Shit/Medieval Overhaul</li>
@@ -12,5 +11,6 @@
     <li IfModActive="vanillaexpanded.gravship">Mods and Shit/VE Gravships</li>
     <li IfModActive="vanillaexpanded.vfefarming">Mods and Shit/VFE Farming</li>
     <li IfModActive="vanillaexpanded.vfeproduction">Mods and Shit/VFE Production</li>
+    <li>1.6</li>
   </v1.6>
 </loadFolders>
