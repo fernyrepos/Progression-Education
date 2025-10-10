@@ -79,9 +79,9 @@ namespace ProgressionEducation
                 return 0f;
             }
             var classroom = studyGroup.classroom;
-            float boardModifier = classroom.CalculateLearningModifier();
+            float classRoomModifier = classroom.CalculateLearningModifier();
             float modMultiplier = EducationSettings.Instance.skillClassesLearningSpeedModifier;
-            float progress = CalculateTeacherScore(studyGroup.teacher) * boardModifier * modMultiplier;
+            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * modMultiplier;
             return progress;
         }
 

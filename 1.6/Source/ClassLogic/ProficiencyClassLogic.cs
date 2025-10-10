@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -99,9 +99,9 @@ namespace ProgressionEducation
         public override float CalculateProgressPerTick()
         {
             var classroom = studyGroup.classroom;
-            float boardModifier = classroom.CalculateLearningModifier();
+            float classRoomModifier = classroom.CalculateLearningModifier();
             float modMultiplier = EducationSettings.Instance.proficiencyClassesLearningSpeedModifier;
-            float progress = CalculateTeacherScore(studyGroup.teacher) * boardModifier * modMultiplier;
+            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * modMultiplier;
             return progress;
         }
 

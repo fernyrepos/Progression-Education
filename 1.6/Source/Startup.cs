@@ -101,6 +101,7 @@ namespace ProgressionEducation
             {
                 existingComp.linkableBuildings.AddRange(linkables);
                 existingComp.linkableBuildings = existingComp.linkableBuildings.Distinct().ToList();
+                existingComp.requiresLOS = true;
 
                 EducationLog.Message($"Added {linkables.ToStringSafeEnumerable()} desks/workbenches to existing CompFacility on {def.defName}.");
             }

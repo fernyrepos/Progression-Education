@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="SchoolDesk"]/comps</xpath>
+    <value>
+      <li Class="ProgressionEducation.CompProperties_SchoolDesk">
+        <speedModifier>1.0</speedModifier>
+      </li>
+    </value>
+  </Operation>
+</Patch>

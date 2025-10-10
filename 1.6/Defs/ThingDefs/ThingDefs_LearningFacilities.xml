@@ -104,7 +104,8 @@
         <uiOrder>2300</uiOrder>
         <minifiedDef>MinifiedThing</minifiedDef>
         <interactionCellIcon>DiningChair</interactionCellIcon>
-        <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+        <interactionCellOffset>(0,0,1)</interactionCellOffset>
+        <hasInteractionCell>true</hasInteractionCell>
         <thingCategories>
             <li>BuildingsFurniture</li>
         </thingCategories>
@@ -135,7 +136,9 @@
             <paintable>false</paintable>
         </building>
         <comps>
-            <li Class="ProgressionEducation.CompProperties_SchoolDesk" />
+            <li Class="ProgressionEducation.CompProperties_SchoolDesk">
+                <speedModifier>0.6</speedModifier>
+            </li>
         </comps>
     </ThingDef>
 
@@ -162,7 +165,9 @@
         <uiOrder>2310</uiOrder>
         <minifiedDef>MinifiedThing</minifiedDef>
         <interactionCellIcon>DiningChair</interactionCellIcon>
-        <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+        <interactionCellOffset>(0,0,1)</interactionCellOffset>
+        <hasInteractionCell>true</hasInteractionCell>
+        <drawerType>MapMeshOnly</drawerType>
         <descriptionHyperlinks>
             <ThingDef>PE_HoloEducatorScreen</ThingDef>
         </descriptionHyperlinks>
@@ -196,7 +201,9 @@
             <paintable>true</paintable>
         </building>
         <comps>
-            <li Class="ProgressionEducation.CompProperties_SchoolDesk" />
+            <li Class="ProgressionEducation.CompProperties_SchoolDesk">
+                <speedModifier>1.5</speedModifier>
+            </li>
         </comps>
     </ThingDef>
 

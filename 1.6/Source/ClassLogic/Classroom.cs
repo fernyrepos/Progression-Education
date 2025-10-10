@@ -6,6 +6,7 @@ using Verse;
 
 namespace ProgressionEducation
 {
+    [HotSwappable]
     public class Classroom : IExposable, ILoadReferenceable, IRenameable
     {
         public int id;
@@ -26,7 +27,7 @@ namespace ProgressionEducation
             var educationManager = EducationManager.Instance;
             id = educationManager.GetNextClassroomId();
             name = "PE_Classroom".Translate() + " " + (educationManager.Classrooms.Count + 1);
-            color = new Color(0.5f, 0.5f, 1f);
+            color = new Color(Rand.Value, Rand.Value, Rand.Value);
             participantCount = 0;
         }
 
@@ -40,7 +41,9 @@ namespace ProgressionEducation
             FindEducationalFacilities(out var learningBoards, out var projectors);
             float bestBoardBonus = CalculateBestBoardBonus(learningBoards);
             float totalProjectorBonus = CalculateTotalProjectorBonus(projectors);
-            return bestBoardBonus * (1f + totalProjectorBonus);
+            float deskSpeedModifier = CalculateAverageDeskSpeedModifier();
+            EducationLog.Message($"Classroom '{name}' Learning Modifier Calculation: Best Board Bonus = {bestBoardBonus}, Total Projector Bonus = {totalProjectorBonus}, Desk Speed Modifier = {deskSpeedModifier}");
+            return bestBoardBonus * (1f + totalProjectorBonus) * deskSpeedModifier;
         }
 
         private void FindEducationalFacilities(out List<Thing> boards, out List<CompProjector> projectors)
@@ -95,6 +98,28 @@ namespace ProgressionEducation
                 totalBonus += projector.Props.learningBonus;
             }
             return totalBonus;
+        }
+
+        private float CalculateAverageDeskSpeedModifier()
+        {
+            var compFacility = learningBoardThing.TryGetComp<CompFacility>();
+            float totalModifier = 0f;
+            int deskCount = 0;
+
+            foreach (var facility in compFacility.linkedBuildings)
+            {
+                var deskComp = facility.TryGetComp<CompSchoolDesk>();
+                if (deskComp != null)
+                {
+                    totalModifier += deskComp.Props.speedModifier;
+                    deskCount++;
+                }
+            }
+            if (deskCount == 0)
+            {
+                return 1f;
+            }
+            return totalModifier / (float)deskCount;
         }
 
         public void ExposeData()

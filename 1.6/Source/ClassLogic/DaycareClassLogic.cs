@@ -50,10 +50,9 @@ namespace ProgressionEducation
         {
             if (student.needs?.learning != null)
             {
-                float learningRateFactor = LearningUtility.LearningRateFactor(student);
+                float learningRateFactor = LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier();
                 student.needs.learning.Learn(1.2E-05f * learningRateFactor);
             }
-            
             base.ApplyLearningTick(student);
         }
 
@@ -75,7 +74,7 @@ namespace ProgressionEducation
             {
                 return;
             }
-            float num = LearningDesireDefOf.Lessontaking.xpPerTick * LearningUtility.LearningRateFactor(student);
+            float num = LearningDesireDefOf.Lessontaking.xpPerTick * LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier();
             student.skills.Learn(taughtSkill, num);
         }
 
