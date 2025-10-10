@@ -115,7 +115,7 @@ namespace ProgressionEducation
             var deleteButtonRect = new Rect(innerRect.xMax - 30f, innerRect.y, 30f, 30f);
             if (Widgets.ButtonImage(deleteButtonRect, DeleteIcon))
             {
-                EducationManager.Instance.RemoveStudyGroup(studyGroup);
+                Find.WindowStack.Add(new Dialog_Confirm("PE_ConfirmDeleteClass".Translate(), () => EducationManager.Instance.RemoveStudyGroup(studyGroup)));
                 return;
             }
             var rescheduleButtonRect = new Rect(deleteButtonRect.x - 32f, innerRect.y, 30f, 30f);

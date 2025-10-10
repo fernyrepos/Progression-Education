@@ -27,6 +27,7 @@
   <PE_SkillFocus>Skill focus</PE_SkillFocus>
   <PE_ProficiencyFocus>Proficiency focus</PE_ProficiencyFocus>
   <PE_SemesterGoal>Semester goal</PE_SemesterGoal>
+  <PE_ConfirmDeleteClass>Are you sure you would like to delete this class? This will reset all learning progress.</PE_ConfirmDeleteClass>
   <PE_StudyTimeNeeded>Study time needed: {0}</PE_StudyTimeNeeded>
   <PE_Requirements>Requirements:</PE_Requirements>
   <PE_LearningBoard>learning board</PE_LearningBoard>
