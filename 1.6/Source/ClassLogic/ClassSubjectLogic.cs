@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -15,20 +16,17 @@ namespace ProgressionEducation
 
         public abstract string Description { get; }
         public virtual bool IsInfinite => false;
-        public virtual int BenchCount => 0;
-        public virtual string BenchLabel
+        public int BenchCount
         {
             get
             {
+                var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
                 var validBenches = GetValidLearningBenches();
-                if (validBenches != null && validBenches.Any())
-                {
-                    return validBenches.Select(b => b.label).ToCommaList();
-                }
-                return "PE_SchoolDesks".Translate();
+                var count = facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
+                return count;
             }
         }
-        
+        public virtual string BenchLabel => "PE_SchoolDesks".Translate();
         public abstract void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog);
         public abstract float CalculateProgressPerTick();
         public abstract void GrantCompletionRewards();
