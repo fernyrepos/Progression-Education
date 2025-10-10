@@ -83,7 +83,7 @@ namespace ProgressionEducation
                 {
                     if (otherGroup != currentGroup && (otherGroup.students.Contains(pawn) || otherGroup.teacher == pawn))
                     {
-                        if (startHour < otherGroup.endHour && endHour > otherGroup.startHour)
+                        if (TimeAssignmentUtility.HasConflict(startHour, endHour, otherGroup.startHour, otherGroup.endHour))
                         {
                             return "PE_CannotRescheduleScheduled".Translate(pawn.LabelShort, otherGroup.startHour, otherGroup.endHour, otherGroup.className);
                         }

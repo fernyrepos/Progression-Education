@@ -29,4 +29,11 @@
         <casualInterruptible>false</casualInterruptible>
     </JobDef>
 
+    <JobDef>
+        <defName>PE_AttendShootingClass</defName>
+        <driverClass>ProgressionEducation.JobDriver_AttendShootingClass</driverClass>
+        <reportString>practicing shooting.</reportString>
+        <casualInterruptible>false</casualInterruptible>
+    </JobDef>
+
 </Defs>

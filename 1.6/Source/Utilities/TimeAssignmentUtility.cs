@@ -67,7 +67,17 @@ namespace ProgressionEducation
             {
                 for (int hour = 0; hour < 24; hour++)
                 {
-                    if (hour >= studyGroup.startHour && hour <= studyGroup.endHour)
+                    bool isScheduled;
+                    if (studyGroup.startHour <= studyGroup.endHour)
+                    {
+                        isScheduled = hour >= studyGroup.startHour && hour <= studyGroup.endHour;
+                    }
+                    else
+                    {
+                        isScheduled = hour >= studyGroup.startHour || hour <= studyGroup.endHour;
+                    }
+
+                    if (isScheduled)
                     {
                         participant.timetable.SetAssignment(hour, assignment);
                     }
@@ -100,6 +110,33 @@ namespace ProgressionEducation
                 return true;
             }
 
+            return false;
+        }
+
+        private static bool IsHourInSchedule(int hour, int start, int end)
+        {
+            if (start <= end)
+            {
+                return hour >= start && hour <= end;
+            }
+            else
+            {
+                return hour >= start || hour <= end;
+            }
+        }
+
+        public static bool HasConflict(int startHour1, int endHour1, int startHour2, int endHour2)
+        {
+            for (int hour = 0; hour < 24; hour++)
+            {
+                bool inSchedule1 = IsHourInSchedule(hour, startHour1, endHour1);
+                bool inSchedule2 = IsHourInSchedule(hour, startHour2, endHour2);
+
+                if (inSchedule1 && inSchedule2)
+                {
+                    return true;
+                }
+            }
             return false;
         }
     }

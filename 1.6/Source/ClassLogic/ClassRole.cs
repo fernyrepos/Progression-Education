@@ -28,7 +28,7 @@ namespace ProgressionEducation
             {
                 if (otherGroup != studyGroup && (otherGroup.students.Contains(pawn) || otherGroup.teacher == pawn))
                 {
-                    if (studyGroup.startHour < otherGroup.endHour && studyGroup.endHour > otherGroup.startHour)
+                    if (TimeAssignmentUtility.HasConflict(studyGroup.startHour, studyGroup.endHour, otherGroup.startHour, otherGroup.endHour))
                     {
                         return new AcceptanceReport("PE_CannotParticipateScheduled".Translate(otherGroup.startHour, otherGroup.endHour, otherGroup.className));
                     }

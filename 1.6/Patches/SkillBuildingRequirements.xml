@@ -114,6 +114,18 @@
   </Operation>
 
   <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Shooting"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>PE_ShootingTarget</li>
+        </requiredBuildings>
+        <requirementLabel>shooting stations</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
     <xpath>Defs/SkillDef[defName="Crafting"]</xpath>
     <value>
       <li Class="ProgressionEducation.SkillBuildingRequirement">

@@ -123,8 +123,7 @@ namespace ProgressionEducation
                 foreach (var studyGroup in StudyGroups)
                 {
                     studyGroup.subjectLogic.HandleStudentLifecycleEvents();
-                    var classroomMap = studyGroup.classroom.LearningBoard.parent.Map;
-                    TryInitiateClassForStudyGroup(studyGroup, classroomMap);
+                    TryInitiateClassForStudyGroup(studyGroup);
                 }
             }
         }
@@ -136,17 +135,19 @@ namespace ProgressionEducation
             TimeAssignmentUtility.ApplyScheduleToPawns(studyGroup, allParticipants);
         }
 
-        public void TryInitiateClassForStudyGroup(StudyGroup studyGroup, Map map)
+        public void TryInitiateClassForStudyGroup(StudyGroup studyGroup)
         {
             var currentAssignment = studyGroup.teacher.timetable.CurrentAssignment;
-            if (!currentAssignment.IsStudyGroupAssignment())
+            if (!currentAssignment.IsStudyGroupAssignment() || currentAssignment.defName != studyGroup.timeAssignmentDefName)
             {
+                EducationLog.Message($"Current assignment for teacher {studyGroup.teacher.LabelShort} is not a study group assignment.");
                 return;
             }
 
             var lord = studyGroup.teacher.GetLord();
             if (lord != null && lord.LordJob is LordJob_AttendClass)
             {
+                EducationLog.Message($"Teacher {studyGroup.teacher.LabelShort} is already in a LordJob_AttendClass. Not initiating another class.");
                 return;
             }
             var classroomMap = studyGroup.classroom.LearningBoard.parent.Map;
@@ -163,11 +164,13 @@ namespace ProgressionEducation
 
             if (existingLordFound)
             {
+                EducationLog.Message($"An existing LordJob_AttendClass was found for class '{studyGroup.className}'. Not initiating another class.");
                 return;
             }
 
             if (Classrooms.Count == 0)
             {
+                EducationLog.Message("No classrooms available. Cannot initiate class.");
                 return;
             }
 
@@ -212,8 +215,10 @@ namespace ProgressionEducation
 
             if (initialPawns.Count < 1)
             {
+                EducationLog.Message($"All participants for class '{studyGroup.className}' are already in other lords. Cannot initiate class.");
                 return;
             }
+            EducationLog.Message($"Initiating class '{studyGroup.className}' with teacher {studyGroup.teacher.LabelShort} and {qualifiedStudents.Count} qualified students.");
 
             LordMaker.MakeNewLord(Faction.OfPlayer, lordJob, classroomMap, initialPawns);
         }

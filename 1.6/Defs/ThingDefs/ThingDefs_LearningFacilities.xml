@@ -41,6 +41,44 @@
         </graphicData>
     </ThingDef>
 
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_ShootingTarget</defName>
+        <label>shooting target</label>
+        <description>A target for practicing shooting skills.</description>
+        <statBases>
+            <MaxHitPoints>100</MaxHitPoints>
+            <WorkToBuild>1000</WorkToBuild>
+            <Mass>15</Mass>
+            <Flammability>1.0</Flammability>
+            <Beauty>-5</Beauty>
+        </statBases>
+        <stuffCategories>
+            <li>Metallic</li>
+            <li>Woody</li>
+        </stuffCategories>
+        <costStuffCount>50</costStuffCount>
+        <altitudeLayer>BuildingOnTop</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <pathCost>42</pathCost>
+        <fillPercent>0.4</fillPercent>
+        <hasInteractionCell>True</hasInteractionCell>
+        <interactionCellOffset>(0,0,5)</interactionCellOffset>
+        <designationCategory>Ferny_Education</designationCategory>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <graphicData>
+            <texPath>Things/Building/Production/ShootingTarget</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(1,1)</drawSize>
+            <damageData>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+                <cornerBL>Damage/Corner</cornerBL>
+                <cornerBR>Damage/Corner</cornerBR>
+            </damageData>
+        </graphicData>
+    </ThingDef>
     <!--==================== New Desks/Boards ====================-->
 
     <ThingDef ParentName="BuildingBase">
@@ -635,5 +673,4 @@
             </li>
         </comps>
     </ThingDef>
-
 </Defs>
