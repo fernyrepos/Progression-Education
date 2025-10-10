@@ -8,7 +8,7 @@
         <requiredBuildings>
           <li>CraftingSpot</li>
         </requiredBuildings>
-        <requirementLabel>construction type workbenches</requirementLabel>
+        <requirementLabel>building workstations</requirementLabel>
       </li>
     </value>
   </Operation>
@@ -21,7 +21,7 @@
           <li>PlantPot</li>
           <li>HydroponicsBasin</li>
         </requiredBuildings>
-        <requirementLabel>planting type workbenches</requirementLabel>
+        <requirementLabel>agricultural workstations</requirementLabel>
       </li>
     </value>
   </Operation>
@@ -34,7 +34,7 @@
           <li>SimpleResearchBench</li>
           <li>HiTechResearchBench</li>
         </requiredBuildings>
-        <requirementLabel>research type workbenches</requirementLabel>
+        <requirementLabel>research workstations</requirementLabel>
       </li>
     </value>
   </Operation>
@@ -95,7 +95,7 @@
         <requiredBuildings>
           <li>TableSculpting</li>
         </requiredBuildings>
-        <requirementLabel>sculpting type workbenches</requirementLabel>
+        <requirementLabel>artistic workbenches</requirementLabel>
       </li>
     </value>
   </Operation>
@@ -107,7 +107,7 @@
         <requiredBuildings>
           <li>PE_StrikingBoard</li>
         </requiredBuildings>
-        <requirementLabel>striking boards</requirementLabel>
+        <requirementLabel>melee stations</requirementLabel>
       </li>
     </value>
   </Operation>
