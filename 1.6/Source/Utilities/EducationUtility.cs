@@ -17,12 +17,12 @@ namespace ProgressionEducation
 
         public static bool IsSchoolDesk(this ThingDef def)
         {
-            return def == ThingDefOf.SchoolDesk;
+            return def.HasComp(typeof(CompSchoolDesk));
         }
 
         public static bool IsSchoolDesk(this Thing t)
         {
-            return IsSchoolDesk(t.def);
+            return t.HasComp<CompSchoolDesk>();
         }
     }
 }

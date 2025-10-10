@@ -10,18 +10,18 @@ namespace ProgressionEducation
     {
         private Vector2 classScrollPosition = Vector2.zero;
         private Vector2 classroomScrollPosition = Vector2.zero;
-
         private const float ClassRowHeight = 90f;
         private const float ClassroomRowHeight = 38f;
         private const float WindowPadding = 12f;
         private const float HeaderHeight = 35f;
 
-        private static readonly Texture2D ParticipantIcon = ContentFinder<Texture2D>.Get("UI/Icons/Members");
+        private float TeacherPortraitSize => 50f;
+        private static readonly Texture2D ParticipantIcon = ContentFinder<Texture2D>.Get("UI/RemoveStudent");
         private static readonly Texture2D RenameIcon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename");
+        private static readonly Texture2D ResheduleIcon = ContentFinder<Texture2D>.Get("UI/Reschedule");
+
         private static readonly Texture2D DeleteIcon = TexButton.Delete;
         private static readonly Texture2D ProgressBarFillTexture = SolidColorMaterials.NewSolidColorTexture(new Color(0.34f, 0.72f, 0.33f));
-
-
         public override void DoWindowContents(Rect inRect)
         {
             var leftRect = new Rect(inRect.x, inRect.y, (inRect.width * 0.65f) - (WindowPadding / 2f), inRect.height);
@@ -68,7 +68,7 @@ namespace ProgressionEducation
             var bgColor = studyGroup.classroom.color;
             var borderColor = bgColor;
             bgColor = Color.Lerp(bgColor, Color.black, 0.65f);
-            
+
             Widgets.DrawBoxSolidWithOutline(rect, bgColor, borderColor);
 
             if (Mouse.IsOver(rect))
@@ -83,21 +83,14 @@ namespace ProgressionEducation
             Widgets.Label(nameRect, studyGroup.className);
             Text.Font = GameFont.Small;
 
-            var participantIconRect = new Rect(nameRect.xMax, innerRect.y, 24f, 24f);
-            GUI.DrawTexture(participantIconRect, ParticipantIcon);
-            TooltipHandler.TipRegion(participantIconRect, "PE_Participants".Translate());
-            var participantCountRect = new Rect(participantIconRect.xMax + 2f, innerRect.y, 40f, 24f);
-            Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(participantCountRect, studyGroup.students.Count.ToString());
-            Text.Anchor = TextAnchor.UpperLeft;
-
             string description = studyGroup.subjectLogic.Description;
             var descriptionRect = new Rect(innerRect.x, nameRect.yMax, innerRect.width, 24f);
             Widgets.Label(descriptionRect, description);
 
+            float progressBarWidth = innerRect.width * 0.7f;
             if (!studyGroup.subjectLogic.IsInfinite)
             {
-                var progressBarRect = new Rect(innerRect.x, innerRect.yMax - 18f, innerRect.width * 0.8f, 18f);
+                var progressBarRect = new Rect(innerRect.x, innerRect.yMax - 18f, progressBarWidth, 18f);
                 Widgets.FillableBar(progressBarRect, studyGroup.ProgressPercentage, ProgressBarFillTexture);
                 Text.Anchor = TextAnchor.MiddleCenter;
                 if (studyGroup.subjectLogic is SkillClassLogic)
@@ -111,16 +104,21 @@ namespace ProgressionEducation
                 Text.Anchor = TextAnchor.UpperLeft;
             }
 
+            var teacherPortraitRect = new Rect(innerRect.x + progressBarWidth, innerRect.yMax - TeacherPortraitSize, TeacherPortraitSize, TeacherPortraitSize);
+            GUI.DrawTexture(teacherPortraitRect, PortraitsCache.Get(studyGroup.teacher, new Vector2(TeacherPortraitSize, TeacherPortraitSize), Rot4.South, cameraZoom: 1.5f));
+            TooltipHandler.TipRegion(teacherPortraitRect, studyGroup.teacher.LabelCap);
+
+            var scheduleInfoRect = new Rect(teacherPortraitRect.xMax, teacherPortraitRect.y + 20, innerRect.width - teacherPortraitRect.width - WindowPadding, TeacherPortraitSize);
+            DrawScheduleInfo(scheduleInfoRect, studyGroup);
+            
             var deleteButtonRect = new Rect(innerRect.xMax - 30f, innerRect.y, 30f, 30f);
             if (Widgets.ButtonImage(deleteButtonRect, DeleteIcon))
             {
                 EducationManager.Instance.RemoveStudyGroup(studyGroup);
                 return;
             }
-            TooltipHandler.TipRegion(deleteButtonRect, "Delete".Translate());
-
             var rescheduleButtonRect = new Rect(deleteButtonRect.x - 32f, innerRect.y, 30f, 30f);
-            if (Widgets.ButtonImage(rescheduleButtonRect, TexButton.ReorderUp))
+            if (Widgets.ButtonImage(rescheduleButtonRect, ResheduleIcon))
             {
                 Find.WindowStack.Add(new Dialog_RescheduleClass(studyGroup));
             }
@@ -133,12 +131,25 @@ namespace ProgressionEducation
             }
             TooltipHandler.TipRegion(renameButtonRect, "Rename".Translate());
 
-            var manageStudentsButtonRect = new Rect(renameButtonRect.x - 32f, innerRect.y, 30f, 30f);
-            if (Widgets.ButtonImage(manageStudentsButtonRect, ParticipantIcon))
+            var participantIconRect = new Rect(renameButtonRect.x - 35, innerRect.y + 2, 24f, 24f);
+            GUI.DrawTexture(participantIconRect, ParticipantIcon);
+            TooltipHandler.TipRegion(participantIconRect, "PE_ManageStudents".Translate());
+            if (Widgets.ButtonImage(participantIconRect, ParticipantIcon))
             {
                 Find.WindowStack.Add(new Dialog_RemoveStudents(studyGroup));
             }
-            TooltipHandler.TipRegion(manageStudentsButtonRect, "PE_ManageStudents".Translate());
+            var participantCountRect = new Rect(participantIconRect.xMax + 2f, participantIconRect.y, 40f, 24f);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.Label(participantCountRect, studyGroup.students.Count.ToString());
+            Text.Anchor = TextAnchor.UpperLeft;
+        }
+
+        private void DrawScheduleInfo(Rect rect, StudyGroup studyGroup)
+        {
+            Text.Font = GameFont.Tiny;
+            var scheduleRect = new Rect(rect.x, rect.y, rect.width, 24f);
+            Widgets.Label(scheduleRect, "PE_ScheduleTime".Translate(studyGroup.startHour, studyGroup.endHour));
+            Text.Font = GameFont.Small;
         }
 
         private void DrawClassroomList(Rect rect)
@@ -153,11 +164,15 @@ namespace ProgressionEducation
             }
 
             Text.Font = GameFont.Medium;
-            var headerRect = new Rect(rect.x, rect.y + HeaderHeight + WindowPadding, rect.width, HeaderHeight);
-            Widgets.Label(headerRect, "PE_Classrooms".Translate());
+            var headerRect = new Rect(rect.x, rect.y + HeaderHeight, rect.width, HeaderHeight);
+            float currentY = headerRect.y;
+            ListSeparator(headerRect.x, ref currentY, headerRect.width, "PE_Classrooms".Translate());
+            var descriptionRect = new Rect(rect.x, currentY, rect.width, 40f);
             Text.Font = GameFont.Small;
+            Widgets.Label(descriptionRect, "PE_ClassroomsDescription".Translate());
 
-            var listOutRect = new Rect(rect.x, headerRect.yMax + WindowPadding, rect.width, rect.height - (headerRect.yMax + WindowPadding));
+            currentY += 45f;
+            var listOutRect = new Rect(rect.x, currentY, rect.width, rect.height - currentY);
             var listContentRect = new Rect(0f, 0f, listOutRect.width - 16f, classrooms.Count * (ClassroomRowHeight + WindowPadding));
 
             Widgets.BeginScrollView(listOutRect, ref classroomScrollPosition, listContentRect);
@@ -201,6 +216,19 @@ namespace ProgressionEducation
             }
 
             Widgets.EndScrollView();
+        }
+        public static void ListSeparator(float curX, ref float curY, float width, string label)
+        {
+            Color color = GUI.color;
+            curY += 3f;
+            Rect rect = new Rect(curX, curY, width, 30f);
+            Text.Anchor = TextAnchor.UpperLeft;
+            Widgets.Label(rect, label);
+            curY += 30f;
+            GUI.color = Widgets.SeparatorLineColor;
+            Widgets.DrawLineHorizontal(curX, curY, width);
+            curY += 2f;
+            GUI.color = color;
         }
     }
 }

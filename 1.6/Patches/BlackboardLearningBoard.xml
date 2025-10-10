@@ -29,14 +29,17 @@
 
   <Operation Class="PatchOperationRemove">
     <xpath>Defs/ThingDef/comps/li[compClass="CompStatEntrySchoolDesk"]</xpath>
+    <success>Always</success>
   </Operation>
 
   <Operation Class="PatchOperationRemove">
     <xpath>Defs/ThingDef/comps/li[compClass="CompInspectStringSchooldesk"]</xpath>
+    <success>Always</success>
   </Operation>
 
   <Operation Class="PatchOperationRemove">
     <xpath>Defs/ThingDef/comps/li[compClass="CompInspectStringBlackboard"]</xpath>
+    <success>Always</success>
   </Operation>
 
 </Patch>

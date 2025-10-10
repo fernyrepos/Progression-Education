@@ -99,7 +99,7 @@ namespace ProgressionEducation
             }
             if (studyGroup.subjectLogic is SkillClassLogic skillLogic && skillLogic.skillFocus == null)
             {
-                Messages.Message("PE_SelectSkillFocusError".Translate(), MessageTypeDefOf.RejectInput);
+                Messages.Message("PE_SkillFocusMissing".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
             var prerequisitesMet = studyGroup.ArePrerequisitesMet();

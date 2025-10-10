@@ -41,4 +41,599 @@
         </graphicData>
     </ThingDef>
 
+    <!--==================== New Desks/Boards ====================-->
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_StoneSchoolDesk</defName>
+        <label>stone school desk</label>
+        <description>todo.</description>
+        <graphicData>
+            <texPath>Buildings/LessonDesks/LessonSlab</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(4,3)</drawSize>
+            <damageData>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+                <cornerBL>Damage/Corner</cornerBL>
+                <cornerBR>Damage/Corner</cornerBR>
+            </damageData>
+        </graphicData>
+        <castEdgeShadows>true</castEdgeShadows>
+        <staticSunShadowHeight>0.15</staticSunShadowHeight>
+        <altitudeLayer>Building</altitudeLayer>
+        <uiIconScale>0.8</uiIconScale>
+        <designationCategory>Ferny_Education</designationCategory>
+        <uiOrder>2300</uiOrder>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <interactionCellIcon>DiningChair</interactionCellIcon>
+        <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+        <thingCategories>
+            <li>BuildingsFurniture</li>
+        </thingCategories>
+        <passability>PassThroughOnly</passability>
+        <canOverlapZones>false</canOverlapZones>
+        <pathCost>50</pathCost>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>100</MaxHitPoints>
+            <WorkToBuild>500</WorkToBuild>
+            <Mass>10</Mass>
+            <Flammability>0</Flammability>
+            <Beauty>-5</Beauty>
+        </statBases>
+        <size>(2,1)</size>
+        <researchPrerequisites>
+            <li>ComplexFurniture</li>
+        </researchPrerequisites>
+        <costStuffCount>40</costStuffCount>
+        <stuffCategories>
+            <li>Stony</li>
+        </stuffCategories>
+        <placeWorkers>
+            <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <building>
+            <paintable>false</paintable>
+        </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_SchoolDesk" />
+        </comps>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_TouchscreenSchoolDesk</defName>
+        <label>touchscreen school desk</label>
+        <description>todo.</description>
+        <graphicData>
+            <texPath>Buildings/LessonDesks/TouchscreenSchoolDesk</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(4,3)</drawSize>
+            <damageData>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+                <cornerBL>Damage/Corner</cornerBL>
+                <cornerBR>Damage/Corner</cornerBR>
+            </damageData>
+        </graphicData>
+        <castEdgeShadows>true</castEdgeShadows>
+        <staticSunShadowHeight>0.15</staticSunShadowHeight>
+        <altitudeLayer>Building</altitudeLayer>
+        <uiIconScale>0.8</uiIconScale>
+        <designationCategory>Ferny_Education</designationCategory>
+        <uiOrder>2310</uiOrder>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <interactionCellIcon>DiningChair</interactionCellIcon>
+        <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+        <descriptionHyperlinks>
+            <ThingDef>PE_HoloEducatorScreen</ThingDef>
+        </descriptionHyperlinks>
+        <thingCategories>
+            <li>BuildingsFurniture</li>
+        </thingCategories>
+        <passability>PassThroughOnly</passability>
+        <canOverlapZones>false</canOverlapZones>
+        <pathCost>50</pathCost>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>100</MaxHitPoints>
+            <WorkToBuild>1500</WorkToBuild>
+            <Mass>10</Mass>
+            <Flammability>0.5</Flammability>
+            <Beauty>8</Beauty>
+        </statBases>
+        <size>(2,1)</size>
+        <researchPrerequisites>
+            <li>ComplexFurniture</li>
+        </researchPrerequisites>
+        <costStuffCount>50</costStuffCount>
+        <stuffCategories>
+            <li>Metallic</li>
+        </stuffCategories>
+        <placeWorkers>
+            <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <building>
+            <paintable>true</paintable>
+        </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_SchoolDesk" />
+        </comps>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_LessonStone</defName>
+        <label>lesson stone</label>
+        <description>todo.</description>
+        <graphicData>
+            <texPath>Buildings/LessonBoards/Lessonstone</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <shaderType>CutoutComplex</shaderType>
+            <drawSize>1.9</drawSize>
+            <damageData>
+                <rectN>(0.1, 0.3, 1.8, 0.5)</rectN>
+                <rectS>(0.1, 0.3, 1.8, 0.5)</rectS>
+                <rectE>(0.45, 0, 0.2, 1)</rectE>
+                <rectW>(0.55, 0, 0.2, 1)</rectW>
+            </damageData>
+            <shadowData>
+                <volume>(2, 0.5, 0.2)</volume>
+            </shadowData>
+        </graphicData>
+        <descriptionHyperlinks>
+            <ThingDef>PE_StoneSchoolDesk</ThingDef>
+        </descriptionHyperlinks>
+        <altitudeLayer>Building</altitudeLayer>
+        <designationCategory>Ferny_Education</designationCategory>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <defaultPlacingRot>South</defaultPlacingRot>
+        <thingCategories>
+            <li>BuildingsFurniture</li>
+        </thingCategories>
+        <passability>PassThroughOnly</passability>
+        <canOverlapZones>false</canOverlapZones>
+        <pathCost>50</pathCost>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>80</MaxHitPoints>
+            <WorkToBuild>700</WorkToBuild>
+            <Mass>10</Mass>
+            <Flammability>0</Flammability>
+            <Beauty>-3</Beauty>
+        </statBases>
+        <size>(2,1)</size>
+        <costStuffCount>20</costStuffCount>
+        <stuffCategories>
+            <li>Stony</li>
+        </stuffCategories>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <building>
+            <paintable>false</paintable>
+        </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard">
+                <qualityBonuses>
+                    <Awful>0.8</Awful>
+                    <Poor>0.9</Poor>
+                    <Normal>1</Normal>
+                    <Good>1.1</Good>
+                    <Excellent>1.2</Excellent>
+                    <Masterwork>1.3</Masterwork>
+                    <Legendary>1.5</Legendary>
+                </qualityBonuses>
+                <techBonuses>
+                    <Undefined>1</Undefined>
+                    <Animal>1</Animal>
+                    <Neolithic>1</Neolithic>
+                    <Medieval>1.1</Medieval>
+                    <Industrial>1.2</Industrial>
+                    <Spacer>1.3</Spacer>
+                    <Ultra>1.4</Ultra>
+                    <Archotech>1.5</Archotech>
+                </techBonuses>
+            </li>
+        </comps>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_LargeBlackboard</defName>
+        <label>large blackboard</label>
+        <description>todo.</description>
+        <graphicData>
+            <texPath>Buildings/LessonBoards/LargeBlackboard</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <shaderType>CutoutComplex</shaderType>
+            <drawSize>2.9</drawSize>
+            <damageData>
+                <rectN>(0.1, 0.3, 2.8, 0.5)</rectN>
+                <rectS>(0.1, 0.3, 2.8, 0.5)</rectS>
+                <rectE>(0.45, 0, 0.2, 1)</rectE>
+                <rectW>(0.55, 0, 0.2, 1)</rectW>
+            </damageData>
+            <shadowData>
+                <volume>(3, 0.5, 0.2)</volume>
+            </shadowData>
+        </graphicData>
+        <descriptionHyperlinks>
+            <ThingDef>SchoolDesk</ThingDef>
+        </descriptionHyperlinks>
+        <altitudeLayer>Building</altitudeLayer>
+        <designationCategory>Ferny_Education</designationCategory>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <defaultPlacingRot>South</defaultPlacingRot>
+        <thingCategories>
+            <li>BuildingsFurniture</li>
+        </thingCategories>
+        <passability>PassThroughOnly</passability>
+        <canOverlapZones>false</canOverlapZones>
+        <pathCost>50</pathCost>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>120</MaxHitPoints>
+            <WorkToBuild>2000</WorkToBuild>
+            <Mass>14</Mass>
+            <Flammability>1.0</Flammability>
+            <Beauty>4</Beauty>
+        </statBases>
+        <size>(3,1)</size>
+        <researchPrerequisites>
+            <li>ComplexFurniture</li>
+        </researchPrerequisites>
+        <costStuffCount>30</costStuffCount>
+        <stuffCategories>
+            <li>Woody</li>
+            <li>Stony</li>
+        </stuffCategories>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <building>
+            <paintable>true</paintable>
+        </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard">
+                <qualityBonuses>
+                    <Awful>0.8</Awful>
+                    <Poor>0.9</Poor>
+                    <Normal>1</Normal>
+                    <Good>1.1</Good>
+                    <Excellent>1.2</Excellent>
+                    <Masterwork>1.3</Masterwork>
+                    <Legendary>1.5</Legendary>
+                </qualityBonuses>
+                <techBonuses>
+                    <Undefined>1</Undefined>
+                    <Animal>1</Animal>
+                    <Neolithic>1</Neolithic>
+                    <Medieval>1.1</Medieval>
+                    <Industrial>1.2</Industrial>
+                    <Spacer>1.3</Spacer>
+                    <Ultra>1.4</Ultra>
+                    <Archotech>1.5</Archotech>
+                </techBonuses>
+            </li>
+        </comps>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_Whiteboard</defName>
+        <label>whiteboard</label>
+        <description>todo.</description>
+        <graphicData>
+            <texPath>Buildings/LessonBoards/Whiteboard</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <shaderType>CutoutComplex</shaderType>
+            <drawSize>1.9</drawSize>
+            <damageData>
+                <rectN>(0.1, 0.3, 1.8, 0.5)</rectN>
+                <rectS>(0.1, 0.3, 1.8, 0.5)</rectS>
+                <rectE>(0.45, 0, 0.2, 1)</rectE>
+                <rectW>(0.55, 0, 0.2, 1)</rectW>
+            </damageData>
+            <shadowData>
+                <volume>(2, 0.5, 0.2)</volume>
+            </shadowData>
+        </graphicData>
+        <descriptionHyperlinks>
+            <ThingDef>SchoolDesk</ThingDef>
+        </descriptionHyperlinks>
+        <altitudeLayer>Building</altitudeLayer>
+        <designationCategory>Ferny_Education</designationCategory>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <defaultPlacingRot>South</defaultPlacingRot>
+        <thingCategories>
+            <li>BuildingsFurniture</li>
+        </thingCategories>
+        <passability>PassThroughOnly</passability>
+        <canOverlapZones>false</canOverlapZones>
+        <pathCost>50</pathCost>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>70</MaxHitPoints>
+            <WorkToBuild>1200</WorkToBuild>
+            <Mass>8</Mass>
+            <Flammability>1.0</Flammability>
+            <Beauty>3</Beauty>
+        </statBases>
+        <size>(2,1)</size>
+        <researchPrerequisites>
+            <li>ComplexFurniture</li>
+        </researchPrerequisites>
+        <costStuffCount>20</costStuffCount>
+        <stuffCategories>
+            <li>Woody</li>
+            <li>Metallic</li>
+        </stuffCategories>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <building>
+            <paintable>true</paintable>
+        </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard">
+                <qualityBonuses>
+                    <Awful>0.8</Awful>
+                    <Poor>0.9</Poor>
+                    <Normal>1</Normal>
+                    <Good>1.1</Good>
+                    <Excellent>1.2</Excellent>
+                    <Masterwork>1.3</Masterwork>
+                    <Legendary>1.5</Legendary>
+                </qualityBonuses>
+                <techBonuses>
+                    <Undefined>1</Undefined>
+                    <Animal>1</Animal>
+                    <Neolithic>1</Neolithic>
+                    <Medieval>1.1</Medieval>
+                    <Industrial>1.2</Industrial>
+                    <Spacer>1.3</Spacer>
+                    <Ultra>1.4</Ultra>
+                    <Archotech>1.5</Archotech>
+                </techBonuses>
+            </li>
+        </comps>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_LargeWhiteboard</defName>
+        <label>large whiteboard</label>
+        <description>todo.</description>
+        <graphicData>
+            <texPath>Buildings/LessonBoards/LargeWhiteboard</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <shaderType>CutoutComplex</shaderType>
+            <drawSize>2.9</drawSize>
+            <damageData>
+                <rectN>(0.1, 0.3, 2.8, 0.5)</rectN>
+                <rectS>(0.1, 0.3, 2.8, 0.5)</rectS>
+                <rectE>(0.45, 0, 0.2, 1)</rectE>
+                <rectW>(0.55, 0, 0.2, 1)</rectW>
+            </damageData>
+            <shadowData>
+                <volume>(3, 0.5, 0.2)</volume>
+            </shadowData>
+        </graphicData>
+        <descriptionHyperlinks>
+            <ThingDef>SchoolDesk</ThingDef>
+        </descriptionHyperlinks>
+        <altitudeLayer>Building</altitudeLayer>
+        <designationCategory>Ferny_Education</designationCategory>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <defaultPlacingRot>South</defaultPlacingRot>
+        <thingCategories>
+            <li>BuildingsFurniture</li>
+        </thingCategories>
+        <passability>PassThroughOnly</passability>
+        <canOverlapZones>false</canOverlapZones>
+        <pathCost>50</pathCost>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>140</MaxHitPoints>
+            <WorkToBuild>2400</WorkToBuild>
+            <Mass>16</Mass>
+            <Flammability>1.0</Flammability>
+            <Beauty>6</Beauty>
+        </statBases>
+        <size>(3,1)</size>
+        <researchPrerequisites>
+            <li>ComplexFurniture</li>
+        </researchPrerequisites>
+        <costStuffCount>40</costStuffCount>
+        <stuffCategories>
+            <li>Woody</li>
+            <li>Metallic</li>
+        </stuffCategories>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <building>
+            <paintable>true</paintable>
+        </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard">
+                <qualityBonuses>
+                    <Awful>0.8</Awful>
+                    <Poor>0.9</Poor>
+                    <Normal>1</Normal>
+                    <Good>1.1</Good>
+                    <Excellent>1.2</Excellent>
+                    <Masterwork>1.3</Masterwork>
+                    <Legendary>1.5</Legendary>
+                </qualityBonuses>
+                <techBonuses>
+                    <Undefined>1</Undefined>
+                    <Animal>1</Animal>
+                    <Neolithic>1</Neolithic>
+                    <Medieval>1.1</Medieval>
+                    <Industrial>1.2</Industrial>
+                    <Spacer>1.3</Spacer>
+                    <Ultra>1.4</Ultra>
+                    <Archotech>1.5</Archotech>
+                </techBonuses>
+            </li>
+        </comps>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_HoloEducatorScreen</defName>
+        <label>holo-educator screen</label>
+        <description>todo.</description>
+        <graphicData>
+            <texPath>Buildings/LessonBoards/HoloeducatorScreen</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <shaderType>CutoutComplex</shaderType>
+            <drawSize>1.9</drawSize>
+            <damageData>
+                <rectN>(0.1, 0.3, 1.8, 0.5)</rectN>
+                <rectS>(0.1, 0.3, 1.8, 0.5)</rectS>
+                <rectE>(0.45, 0, 0.2, 1)</rectE>
+                <rectW>(0.55, 0, 0.2, 1)</rectW>
+            </damageData>
+            <shadowData>
+                <volume>(2, 0.5, 0.2)</volume>
+            </shadowData>
+        </graphicData>
+        <descriptionHyperlinks>
+            <ThingDef>PE_TouchscreenSchoolDesk</ThingDef>
+        </descriptionHyperlinks>
+        <altitudeLayer>Building</altitudeLayer>
+        <designationCategory>Ferny_Education</designationCategory>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <defaultPlacingRot>South</defaultPlacingRot>
+        <thingCategories>
+            <li>BuildingsFurniture</li>
+        </thingCategories>
+        <passability>PassThroughOnly</passability>
+        <canOverlapZones>false</canOverlapZones>
+        <pathCost>50</pathCost>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>80</MaxHitPoints>
+            <WorkToBuild>1800</WorkToBuild>
+            <Mass>10</Mass>
+            <Flammability>0.5</Flammability>
+            <Beauty>10</Beauty>
+        </statBases>
+        <size>(2,1)</size>
+        <researchPrerequisites>
+            <li>ComplexFurniture</li>
+        </researchPrerequisites>
+        <costStuffCount>30</costStuffCount>
+        <stuffCategories>
+            <li>Metallic</li>
+        </stuffCategories>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <building>
+            <paintable>true</paintable>
+        </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard">
+                <qualityBonuses>
+                    <Awful>0.8</Awful>
+                    <Poor>0.9</Poor>
+                    <Normal>1</Normal>
+                    <Good>1.1</Good>
+                    <Excellent>1.2</Excellent>
+                    <Masterwork>1.3</Masterwork>
+                    <Legendary>1.5</Legendary>
+                </qualityBonuses>
+                <techBonuses>
+                    <Undefined>1</Undefined>
+                    <Animal>1</Animal>
+                    <Neolithic>1</Neolithic>
+                    <Medieval>1.1</Medieval>
+                    <Industrial>1.2</Industrial>
+                    <Spacer>1.3</Spacer>
+                    <Ultra>1.4</Ultra>
+                    <Archotech>1.5</Archotech>
+                </techBonuses>
+            </li>
+        </comps>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_LargeHoloEducatorScreen</defName>
+        <label>large holo-educator screen</label>
+        <description>todo.</description>
+        <graphicData>
+            <texPath>Buildings/LessonBoards/LargeHoloeducatorScreen</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <shaderType>CutoutComplex</shaderType>
+            <drawSize>2.9</drawSize>
+            <damageData>
+                <rectN>(0.1, 0.3, 2.8, 0.5)</rectN>
+                <rectS>(0.1, 0.3, 2.8, 0.5)</rectS>
+                <rectE>(0.45, 0, 0.2, 1)</rectE>
+                <rectW>(0.55, 0, 0.2, 1)</rectW>
+            </damageData>
+            <shadowData>
+                <volume>(3, 0.5, 0.2)</volume>
+            </shadowData>
+        </graphicData>
+        <descriptionHyperlinks>
+            <ThingDef>PE_TouchscreenSchoolDesk</ThingDef>
+        </descriptionHyperlinks>
+        <altitudeLayer>Building</altitudeLayer>
+        <designationCategory>Ferny_Education</designationCategory>
+        <minifiedDef>MinifiedThing</minifiedDef>
+        <defaultPlacingRot>South</defaultPlacingRot>
+        <thingCategories>
+            <li>BuildingsFurniture</li>
+        </thingCategories>
+        <passability>PassThroughOnly</passability>
+        <canOverlapZones>false</canOverlapZones>
+        <pathCost>50</pathCost>
+        <fillPercent>0.5</fillPercent>
+        <statBases>
+            <MaxHitPoints>120</MaxHitPoints>
+            <WorkToBuild>2700</WorkToBuild>
+            <Mass>15</Mass>
+            <Flammability>0.5</Flammability>
+            <Beauty>15</Beauty>
+        </statBases>
+        <size>(3,1)</size>
+        <researchPrerequisites>
+            <li>ComplexFurniture</li>
+        </researchPrerequisites>
+        <costStuffCount>45</costStuffCount>
+        <stuffCategories>
+            <li>Metallic</li>
+        </stuffCategories>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <building>
+            <paintable>true</paintable>
+        </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard">
+                <qualityBonuses>
+                    <Awful>0.8</Awful>
+                    <Poor>0.9</Poor>
+                    <Normal>1</Normal>
+                    <Good>1.1</Good>
+                    <Excellent>1.2</Excellent>
+                    <Masterwork>1.3</Masterwork>
+                    <Legendary>1.5</Legendary>
+                </qualityBonuses>
+                <techBonuses>
+                    <Undefined>1</Undefined>
+                    <Animal>1</Animal>
+                    <Neolithic>1</Neolithic>
+                    <Medieval>1.1</Medieval>
+                    <Industrial>1.2</Industrial>
+                    <Spacer>1.3</Spacer>
+                    <Ultra>1.4</Ultra>
+                    <Archotech>1.5</Archotech>
+                </techBonuses>
+            </li>
+        </comps>
+    </ThingDef>
+
 </Defs>

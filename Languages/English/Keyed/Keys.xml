@@ -8,7 +8,7 @@
 
   <!-- Main Education Tab -->
   <PE_Classes>Active classes</PE_Classes>
-  <PE_Classrooms>List of classrooms</PE_Classrooms>
+  <PE_Classrooms>Classrooms</PE_Classrooms>
   <PE_Participants>Participants</PE_Participants>
   <PE_ProgressFormat>{0} / {1}</PE_ProgressFormat>
   <PE_Reschedule>Reschedule</PE_Reschedule>
@@ -16,6 +16,7 @@
   <PE_EstimatedHourlyProgress>Est. hourly progress</PE_EstimatedHourlyProgress>
   <PE_XpPerHour>xp/hour</PE_XpPerHour>
   <PE_PerHour>/hour</PE_PerHour>
+  <PE_ClassroomsDescription>Classrooms will appear here as you build them in your colony.</PE_ClassroomsDescription>
 
   <!-- Create Class Dialog -->
   <PE_CreateClass>Create a class</PE_CreateClass>
@@ -44,7 +45,8 @@
   <PE_SubjectDaycare>Daycare</PE_SubjectDaycare>
   <PE_Daycare>Daycare</PE_Daycare>
   <PE_RescheduleClass>Reschedule class</PE_RescheduleClass>
-
+  <PE_SkillFocusMissing>Skill focus is missing</PE_SkillFocusMissing>
+  <PE_ScheduleTime>Schedule: {0}:00 - {1}:00</PE_ScheduleTime>
   <!-- Manage Students Dialog -->
   <PE_ManageStudents>Manage students</PE_ManageStudents>
   <PE_RemoveStudents>Remove students</PE_RemoveStudents>
