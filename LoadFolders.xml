@@ -1,6 +1,7 @@
 <loadFolders>
   <v1.6>
     <li>/</li>
+    <li>1.6</li>
     <li IfModActive="xmb.ancienturbanruins.mo">Mods and Shit/Ancient Urban Ruins</li>
     <li IfModActive="van.foodfamine">Mods and Shit/Famine Food</li>
     <li IfModActive="dankpyon.medieval.overhaul">Mods and Shit/Medieval Overhaul</li>
