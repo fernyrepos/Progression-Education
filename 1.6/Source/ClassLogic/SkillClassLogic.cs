@@ -183,6 +183,8 @@ namespace ProgressionEducation
             return null;
         }
 
+        public override JobDef LearningJob => skillFocus == SkillDefOf.Melee ? DefsOf.PE_AttendMeleeClass : DefsOf.PE_AttendClass;
+
         public override void ExposeData()
         {
             base.ExposeData();

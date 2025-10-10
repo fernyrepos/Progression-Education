@@ -12,6 +12,7 @@ namespace ProgressionEducation
         [DefAlias("PE_RingBell")] public static DutyDef PE_RingBellDuty;
 
         public static JobDef PE_AttendClass;
+        public static JobDef PE_AttendMeleeClass;
         public static JobDef PE_RingBell;
         public static JobDef PE_Teach;
 

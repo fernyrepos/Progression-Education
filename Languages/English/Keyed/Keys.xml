@@ -41,6 +41,8 @@
   <PE_NotEnoughBenches>Not enough {0} available. Required: {1}, Have: {2}.</PE_NotEnoughBenches>
   <PE_SubjectSkill>Skill</PE_SubjectSkill>
   <PE_SubjectProficiency>Proficiency</PE_SubjectProficiency>
+  <PE_SubjectDaycare>Daycare</PE_SubjectDaycare>
+  <PE_Daycare>Daycare</PE_Daycare>
   <PE_RescheduleClass>Reschedule class</PE_RescheduleClass>
 
   <!-- Manage Students Dialog -->
@@ -90,6 +92,8 @@
   <PE_TrainingSkill>Training {0} skill</PE_TrainingSkill>
   <PE_TeacherNotQualifiedSkill>{0}'s {1} skill is too low to teach (must be at least 5).</PE_TeacherNotQualifiedSkill>
   <PE_StudentSkillDisabled>{0}'s {1} skill is disabled and cannot be trained.</PE_StudentSkillDisabled>
+  <PE_MustBeChild>Must be a child.</PE_MustBeChild>
+  <PE_NoLearningNeed>No learning need.</PE_NoLearningNeed>
 
   <!-- Job Reports -->
   <PE_JobReport_WaitingForStudents>Waiting for students</PE_JobReport_WaitingForStudents>

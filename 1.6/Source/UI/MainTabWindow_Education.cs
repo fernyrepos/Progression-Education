@@ -95,20 +95,19 @@ namespace ProgressionEducation
             var descriptionRect = new Rect(innerRect.x, nameRect.yMax, innerRect.width, 24f);
             Widgets.Label(descriptionRect, description);
 
-            if (studyGroup.subjectLogic is SkillClassLogic)
+            if (!studyGroup.subjectLogic.IsInfinite)
             {
                 var progressBarRect = new Rect(innerRect.x, innerRect.yMax - 18f, innerRect.width * 0.8f, 18f);
                 Widgets.FillableBar(progressBarRect, studyGroup.ProgressPercentage, ProgressBarFillTexture);
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(progressBarRect, "PE_ProgressFormat".Translate(studyGroup.currentProgress.ToString("F0"), studyGroup.semesterGoal.ToString()));
-                Text.Anchor = TextAnchor.UpperLeft;
-            }
-            else if (studyGroup.subjectLogic is ProficiencyClassLogic)
-            {
-                var progressBarRect = new Rect(innerRect.x, innerRect.yMax - 18f, innerRect.width * 0.8f, 18f);
-                Widgets.FillableBar(progressBarRect, studyGroup.ProgressPercentage, ProgressBarFillTexture);
-                Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(progressBarRect, studyGroup.ProgressPercentage.ToStringPercent());
+                if (studyGroup.subjectLogic is SkillClassLogic)
+                {
+                    Widgets.Label(progressBarRect, "PE_ProgressFormat".Translate(studyGroup.currentProgress.ToString("F0"), studyGroup.semesterGoal.ToString()));
+                }
+                else if (studyGroup.subjectLogic is ProficiencyClassLogic)
+                {
+                    Widgets.Label(progressBarRect, studyGroup.ProgressPercentage.ToStringPercent());
+                }
                 Text.Anchor = TextAnchor.UpperLeft;
             }
 

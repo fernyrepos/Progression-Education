@@ -122,6 +122,7 @@ namespace ProgressionEducation
             {
                 foreach (var studyGroup in StudyGroups)
                 {
+                    studyGroup.subjectLogic.HandleStudentLifecycleEvents();
                     var classroomMap = studyGroup.classroom.LearningBoard.parent.Map;
                     TryInitiateClassForStudyGroup(studyGroup, classroomMap);
                 }

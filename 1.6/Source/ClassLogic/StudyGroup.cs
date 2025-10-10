@@ -1,5 +1,6 @@
 using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 using Verse.AI;
 
@@ -86,7 +87,7 @@ namespace ProgressionEducation
         }
 
         public float ProgressPercentage => (float)currentProgress / semesterGoal;
-        public bool IsCompleted => currentProgress >= semesterGoal;
+        public bool IsCompleted => !subjectLogic.IsInfinite && currentProgress >= semesterGoal;
 
         public float CalculateProgressPerTick()
         {
@@ -107,6 +108,10 @@ namespace ProgressionEducation
             Scribe_Collections.Look(ref students, "students", LookMode.Reference);
             Scribe_Values.Look(ref className, "className");
             Scribe_Deep.Look(ref subjectLogic, "subjectLogic", this);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && subjectLogic == null)
+            {
+                subjectLogic = new SkillClassLogic(this);
+            }
             Scribe_Values.Look(ref semesterGoal, "semesterGoal");
             Scribe_Values.Look(ref currentProgress, "currentProgress");
             Scribe_References.Look(ref classroom, "classroom");
@@ -158,8 +163,16 @@ namespace ProgressionEducation
                 {
                     return false;
                 }
-
-                if (student.Position != JobDriver_AttendClass.DeskSpotStudent(attendClassDriver.job.GetTarget(TargetIndex.A).Thing))
+                
+                if (attendClassDriver is JobDriver_AttendMeleeClass)
+                {
+                    // Melee class students can be anywhere adjacent to the desk
+                    if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing).Contains(student.Position))
+                    {
+                        return false;
+                    }
+                }
+                else if (student.Position != JobDriver_AttendClass.DeskSpotStudent(attendClassDriver.job.GetTarget(TargetIndex.A).Thing))
                 {
                     return false;
                 }

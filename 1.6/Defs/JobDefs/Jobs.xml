@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <JobDef>
-    <defName>PE_AttendClass</defName>
-    <driverClass>ProgressionEducation.JobDriver_AttendClass</driverClass>
-    <reportString>attending class.</reportString>
-    <casualInterruptible>false</casualInterruptible>
-  </JobDef>
 
-  <JobDef>
-    <defName>PE_RingBell</defName>
-    <driverClass>ProgressionEducation.JobDriver_RingBell</driverClass>
-    <reportString>ringing bell.</reportString>
-    <casualInterruptible>false</casualInterruptible>
-  </JobDef>
-  
-  <JobDef>
-    <defName>PE_Teach</defName>
-    <driverClass>ProgressionEducation.JobDriver_Teach</driverClass>
-    <reportString>teaching class.</reportString>
-    <casualInterruptible>false</casualInterruptible>
-  </JobDef>
+    <JobDef>
+        <defName>PE_AttendClass</defName>
+        <driverClass>ProgressionEducation.JobDriver_AttendClass</driverClass>
+        <reportString>attending class.</reportString>
+        <casualInterruptible>false</casualInterruptible>
+    </JobDef>
+
+    <JobDef>
+        <defName>PE_RingBell</defName>
+        <driverClass>ProgressionEducation.JobDriver_RingBell</driverClass>
+        <reportString>ringing bell.</reportString>
+        <casualInterruptible>false</casualInterruptible>
+    </JobDef>
+
+    <JobDef>
+        <defName>PE_Teach</defName>
+        <driverClass>ProgressionEducation.JobDriver_Teach</driverClass>
+        <reportString>teaching class.</reportString>
+        <casualInterruptible>false</casualInterruptible>
+    </JobDef>
+
+    <JobDef>
+        <defName>PE_AttendMeleeClass</defName>
+        <driverClass>ProgressionEducation.JobDriver_AttendMeleeClass</driverClass>
+        <reportString>practicing melee combat.</reportString>
+        <casualInterruptible>false</casualInterruptible>
+    </JobDef>
+
 </Defs>
