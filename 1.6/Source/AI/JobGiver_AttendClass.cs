@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -63,15 +63,18 @@ namespace ProgressionEducation
                 if (thingValidator(thing))
                 {
                     EducationLog.Message($"-> Found thing matching criteria: {thing.Label}");
+                    TimeAssignmentUtility.allowUsing = true;
                     if (pawn.CanReserve(thing) && pawn.CanReserveSittableOrSpot(JobDriver_AttendClass.DeskSpotStudent(thing)))
                     {
                         EducationLog.Message($"-> Pawn can reserve {thing.Label} and its spot. Returning it.");
+                        TimeAssignmentUtility.allowUsing = false;
                         return thing;
                     }
                     else
                     {
                         EducationLog.Message($"-> Pawn cannot reserve {thing.Label} or its spot.");
                     }
+                    TimeAssignmentUtility.allowUsing = false;
                 }
             }
             EducationLog.Message($"-> No unoccupied thing found.");

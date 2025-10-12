@@ -90,8 +90,9 @@ namespace ProgressionEducation
         {
             studyGroups.Remove(studyGroup);
 
-            EducationLog.Message($"Removing study group '{studyGroup.className}'. Cleaning up pawn timetables...");
             List<Pawn> allParticipants = [studyGroup.teacher, .. studyGroup.students];
+            EducationLog.Message($"Removing study group '{studyGroup.className}'. Cleaning up timetables for participants: {allParticipants.ToStringSafeEnumerable()}");
+
             TimeAssignmentUtility.ClearScheduleFromPawns(studyGroup, allParticipants);
             TimeAssignmentUtility.RemoveTimeAssignmentDef(studyGroup);
 

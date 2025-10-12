@@ -14,7 +14,7 @@ namespace ProgressionEducation
             {
                 if (thing is Building building)
                 {
-                    return pawn.CanUseDuringActiveClassTime(building) is false;
+                    return pawn.CanUse(building) is false;
                 }
                 return false;
             });

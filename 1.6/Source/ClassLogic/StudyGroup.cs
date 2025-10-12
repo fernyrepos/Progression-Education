@@ -118,6 +118,17 @@ namespace ProgressionEducation
             Scribe_Values.Look(ref startHour, "startHour", 0);
             Scribe_Values.Look(ref endHour, "endHour", 0);
             Scribe_Values.Look(ref timeAssignmentDefName, "timeAssignmentDefName");
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                var pawns = new List<Pawn>
+                {
+                    teacher
+                }.Concat(students).ToList();
+                foreach (var pawn in pawns)
+                {
+                    TimeAssignmentUtility.TryRepairTimetable(pawn);
+                }
+            }
         }
 
         public string GetUniqueLoadID()

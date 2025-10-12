@@ -1,4 +1,5 @@
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -41,8 +42,8 @@ namespace ProgressionEducation
             var dynamicDefsToRemove = DefDatabase<TimeAssignmentDef>.AllDefsListForReading
                 .Where(def => def.IsStudyGroupAssignment())
                 .ToList();
-            Log.Message($"Found {dynamicDefsToRemove.ToStringSafeEnumerable()} dynamic defs to remove.");
-            Log.Message($"All defs present: {DefDatabase<TimeAssignmentDef>.AllDefsListForReading.ToStringSafeEnumerable()}");
+            EducationLog.Message($"Found {dynamicDefsToRemove.ToStringSafeEnumerable()} dynamic defs to remove.");
+            EducationLog.Message($"All defs present: {DefDatabase<TimeAssignmentDef>.AllDefsListForReading.ToStringSafeEnumerable()}");
             foreach (var def in dynamicDefsToRemove)
             {
                 DefDatabase<TimeAssignmentDef>.AllDefsListForReading.Remove(def);
@@ -58,13 +59,14 @@ namespace ProgressionEducation
 
         public static void ClearScheduleFromPawns(StudyGroup studyGroup, List<Pawn> participants)
         {
-            SetPawnSchedules(studyGroup, participants, TimeAssignmentDefOf.Anything);
+            SetPawnSchedules(studyGroup, participants);
         }
 
-        private static void SetPawnSchedules(StudyGroup studyGroup, List<Pawn> participants, TimeAssignmentDef assignment)
+        private static void SetPawnSchedules(StudyGroup studyGroup, List<Pawn> participants, TimeAssignmentDef assignment = null)
         {
             foreach (var participant in participants)
             {
+                TryRepairTimetable(participant);
                 for (int hour = 0; hour < 24; hour++)
                 {
                     bool isScheduled;
@@ -79,8 +81,36 @@ namespace ProgressionEducation
 
                     if (isScheduled)
                     {
-                        participant.timetable.SetAssignment(hour, assignment);
+                        TimeAssignmentDef assignmentToSet = assignment ?? ((hour > 5 && hour <= 21) ? TimeAssignmentDefOf.Anything : TimeAssignmentDefOf.Sleep);
+                        participant.timetable.SetAssignment(hour, assignmentToSet);
+                        EducationLog.Message($"Set timetable for pawn {participant.LabelShort} at hour {hour} to {assignmentToSet.defName}");
                     }
+                }
+            }
+        }
+
+        public static void TryRepairTimetable(Pawn pawn)
+        {
+            if (pawn.timetable.times == null)
+            {
+                pawn.timetable.times = new List<TimeAssignmentDef>();
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                try
+                {
+                    _ = pawn.timetable.GetAssignment(i);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    while (pawn.timetable.times.Count < 24)
+                    {
+                        Log.Warning($"Timetable for {pawn.LabelShort} is incomplete. Appending hour {pawn.timetable.times.Count}.");
+                        int hour = pawn.timetable.times.Count;
+                        TimeAssignmentDef defaultAssignment = ((hour > 5 && hour <= 21) ? TimeAssignmentDefOf.Anything : TimeAssignmentDefOf.Sleep);
+                        pawn.timetable.times.Add(defaultAssignment);
+                    }
+                    break;
                 }
             }
         }
@@ -140,10 +170,12 @@ namespace ProgressionEducation
             return false;
         }
 
-        public static bool CanUseDuringActiveClassTime(this Pawn pawn, Building building)
+        public static bool allowUsing;
+        public static bool CanUse(this Pawn pawn, Building building)
         {
+            if (allowUsing) return true;
             var room = building.GetRoom();
-            if (room == null) return false;
+            if (room == null) return true;
             foreach (var classroom in EducationManager.Instance.Classrooms)
             {
                 if (classroom.restrictReservationsDuringClass && classroom.LearningBoard.parent.GetRoom() == room)
@@ -154,11 +186,8 @@ namespace ProgressionEducation
                         var validBenches = studyGroup.subjectLogic.GetValidLearningBenches();
                         if (validBenches.Contains(building.def))
                         {
-                            var assignment = pawn.timetable?.CurrentAssignment;
-                            if (assignment is null || assignment.defName != studyGroup.timeAssignmentDefName)
-                            {
-                                return false;
-                            }
+                            EducationLog.Message($"Pawn {pawn.LabelShort} cannot use {building.Label} during active class time in classroom {classroom.name}.");
+                            return false;
                         }
                     }
                 }
