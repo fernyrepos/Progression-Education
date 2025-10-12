@@ -157,16 +157,12 @@ namespace ProgressionEducation
                         }
                         studyGroup.subjectLogic.AutoAssignStudents(this);
                     }),
-                ];
-                if (ModsConfig.BiotechActive)
-                {
-                    options.Add(
                     new FloatMenuOption("PE_SubjectDaycare".Translate(), () =>
-                    {
-                        studyGroup.subjectLogic = daycareClassLogic;
-                        studyGroup.subjectLogic.AutoAssignStudents(this);
-                    }));
-                }
+                {
+                    studyGroup.subjectLogic = daycareClassLogic;
+                    studyGroup.subjectLogic.AutoAssignStudents(this);
+                })
+                ];
                 Find.WindowStack.Add(new FloatMenu(options));
             }
             curY += 30f;

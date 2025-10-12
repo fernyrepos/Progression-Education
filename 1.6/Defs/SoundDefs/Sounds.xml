@@ -16,4 +16,21 @@
       </li>
     </subSounds>
   </SoundDef>
+
+  <SoundDef>
+    <defName>PE_ElectricSchoolBell</defName>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <onCamera>True</onCamera>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>ElectricSchoolBell</clipPath>
+          </li>
+        </grains>
+        <volumeRange>20~20</volumeRange>
+        <pitchRange>0.9~1.1</pitchRange>
+      </li>
+    </subSounds>
+  </SoundDef>
 </Defs>

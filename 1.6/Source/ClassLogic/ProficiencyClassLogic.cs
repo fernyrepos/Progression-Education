@@ -30,19 +30,6 @@ namespace ProgressionEducation
 
         public override string Description => "PE_TrainingProficiency".Translate(proficiencyFocus.ToStringHuman());
 
-        public override int BenchCount
-        {
-            get
-            {
-                var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
-                if (facility != null)
-                {
-                    var validBenches = GetValidLearningBenches();
-                    return facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
-                }
-                return 0;
-            }
-        }
 
         public override void GrantCompletionRewards()
         {
@@ -203,23 +190,5 @@ namespace ProgressionEducation
             base.ExposeData();
             Scribe_Values.Look(ref _proficiencyFocus, "proficiencyFocus");
         }
-
-        public override HashSet<ThingDef> GetValidLearningBenches()
-        {
-            if (_validLearningBenches == null)
-            {
-                _validLearningBenches = [];
-                var allDefs = DefDatabase<ThingDef>.AllDefsListForReading;
-                foreach (var def in allDefs)
-                {
-                    if (def.IsSchoolDesk())
-                    {
-                        _validLearningBenches.Add(def);
-                    }
-                }
-            }
-            return _validLearningBenches;
-        }
-
     }
 }

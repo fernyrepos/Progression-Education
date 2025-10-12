@@ -28,20 +28,6 @@ namespace ProgressionEducation
 
         public override string Description => "PE_TrainingSkill".Translate(SkillFocus.label);
 
-        public override int BenchCount
-        {
-            get
-            {
-                var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
-                if (facility != null)
-                {
-                    var validBenches = GetValidLearningBenches();
-                    return facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
-                }
-                return 0;
-            }
-        }
-
         public override string BenchLabel
         {
             get
