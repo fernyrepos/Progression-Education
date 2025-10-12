@@ -190,23 +190,5 @@ namespace ProgressionEducation
             base.ExposeData();
             Scribe_Values.Look(ref _proficiencyFocus, "proficiencyFocus");
         }
-
-        public override HashSet<ThingDef> GetValidLearningBenches()
-        {
-            if (_validLearningBenches == null)
-            {
-                _validLearningBenches = [];
-                var allDefs = DefDatabase<ThingDef>.AllDefsListForReading;
-                foreach (var def in allDefs)
-                {
-                    if (def.IsSchoolDesk())
-                    {
-                        _validLearningBenches.Add(def);
-                    }
-                }
-            }
-            return _validLearningBenches;
-        }
-
     }
 }

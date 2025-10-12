@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using Verse;
 using Verse.Sound;
@@ -47,7 +47,14 @@ namespace ProgressionEducation
 
         public void RingBell()
         {
-            DefsOf.PE_SchoolBellSound.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
+            if (ShouldRingAutomatically)
+            {
+                DefsOf.PE_ElectricSchoolBellSound.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
+            }
+            else
+            {
+                DefsOf.PE_SchoolBellSound.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
+            }
         }
     }
 }

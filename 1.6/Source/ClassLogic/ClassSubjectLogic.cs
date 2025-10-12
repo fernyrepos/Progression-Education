@@ -23,6 +23,7 @@ namespace ProgressionEducation
                 var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
                 var validBenches = GetValidLearningBenches();
                 var count = facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
+                Log.Message($"Found {count} valid benches for class '{studyGroup.className}'");
                 return count;
             }
         }
@@ -193,12 +194,19 @@ namespace ProgressionEducation
         protected HashSet<ThingDef> _validLearningBenches;
         public virtual JobDef LearningJob => DefsOf.PE_AttendClass;
         public virtual void HandleStudentLifecycleEvents() { }
-        
         public virtual HashSet<ThingDef> GetValidLearningBenches()
         {
             if (_validLearningBenches == null)
             {
                 _validLearningBenches = [];
+                var allDefs = DefDatabase<ThingDef>.AllDefsListForReading;
+                foreach (var def in allDefs)
+                {
+                    if (def.IsSchoolDesk())
+                    {
+                        _validLearningBenches.Add(def);
+                    }
+                }
             }
             return _validLearningBenches;
         }
