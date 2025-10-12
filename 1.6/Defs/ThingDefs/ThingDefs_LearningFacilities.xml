@@ -51,26 +51,26 @@
             <Flammability>0.7</Flammability>
             <Beauty>-3</Beauty>
         </statBases>
-        <stuffCategories>
-            <li>Metallic</li>
-            <li>Woody</li>
-            <li>Stony</li>
-        </stuffCategories>
-        <costStuffCount>75</costStuffCount>
+        <size>(1,2)</size>
         <altitudeLayer>BuildingOnTop</altitudeLayer>
         <passability>PassThroughOnly</passability>
         <pathCost>42</pathCost>
+		<costList>
+            <WoodLog>30</WoodLog>
+            <Steel>8</Steel>
+            <Cloth>20</Cloth>
+		</costList>
         <fillPercent>0.4</fillPercent>
         <hasInteractionCell>True</hasInteractionCell>
-        <interactionCellOffset>(0,0,1)</interactionCellOffset>
+        <interactionCellOffset>(0,0,-1)</interactionCellOffset>
         <designationCategory>Ferny_Education</designationCategory>
-        <placeWorkers>
+        <!-- <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
-        </placeWorkers>
+        </placeWorkers> -->
         <graphicData>
             <texPath>Buildings/Tools/Cadaver</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
-            <drawSize>(2,1)</drawSize>
+            <drawSize>(2,2)</drawSize>
             <damageData>
                 <cornerTL>Damage/Corner</cornerTL>
                 <cornerTR>Damage/Corner</cornerTR>

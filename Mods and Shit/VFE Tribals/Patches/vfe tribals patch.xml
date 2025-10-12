@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- VFET patches -->
+
+<!-- INTELLECTUAL -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Intellectual"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VFET_ResearchSpot</li>
+  </value>
+</Operation>
+
+
+</Patch>

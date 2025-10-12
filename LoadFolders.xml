@@ -11,6 +11,8 @@
     <li IfModActive="vanillaexpanded.gravship">Mods and Shit/VE Gravships</li>
     <li IfModActive="vanillaexpanded.vfefarming">Mods and Shit/VFE Farming</li>
     <li IfModActive="vanillaexpanded.vfeproduction">Mods and Shit/VFE Production</li>
+    <li IfModActive="oskarpotocki.vfe.tribals">Mods and Shit/VFE Tribals</li>
+    <li IfModActive="ferny.progressionagriculture">Mods and Shit/Progression Agriculture</li>
     <li>1.6</li>
   </v1.6>
 </loadFolders>

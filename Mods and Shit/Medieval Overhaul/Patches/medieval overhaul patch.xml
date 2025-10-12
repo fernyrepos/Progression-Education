@@ -33,7 +33,13 @@
   </value>
 </Operation>
 
-
+<!-- INTELLECTUAL -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Intellectual"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>DankPyon_AdvancedResearchBench</li>
+  </value>
+</Operation>
 
 
 </Patch>

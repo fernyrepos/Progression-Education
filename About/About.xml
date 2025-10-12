@@ -9,11 +9,24 @@
     </supportedVersions>
 	<modDependencies>
 		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+		</li>
+		<li>
+			<packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
+			<displayName>Vanilla Expanded Framework</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/workshop/filedetails/?id=2023507013</steamWorkshopUrl>
+			<downloadUrl>https://github.com/Vanilla-Expanded/VanillaExpandedFramework</downloadUrl>
+		</li>
+		<li>
 			<packageId>Ludeon.Rimworld.Biotech</packageId>
 			<displayName>Biotech</displayName>
 		</li>
 	</modDependencies>
     <loadAfter>
+        <!-- CORE STUFF -->
         <li>Ludeon.RimWorld</li>
         <li>Ludeon.RimWorld.Royalty</li>
         <li>Ludeon.RimWorld.Ideology</li>
@@ -22,6 +35,19 @@
         <li>Ludeon.RimWorld.Odyssey</li>
         <li>brrainz.harmony</li>
 		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
+
+        <!-- MOD COMPAT PATCHES -->
+        <li>xmb.ancienturbanruins.mo</li>
+        <li>van.foodfamine</li>
+        <li>dankpyon.medieval.overhaul</li>
+        <li>vanillaexpanded.vcookehaute</li>
+        <li>vanillaexpanded.vcookesushi</li>
+        <li>vanillaexpanded.vbrewe</li>
         <li>vanillaexpanded.vcooke</li>
+        <li>vanillaexpanded.gravship</li>
+        <li>vanillaexpanded.vfefarming</li>
+        <li>vanillaexpanded.vfeproduction</li>
+        <li>oskarpotocki.vfe.tribals</li>
+        <li>ferny.progressionagriculture</li>
     </loadAfter>
 </ModMetaData>

@@ -57,6 +57,22 @@
       <li Class="ProgressionEducation.SkillBuildingRequirement">
         <requiredBuildings>
           <li>SchoolDesk</li>
+          <li>PE_StoneSchoolDesk</li>
+          <li>PE_TouchscreenSchoolDesk</li>
+        </requiredBuildings>
+        <requirementLabel>school desks</requirementLabel>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/SkillDef[defName="Animals"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.SkillBuildingRequirement">
+        <requiredBuildings>
+          <li>SchoolDesk</li>
+          <li>PE_StoneSchoolDesk</li>
+          <li>PE_TouchscreenSchoolDesk</li>
         </requiredBuildings>
         <requirementLabel>school desks</requirementLabel>
       </li>
@@ -82,9 +98,9 @@
     <value>
       <li Class="ProgressionEducation.SkillBuildingRequirement">
         <requiredBuildings>
-          <li>DrugLab</li>
+          <li>PE_Cadaver</li>
         </requiredBuildings>
-        <requirementLabel>drug labs</requirementLabel>
+        <requirementLabel>cadavers</requirementLabel>
       </li>
     </value>
   </Operation>
