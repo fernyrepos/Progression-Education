@@ -3,10 +3,10 @@
  <ThingDef ParentName="BuildingBase">
     <defName>PE_SchoolBell</defName>
     <label>school bell</label>
-    <description>A bell used to signal the start and end of classes.</description>
+    <description>A loud bell used to signal the start of classes. A teacher will manually ring this to call students.</description>
     <thingClass>Building</thingClass>
     <graphicData>
-      <texPath>Things/Building/Misc/SchoolBell</texPath>
+      <texPath>Buildings/Tools/SchoolBell</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(1,1)</drawSize>
     </graphicData>
@@ -42,10 +42,10 @@
   <ThingDef ParentName="BuildingBase">
     <defName>PE_ElectricSchoolBell</defName>
     <label>electric school bell</label>
-    <description>An electric bell used to signal the start and end of classes. More reliable than a regular bell.</description>
+    <description>An automatic bell used to signal the start of classes. More reliable than a regular bell, as it doesn't need to be rung manually.</description>
     <thingClass>Building</thingClass>
     <graphicData>
-      <texPath>Things/Building/Misc/ElectricSchoolBell</texPath>
+      <texPath>Buildings/Tools/ElectricSchoolBell</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(1,1)</drawSize>
     </graphicData>

@@ -6,8 +6,8 @@
     <description>A classroom projector that can be linked to a learning board to improve learning effectiveness.</description>
     <thingClass>Building</thingClass>
     <graphicData>
-      <texPath>Things/Building/Furniture/Projector</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
+      <texPath>Buildings/Tools/LearningProjector</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(1,1)</drawSize>
     </graphicData>
     <altitudeLayer>BuildingOnTop</altitudeLayer>

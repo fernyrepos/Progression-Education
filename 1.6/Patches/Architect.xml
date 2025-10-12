@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="SchoolDesk"]/designationCategory</xpath>
+    <value>
+      <designationCategory>Ferny_Education</designationCategory>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/designationCategory</xpath>
+    <value>
+      <designationCategory>Ferny_Education</designationCategory>
+    </value>
+  </Operation>
+
+
+
+
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="SchoolDesk"]/description</xpath>
+    <value>
+      <description>A desk where students can learn in classes.</description>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/description</xpath>
+    <value>
+      <description>A flat surface for writing on with chalk at moderate speed. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
+    </value>
+  </Operation>
+
+
+
+
+</Patch>

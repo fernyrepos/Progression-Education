@@ -13,6 +13,45 @@
             <Beauty>-3</Beauty>
         </statBases>
         <stuffCategories>
+            <li>Woody</li>
+        </stuffCategories>
+        <costStuffCount>75</costStuffCount>
+        <altitudeLayer>BuildingOnTop</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <pathCost>42</pathCost>
+        <fillPercent>0.4</fillPercent>
+        <rotatable>false</rotatable>
+        <hasInteractionCell>True</hasInteractionCell>
+        <interactionCellOffset>(0,0,1)</interactionCellOffset>
+        <designationCategory>Ferny_Education</designationCategory>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <graphicData>
+            <texPath>Buildings/Tools/StrikingBoard</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <drawSize>(1,1)</drawSize>
+            <damageData>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+                <cornerBL>Damage/Corner</cornerBL>
+                <cornerBR>Damage/Corner</cornerBR>
+            </damageData>
+        </graphicData>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_Cadaver</defName>
+        <label>cadaver</label>
+        <description>todo.</description>
+        <statBases>
+            <MaxHitPoints>150</MaxHitPoints>
+            <WorkToBuild>2500</WorkToBuild>
+            <Mass>25</Mass>
+            <Flammability>0.7</Flammability>
+            <Beauty>-3</Beauty>
+        </statBases>
+        <stuffCategories>
             <li>Metallic</li>
             <li>Woody</li>
             <li>Stony</li>
@@ -29,9 +68,9 @@
             <li>PlaceWorker_ShowFacilitiesConnections</li>
         </placeWorkers>
         <graphicData>
-            <texPath>Things/Building/Production/StrikingBoard</texPath>
+            <texPath>Buildings/Tools/Cadaver</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
-            <drawSize>(1,1)</drawSize>
+            <drawSize>(2,1)</drawSize>
             <damageData>
                 <cornerTL>Damage/Corner</cornerTL>
                 <cornerTR>Damage/Corner</cornerTR>
@@ -43,7 +82,7 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_ShootingTarget</defName>
-        <label>shooting target</label>
+        <label>practice target</label>
         <description>A target for practicing shooting skills.</description>
         <statBases>
             <MaxHitPoints>100</MaxHitPoints>
@@ -69,7 +108,7 @@
         </placeWorkers>
         <size>(1,5)</size>
         <graphicData>
-            <texPath>Things/Building/Production/ShootingTarget</texPath>
+            <texPath>Buildings/Tools/ShootingTarget</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
             <drawSize>(1,1)</drawSize>
             <drawOffsetNorth>(0, 0, 2)</drawOffsetNorth>

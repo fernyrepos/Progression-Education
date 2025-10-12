@@ -4,7 +4,7 @@
   <ThingDef ParentName="SansComfortBedBase">
     <defName>RoyalCrib</defName>
     <label>royal crib</label>
-    <description>todo.</description>
+    <description>A luxuriously comfortable gold bed with safe latticed sides, perfect for a sleepy baby. A high quality crib will make a baby happy. Multiple cribs can be placed in a bedroom without turning it into a barracks.</description>
     <comps>
       <li Class="CompProperties_AffectedByFacilities">
         <linkableFacilities>
@@ -49,7 +49,7 @@
   <ThingDef ParentName="SansComfortBedBase">
     <defName>TribalCrib</defName>
     <label>tribal crib</label>
-    <description>todo.</description>
+    <description>An unstable weaved bed perfect for a sleepy baby. A high quality crib will make a baby happy. Multiple cribs can be placed in a bedroom without turning it into a barracks.</description>
     <comps>
       <li Class="CompProperties_AffectedByFacilities">
         <linkableFacilities>
