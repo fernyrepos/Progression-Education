@@ -3,11 +3,11 @@
 
   <ThingDef ParentName="BaseGun">
     <defName>PE_Gun_AssaultRifleTraining</defName>
-    <label>training assault rifle</label>
-    <description>A general-purpose gas-operated assault rifle for field or urban combat, modified for training purposes. It has good range, decent power, and good accuracy, but its projectiles deal no damage.</description>
+    <label>training rifle</label>
+    <description>A weapon designed purely for education. Its projectiles deal no damage.</description>
     <smeltable>false</smeltable>
     <graphicData>
-      <texPath>Things/Item/Equipment/WeaponRanged/AssaultRifle</texPath>
+      <texPath>Weapons/SchoolFakeGun</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <soundInteract>Interact_Rifle</soundInteract>

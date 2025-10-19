@@ -2,259 +2,9 @@
 <Defs>
 
     <ThingDef ParentName="BuildingBase">
-        <defName>PE_StrikingBoard</defName>
-        <label>striking board</label>
-        <description>todo.</description>
-        <statBases>
-            <MaxHitPoints>150</MaxHitPoints>
-            <WorkToBuild>2500</WorkToBuild>
-            <Mass>25</Mass>
-            <Flammability>0.7</Flammability>
-            <Beauty>-3</Beauty>
-        </statBases>
-        <stuffCategories>
-            <li>Woody</li>
-        </stuffCategories>
-        <costStuffCount>75</costStuffCount>
-        <altitudeLayer>BuildingOnTop</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <pathCost>42</pathCost>
-        <fillPercent>0.4</fillPercent>
-        <rotatable>false</rotatable>
-        <hasInteractionCell>True</hasInteractionCell>
-        <interactionCellOffset>(0,0,1)</interactionCellOffset>
-        <designationCategory>Ferny_Education</designationCategory>
-        <placeWorkers>
-            <li>PlaceWorker_ShowFacilitiesConnections</li>
-        </placeWorkers>
-        <graphicData>
-            <texPath>Buildings/Tools/StrikingBoard</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
-            <drawSize>(1,1)</drawSize>
-            <damageData>
-                <cornerTL>Damage/Corner</cornerTL>
-                <cornerTR>Damage/Corner</cornerTR>
-                <cornerBL>Damage/Corner</cornerBL>
-                <cornerBR>Damage/Corner</cornerBR>
-            </damageData>
-        </graphicData>
-    </ThingDef>
-
-    <ThingDef ParentName="BuildingBase">
-        <defName>PE_Cadaver</defName>
-        <label>cadaver</label>
-        <description>todo.</description>
-        <statBases>
-            <MaxHitPoints>150</MaxHitPoints>
-            <WorkToBuild>2500</WorkToBuild>
-            <Mass>25</Mass>
-            <Flammability>0.7</Flammability>
-            <Beauty>-3</Beauty>
-        </statBases>
-        <size>(1,2)</size>
-        <altitudeLayer>BuildingOnTop</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <pathCost>42</pathCost>
-		<costList>
-            <WoodLog>30</WoodLog>
-            <Steel>8</Steel>
-            <Cloth>20</Cloth>
-		</costList>
-        <fillPercent>0.4</fillPercent>
-        <hasInteractionCell>True</hasInteractionCell>
-        <interactionCellOffset>(0,0,-1)</interactionCellOffset>
-        <designationCategory>Ferny_Education</designationCategory>
-        <!-- <placeWorkers>
-            <li>PlaceWorker_ShowFacilitiesConnections</li>
-        </placeWorkers> -->
-        <graphicData>
-            <texPath>Buildings/Tools/Cadaver</texPath>
-            <graphicClass>Graphic_Multi</graphicClass>
-            <drawSize>(2,2)</drawSize>
-            <damageData>
-                <cornerTL>Damage/Corner</cornerTL>
-                <cornerTR>Damage/Corner</cornerTR>
-                <cornerBL>Damage/Corner</cornerBL>
-                <cornerBR>Damage/Corner</cornerBR>
-            </damageData>
-        </graphicData>
-    </ThingDef>
-
-    <ThingDef ParentName="BuildingBase">
-        <defName>PE_ShootingTarget</defName>
-        <label>practice target</label>
-        <description>A target for practicing shooting skills.</description>
-        <statBases>
-            <MaxHitPoints>100</MaxHitPoints>
-            <WorkToBuild>1000</WorkToBuild>
-            <Mass>15</Mass>
-            <Flammability>1.0</Flammability>
-            <Beauty>-5</Beauty>
-        </statBases>
-        <stuffCategories>
-            <li>Metallic</li>
-            <li>Woody</li>
-        </stuffCategories>
-        <costStuffCount>50</costStuffCount>
-        <altitudeLayer>BuildingOnTop</altitudeLayer>
-        <passability>PassThroughOnly</passability>
-        <pathCost>42</pathCost>
-        <fillPercent>0.4</fillPercent>
-        <hasInteractionCell>True</hasInteractionCell>
-        <interactionCellOffset>(0,0,-2)</interactionCellOffset>
-        <designationCategory>Ferny_Education</designationCategory>
-        <placeWorkers>
-            <li>PlaceWorker_ShowFacilitiesConnections</li>
-        </placeWorkers>
-        <size>(1,5)</size>
-        <graphicData>
-            <texPath>Buildings/Tools/ShootingTarget</texPath>
-            <graphicClass>Graphic_Multi</graphicClass>
-            <drawSize>(1,1)</drawSize>
-            <drawOffsetNorth>(0, 0, 2)</drawOffsetNorth>
-            <drawOffsetSouth>(0, 0, -2)</drawOffsetSouth>
-            <drawOffsetEast>(2, 0, 0)</drawOffsetEast>
-            <drawOffsetWest>(-2, 0, 0)</drawOffsetWest>
-            <damageData>
-                <cornerTL>Damage/Corner</cornerTL>
-                <cornerTR>Damage/Corner</cornerTR>
-                <cornerBL>Damage/Corner</cornerBL>
-                <cornerBR>Damage/Corner</cornerBR>
-            </damageData>
-        </graphicData>
-    </ThingDef>
-    <!--==================== New Desks/Boards ====================-->
-
-    <ThingDef ParentName="BuildingBase">
-        <defName>PE_StoneSchoolDesk</defName>
-        <label>stone school desk</label>
-        <description>todo.</description>
-        <graphicData>
-            <texPath>Buildings/LessonDesks/LessonSlab</texPath>
-            <graphicClass>Graphic_Multi</graphicClass>
-            <drawSize>(4,3)</drawSize>
-            <damageData>
-                <cornerTL>Damage/Corner</cornerTL>
-                <cornerTR>Damage/Corner</cornerTR>
-                <cornerBL>Damage/Corner</cornerBL>
-                <cornerBR>Damage/Corner</cornerBR>
-            </damageData>
-        </graphicData>
-        <castEdgeShadows>true</castEdgeShadows>
-        <staticSunShadowHeight>0.15</staticSunShadowHeight>
-        <altitudeLayer>Building</altitudeLayer>
-        <uiIconScale>0.8</uiIconScale>
-        <designationCategory>Ferny_Education</designationCategory>
-        <uiOrder>2300</uiOrder>
-        <minifiedDef>MinifiedThing</minifiedDef>
-        <interactionCellIcon>DiningChair</interactionCellIcon>
-        <interactionCellOffset>(0,0,1)</interactionCellOffset>
-        <hasInteractionCell>true</hasInteractionCell>
-        <thingCategories>
-            <li>BuildingsFurniture</li>
-        </thingCategories>
-        <passability>PassThroughOnly</passability>
-        <canOverlapZones>false</canOverlapZones>
-        <pathCost>50</pathCost>
-        <fillPercent>0.5</fillPercent>
-        <statBases>
-            <MaxHitPoints>100</MaxHitPoints>
-            <WorkToBuild>500</WorkToBuild>
-            <Mass>10</Mass>
-            <Flammability>0</Flammability>
-            <Beauty>-5</Beauty>
-        </statBases>
-        <size>(2,1)</size>
-        <researchPrerequisites>
-            <li>ComplexFurniture</li>
-        </researchPrerequisites>
-        <costStuffCount>40</costStuffCount>
-        <stuffCategories>
-            <li>Stony</li>
-        </stuffCategories>
-        <placeWorkers>
-            <li>PlaceWorker_PreventInteractionSpotOverlap</li>
-            <li>PlaceWorker_ShowFacilitiesConnections</li>
-        </placeWorkers>
-        <building>
-            <paintable>false</paintable>
-        </building>
-        <comps>
-            <li Class="ProgressionEducation.CompProperties_SchoolDesk">
-                <speedModifier>0.6</speedModifier>
-            </li>
-        </comps>
-    </ThingDef>
-
-    <ThingDef ParentName="BuildingBase">
-        <defName>PE_TouchscreenSchoolDesk</defName>
-        <label>touchscreen school desk</label>
-        <description>todo.</description>
-        <graphicData>
-            <texPath>Buildings/LessonDesks/TouchscreenSchoolDesk</texPath>
-            <graphicClass>Graphic_Multi</graphicClass>
-            <drawSize>(4,3)</drawSize>
-            <damageData>
-                <cornerTL>Damage/Corner</cornerTL>
-                <cornerTR>Damage/Corner</cornerTR>
-                <cornerBL>Damage/Corner</cornerBL>
-                <cornerBR>Damage/Corner</cornerBR>
-            </damageData>
-        </graphicData>
-        <castEdgeShadows>true</castEdgeShadows>
-        <staticSunShadowHeight>0.15</staticSunShadowHeight>
-        <altitudeLayer>Building</altitudeLayer>
-        <uiIconScale>0.8</uiIconScale>
-        <designationCategory>Ferny_Education</designationCategory>
-        <uiOrder>2310</uiOrder>
-        <minifiedDef>MinifiedThing</minifiedDef>
-        <interactionCellIcon>DiningChair</interactionCellIcon>
-        <interactionCellOffset>(0,0,1)</interactionCellOffset>
-        <hasInteractionCell>true</hasInteractionCell>
-        <drawerType>MapMeshOnly</drawerType>
-        <descriptionHyperlinks>
-            <ThingDef>PE_HoloEducatorScreen</ThingDef>
-        </descriptionHyperlinks>
-        <thingCategories>
-            <li>BuildingsFurniture</li>
-        </thingCategories>
-        <passability>PassThroughOnly</passability>
-        <canOverlapZones>false</canOverlapZones>
-        <pathCost>50</pathCost>
-        <fillPercent>0.5</fillPercent>
-        <statBases>
-            <MaxHitPoints>100</MaxHitPoints>
-            <WorkToBuild>1500</WorkToBuild>
-            <Mass>10</Mass>
-            <Flammability>0.5</Flammability>
-            <Beauty>8</Beauty>
-        </statBases>
-        <size>(2,1)</size>
-        <researchPrerequisites>
-            <li>ComplexFurniture</li>
-        </researchPrerequisites>
-        <costStuffCount>50</costStuffCount>
-        <stuffCategories>
-            <li>Metallic</li>
-        </stuffCategories>
-        <placeWorkers>
-            <li>PlaceWorker_PreventInteractionSpotOverlap</li>
-            <li>PlaceWorker_ShowFacilitiesConnections</li>
-        </placeWorkers>
-        <building>
-            <paintable>true</paintable>
-        </building>
-        <comps>
-            <li Class="ProgressionEducation.CompProperties_SchoolDesk">
-                <speedModifier>1.5</speedModifier>
-            </li>
-        </comps>
-    </ThingDef>
-
-    <ThingDef ParentName="BuildingBase">
         <defName>PE_LessonStone</defName>
         <label>lesson stone</label>
-        <description>todo.</description>
+        <description>A bumpy surface for teaching basic lessons at slow speeds. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/Lessonstone</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -273,6 +23,7 @@
         <descriptionHyperlinks>
             <ThingDef>PE_StoneSchoolDesk</ThingDef>
         </descriptionHyperlinks>
+        <uiOrder>1</uiOrder>
         <altitudeLayer>Building</altitudeLayer>
         <designationCategory>Ferny_Education</designationCategory>
         <minifiedDef>MinifiedThing</minifiedDef>
@@ -329,8 +80,8 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_LargeBlackboard</defName>
-        <label>large blackboard</label>
-        <description>todo.</description>
+        <label>blackboard (1x3)</label>
+        <description>A flat surface for writing on with chalk at moderate speed. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/LargeBlackboard</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -372,6 +123,7 @@
             <li>ComplexFurniture</li>
         </researchPrerequisites>
         <costStuffCount>30</costStuffCount>
+        <uiOrder>3</uiOrder>
         <stuffCategories>
             <li>Woody</li>
             <li>Stony</li>
@@ -409,8 +161,8 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_Whiteboard</defName>
-        <label>whiteboard</label>
-        <description>todo.</description>
+        <label>whiteboard (1x2)</label>
+        <description>A flat surface for writing on with markers. Its sleek surface makes writing and erasing a breeze, leading to very effective classes. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/Whiteboard</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -430,6 +182,7 @@
             <ThingDef>SchoolDesk</ThingDef>
         </descriptionHyperlinks>
         <altitudeLayer>Building</altitudeLayer>
+        <uiOrder>4</uiOrder>
         <designationCategory>Ferny_Education</designationCategory>
         <minifiedDef>MinifiedThing</minifiedDef>
         <defaultPlacingRot>South</defaultPlacingRot>
@@ -449,7 +202,7 @@
         </statBases>
         <size>(2,1)</size>
         <researchPrerequisites>
-            <li>ComplexFurniture</li>
+            <li>Ferny_IndustrialEducation</li>
         </researchPrerequisites>
         <costStuffCount>20</costStuffCount>
         <stuffCategories>
@@ -489,8 +242,9 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_LargeWhiteboard</defName>
-        <label>large whiteboard</label>
-        <description>todo.</description>
+        <label>whiteboard (1x3)</label>
+        <uiOrder>5</uiOrder>
+        <description>A flat surface for writing on with markers. Its sleek surface makes writing and erasing a breeze, leading to very effective classes. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/LargeWhiteboard</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -529,7 +283,7 @@
         </statBases>
         <size>(3,1)</size>
         <researchPrerequisites>
-            <li>ComplexFurniture</li>
+            <li>Ferny_IndustrialEducation</li>
         </researchPrerequisites>
         <costStuffCount>40</costStuffCount>
         <stuffCategories>
@@ -569,8 +323,8 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_HoloEducatorScreen</defName>
-        <label>holo-educator screen</label>
-        <description>todo.</description>
+        <label>holo-educator screen (1x2)</label>
+        <description>A holographic display capable of teaching students at lighting speed, barely needing a teacher's guidance. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/HoloeducatorScreen</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -586,6 +340,7 @@
                 <volume>(2, 0.5, 0.2)</volume>
             </shadowData>
         </graphicData>
+        <uiOrder>6</uiOrder>
         <descriptionHyperlinks>
             <ThingDef>PE_TouchscreenSchoolDesk</ThingDef>
         </descriptionHyperlinks>
@@ -609,7 +364,7 @@
         </statBases>
         <size>(2,1)</size>
         <researchPrerequisites>
-            <li>ComplexFurniture</li>
+            <li>Ferny_SpacerEducation</li>
         </researchPrerequisites>
         <costStuffCount>30</costStuffCount>
         <stuffCategories>
@@ -648,8 +403,9 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_LargeHoloEducatorScreen</defName>
-        <label>large holo-educator screen</label>
-        <description>todo.</description>
+        <label>holo-educator screen (1x3)</label>
+        <uiOrder>7</uiOrder>
+        <description>A holographic display capable of teaching students at lighting speed, barely needing a teacher's guidance. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/LargeHoloeducatorScreen</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -688,7 +444,7 @@
         </statBases>
         <size>(3,1)</size>
         <researchPrerequisites>
-            <li>ComplexFurniture</li>
+            <li>Ferny_SpacerEducation</li>
         </researchPrerequisites>
         <costStuffCount>45</costStuffCount>
         <stuffCategories>

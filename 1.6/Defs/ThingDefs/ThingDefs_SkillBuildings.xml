@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_StrikingBoard</defName>
+        <label>striking board</label>
+        <description>todo.</description>
+        <statBases>
+            <MaxHitPoints>150</MaxHitPoints>
+            <WorkToBuild>2500</WorkToBuild>
+            <Mass>25</Mass>
+            <Flammability>0.7</Flammability>
+            <Beauty>-3</Beauty>
+        </statBases>
+        <stuffCategories>
+            <li>Woody</li>
+        </stuffCategories>
+        <costStuffCount>75</costStuffCount>
+        <altitudeLayer>BuildingOnTop</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <pathCost>42</pathCost>
+        <fillPercent>0.4</fillPercent>
+        <rotatable>false</rotatable>
+        <hasInteractionCell>True</hasInteractionCell>
+        <interactionCellOffset>(0,0,1)</interactionCellOffset>
+        <designationCategory>Ferny_Education</designationCategory>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <graphicData>
+            <texPath>Buildings/Tools/StrikingBoard</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <drawSize>(1,1)</drawSize>
+            <damageData>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+                <cornerBL>Damage/Corner</cornerBL>
+                <cornerBR>Damage/Corner</cornerBR>
+            </damageData>
+        </graphicData>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_Cadaver</defName>
+        <label>cadaver</label>
+        <description>todo.</description>
+        <statBases>
+            <MaxHitPoints>150</MaxHitPoints>
+            <WorkToBuild>2500</WorkToBuild>
+            <Mass>25</Mass>
+            <Flammability>0.7</Flammability>
+            <Beauty>-3</Beauty>
+        </statBases>
+        <size>(1,2)</size>
+        <altitudeLayer>BuildingOnTop</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <pathCost>42</pathCost>
+		<costList>
+            <WoodLog>30</WoodLog>
+            <Steel>8</Steel>
+            <Cloth>20</Cloth>
+		</costList>
+        <fillPercent>0.4</fillPercent>
+        <hasInteractionCell>True</hasInteractionCell>
+        <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+        <designationCategory>Ferny_Education</designationCategory>
+        <!-- <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers> -->
+        <graphicData>
+            <texPath>Buildings/Tools/Cadaver</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(2,2)</drawSize>
+            <damageData>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+                <cornerBL>Damage/Corner</cornerBL>
+                <cornerBR>Damage/Corner</cornerBR>
+            </damageData>
+        </graphicData>
+    </ThingDef>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>PE_ShootingTarget</defName>
+        <label>practice target</label>
+        <description>A target for practicing shooting skills.</description>
+        <statBases>
+            <MaxHitPoints>100</MaxHitPoints>
+            <WorkToBuild>1000</WorkToBuild>
+            <Mass>15</Mass>
+            <Flammability>1.0</Flammability>
+            <Beauty>-5</Beauty>
+        </statBases>
+        <stuffCategories>
+            <li>Metallic</li>
+            <li>Woody</li>
+        </stuffCategories>
+        <researchPrerequisites>
+            <li>Ferny_IndustrialEducation</li>
+        </researchPrerequisites>
+        <costStuffCount>50</costStuffCount>
+        <altitudeLayer>BuildingOnTop</altitudeLayer>
+        <passability>PassThroughOnly</passability>
+        <pathCost>42</pathCost>
+        <fillPercent>0.4</fillPercent>
+        <hasInteractionCell>True</hasInteractionCell>
+        <interactionCellOffset>(0,0,-2)</interactionCellOffset>
+        <designationCategory>Ferny_Education</designationCategory>
+        <placeWorkers>
+            <li>PlaceWorker_ShowFacilitiesConnections</li>
+        </placeWorkers>
+        <size>(1,5)</size>
+        <graphicData>
+            <texPath>Buildings/Tools/ShootingTarget</texPath>
+            <graphicClass>Graphic_Multi</graphicClass>
+            <drawSize>(1,1)</drawSize>
+            <drawOffsetNorth>(0, 0, 2)</drawOffsetNorth>
+            <drawOffsetSouth>(0, 0, -2)</drawOffsetSouth>
+            <drawOffsetEast>(2, 0, 0)</drawOffsetEast>
+            <drawOffsetWest>(-2, 0, 0)</drawOffsetWest>
+            <damageData>
+                <cornerTL>Damage/Corner</cornerTL>
+                <cornerTR>Damage/Corner</cornerTR>
+                <cornerBL>Damage/Corner</cornerBL>
+                <cornerBR>Damage/Corner</cornerBR>
+            </damageData>
+        </graphicData>
+    </ThingDef>
+
+</Defs>

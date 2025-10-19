@@ -32,6 +32,18 @@
   </Operation>
 
 
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]</xpath>
+    <value>
+      <uiOrder>2</uiOrder>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="SchoolDesk"]</xpath>
+    <value>
+      <uiOrder>8</uiOrder>
+    </value>
+  </Operation>
 
 
 </Patch>

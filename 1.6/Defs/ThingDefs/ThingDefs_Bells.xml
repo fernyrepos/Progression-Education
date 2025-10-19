@@ -34,6 +34,9 @@
     <tickerType>Never</tickerType>
     <soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <researchPrerequisites>
+        <li>Ferny_NeolithicEducation</li>
+    </researchPrerequisites>
     <comps>
       <li Class="ProgressionEducation.CompProperties_Bell" />
     </comps>
@@ -59,6 +62,9 @@
       <Mass>8</Mass>
     </statBases>
     <size>(1,1)</size>
+    <researchPrerequisites>
+        <li>Ferny_IndustrialEducation</li>
+    </researchPrerequisites>
     <costList>
       <Steel>75</Steel>
       <ComponentIndustrial>2</ComponentIndustrial>
