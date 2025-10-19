@@ -54,6 +54,7 @@
   <PE_RemoveStudents>Remove students</PE_RemoveStudents>
   <PE_RemoveFromClass>Remove from class</PE_RemoveFromClass>
   <PE_ConfirmRemoveStudent>Are you sure you want to remove {0} from this class? They cannot be added back.</PE_ConfirmRemoveStudent>
+  <PE_ConfirmRemoveLastStudent>Removing this student will delete the class, as there will be no students left. Are you sure you want to proceed?</PE_ConfirmRemoveLastStudent>
 
   <!-- Classroom Management -->
   <PE_EditClassroom>Edit classroom</PE_EditClassroom>

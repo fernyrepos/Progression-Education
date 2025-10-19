@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -66,10 +66,20 @@ namespace ProgressionEducation
             Text.Anchor = TextAnchor.MiddleCenter;
             if (Widgets.ButtonText(removeButtonRect, "PE_RemoveFromClass".Translate()))
             {
-                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("PE_ConfirmRemoveStudent".Translate(student.LabelShort), () =>
+                if (studyGroup.students.Count == 1)
                 {
-                    studyGroup.RemoveStudent(student);
-                }, true));
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("PE_ConfirmRemoveLastStudent".Translate(), () =>
+                    {
+                        EducationManager.Instance.RemoveStudyGroup(studyGroup);
+                    }, true));
+                }
+                else
+                {
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("PE_ConfirmRemoveStudent".Translate(student.LabelShort), () =>
+                    {
+                        studyGroup.RemoveStudent(student);
+                    }, true));
+                }
             }
             Text.Anchor = originalAnchor;
         }
