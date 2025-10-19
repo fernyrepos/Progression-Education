@@ -12,17 +12,17 @@
             <Flammability>0.7</Flammability>
             <Beauty>-3</Beauty>
         </statBases>
-        <stuffCategories>
-            <li>Woody</li>
-        </stuffCategories>
         <uiIconOffset>(0, 0.1)</uiIconOffset>
         <uiIconScale>1.2</uiIconScale>
-        <costStuffCount>75</costStuffCount>
+		<costList>
+            <WoodLog>1</WoodLog>
+            <Cloth>5</Cloth>
+		</costList>
         <altitudeLayer>BuildingOnTop</altitudeLayer>
         <passability>PassThroughOnly</passability>
         <pathCost>42</pathCost>
         <fillPercent>0.4</fillPercent>
-        <rotatable>false</rotatable>
+        <rotatable>true</rotatable>
         <hasInteractionCell>True</hasInteractionCell>
         <interactionCellOffset>(0,0,1)</interactionCellOffset>
         <researchPrerequisites>
@@ -34,7 +34,7 @@
         </placeWorkers>
         <graphicData>
             <texPath>Buildings/Tools/StrikingBoard</texPath>
-            <graphicClass>Graphic_Single</graphicClass>
+            <graphicClass>Graphic_Multi</graphicClass>
             <drawSize>(1,1)</drawSize>
             <damageData>
                 <cornerTL>Damage/Corner</cornerTL>
@@ -47,7 +47,7 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_Cadaver</defName>
-        <label>cadaver</label>
+        <label>cadaver dummy</label>
         <description>A medical-grade cloth recreation of a baseliner, down to the individual muscles. Students can train their medical skills by performing practice surgeries on it.</description>
         <statBases>
             <MaxHitPoints>150</MaxHitPoints>
@@ -93,7 +93,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_ShootingTarget</defName>
         <label>practice target</label>
-        <description>A metallic target equipped with a practice rifle. Students can shoot the target to train their shooting skills.</description>
+        <description>A metallic target equipped with a practice rifle. Students can fire at the target to train their shooting skills.</description>
         <statBases>
             <MaxHitPoints>100</MaxHitPoints>
             <WorkToBuild>1000</WorkToBuild>

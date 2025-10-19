@@ -80,8 +80,8 @@
   <PE_ClassGraduates>Graduates: {0}</PE_ClassGraduates>
 
   <!-- Proficiency & Equipment -->
-  <PE_CannotEquipItem>{1} must be taught {0} proficiency.</PE_CannotEquipItem>
-  <PE_ProficiencyLowTech>low-tech</PE_ProficiencyLowTech>
+  <PE_CannotEquipItem>Colonist must be taught {0} proficiency.</PE_CannotEquipItem>
+  <PE_ProficiencyLowTech>low gear</PE_ProficiencyLowTech>
   <PE_ProficiencyFirearm>firearm</PE_ProficiencyFirearm>
   <PE_ProficiencyHighTech>high-tech</PE_ProficiencyHighTech>
 
