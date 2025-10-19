@@ -125,5 +125,8 @@
   <PE_ClassroomSettings>Classroom settings</PE_ClassroomSettings>
   <PE_RestrictReservationsDuringClass>Disallow traditional work in classroom</PE_RestrictReservationsDuringClass>
   <PE_RestrictReservationsDuringClass_Desc>If enabled, pawns will not be able to use classroom furniture (desks, etc.).</PE_RestrictReservationsDuringClass_Desc>
+  
+  <!-- Off-Map Messages -->
+  <PE_ClassCancelledOffMap>{0} class cancelled today as members are off map.</PE_ClassCancelledOffMap>
 
 </LanguageData>

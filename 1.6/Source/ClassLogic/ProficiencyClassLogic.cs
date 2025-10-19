@@ -144,12 +144,12 @@ namespace ProgressionEducation
             {
                 List<FloatMenuOption> options =
                 [
-                    new FloatMenuOption(ProficiencyLevel.Firearm.ToStringHuman(), () => {
+                    new FloatMenuOption(ProficiencyLevel.Firearm.ToStringHuman().CapitalizeFirst(), () => {
                         proficiencyFocus = ProficiencyLevel.Firearm;
                         studyGroup.semesterGoal = FirearmTeachingDuration;
                         studyGroup.subjectLogic.AutoAssignStudents(createClassDialog);
                     }),
-                    new FloatMenuOption(ProficiencyLevel.HighTech.ToStringHuman(), () => {
+                    new FloatMenuOption(ProficiencyLevel.HighTech.ToStringHuman().CapitalizeFirst(), () => {
                         proficiencyFocus = ProficiencyLevel.HighTech;
                         studyGroup.semesterGoal = HighTechTeachingDuration;
                         studyGroup.subjectLogic.AutoAssignStudents(createClassDialog);

@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
@@ -150,6 +150,13 @@ namespace ProgressionEducation
                 EducationLog.Message($"Teacher {studyGroup.teacher.LabelShort} is already in a LordJob_AttendClass. Not initiating another class.");
                 return;
             }
+            if (!studyGroup.teacher.Spawned || studyGroup.teacher.Map != studyGroup.classroom.LearningBoard.parent.Map)
+            {
+                Messages.Message("PE_ClassCancelledOffMap".Translate(studyGroup.className), MessageTypeDefOf.NegativeEvent);
+                EducationLog.Message($"Teacher for class '{studyGroup.className}' is off the map. Class cancelled.");
+                return;
+            }
+            
             var classroomMap = studyGroup.classroom.LearningBoard.parent.Map;
             bool existingLordFound = false;
             foreach (var existingLord in classroomMap.lordManager.lords)
@@ -189,9 +196,16 @@ namespace ProgressionEducation
             }
             var studentRole = studyGroup.GetStudentRole();
             List<Pawn> qualifiedStudents = [];
+            List<Pawn> studentsOffMap = [];
 
             foreach (var student in studyGroup.students)
             {
+                if (!student.Spawned || student.Map != studyGroup.classroom.LearningBoard.parent.Map)
+                {
+                    studentsOffMap.Add(student);
+                    continue;
+                }
+                
                 var studentQualification = studentRole.CanAcceptPawn(student);
                 if (studentQualification.Accepted)
                 {
@@ -203,6 +217,13 @@ namespace ProgressionEducation
                     EducationLog.Message($"Student {student.LabelShort} no longer qualifies for class '{studyGroup.className}': {studentQualification.Reason}");
                 }
             }
+            if (studentsOffMap.Count > 0)
+            {
+                Messages.Message("PE_ClassCancelledOffMap".Translate(studyGroup.className), MessageTypeDefOf.NegativeEvent);
+                EducationLog.Message($"Some students for class '{studyGroup.className}' are off the map. Class cancelled.");
+                return;
+            }
+            
             if (qualifiedStudents.Count == 0)
             {
                 EducationLog.Message($"No qualified students for class '{studyGroup.className}'. Cannot initiate class.");
