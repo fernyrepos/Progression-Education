@@ -42,6 +42,9 @@
             <Flammability>0</Flammability>
             <Beauty>-3</Beauty>
         </statBases>
+        <researchPrerequisites>
+            <li>Stonecutting</li>
+        </researchPrerequisites>
         <size>(2,1)</size>
         <costStuffCount>20</costStuffCount>
         <stuffCategories>

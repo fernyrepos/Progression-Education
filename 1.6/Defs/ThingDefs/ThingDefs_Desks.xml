@@ -5,7 +5,7 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_StoneSchoolDesk</defName>
-        <label>stone school desk</label>
+        <label>rough school desk</label>
         <description>todo.</description>
         <graphicData>
             <texPath>Buildings/LessonDesks/LessonSlab</texPath>
@@ -44,7 +44,7 @@
         </statBases>
         <size>(2,1)</size>
         <researchPrerequisites>
-            <li>ComplexFurniture</li>
+            <li>Stonecutting</li>
         </researchPrerequisites>
         <costStuffCount>40</costStuffCount>
         <stuffCategories>
@@ -109,7 +109,7 @@
         </statBases>
         <size>(2,1)</size>
         <researchPrerequisites>
-            <li>ComplexFurniture</li>
+            <li>Ferny_SpacerEducation</li>
         </researchPrerequisites>
         <costStuffCount>50</costStuffCount>
         <stuffCategories>

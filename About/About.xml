@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ModMetaData>
-    <name>Progression-Education</name>
+    <name>Progression: Education</name>
     <author>ferny</author>
     <packageId>ferny.ProgressionEducation</packageId>
     <description>An education system.</description>
@@ -25,6 +25,9 @@
 			<displayName>Biotech</displayName>
 		</li>
 	</modDependencies>
+    <incompatibleWith>
+        <li>dame.arcanetechnology</li>
+    </incompatibleWith>
     <loadAfter>
         <!-- CORE STUFF -->
         <li>Ludeon.RimWorld</li>

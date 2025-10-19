@@ -45,7 +45,7 @@
   <PE_SubjectSkill>Skill</PE_SubjectSkill>
   <PE_SubjectProficiency>Proficiency</PE_SubjectProficiency>
   <PE_SubjectDaycare>Daycare</PE_SubjectDaycare>
-  <PE_Daycare>Daycare</PE_Daycare>
+  <PE_Daycare>Fulfills children's learning need. Scheduled until its deleted.</PE_Daycare>
   <PE_RescheduleClass>Reschedule class</PE_RescheduleClass>
   <PE_SkillFocusMissing>Skill focus is missing</PE_SkillFocusMissing>
   <PE_ScheduleTime>Schedule: {0}:00 - {1}:00</PE_ScheduleTime>
@@ -79,10 +79,10 @@
   <PE_ClassGraduates>Graduates: {0}</PE_ClassGraduates>
 
   <!-- Proficiency & Equipment -->
-  <PE_CannotEquipItem>no {0} or higher proficiency.</PE_CannotEquipItem>
-  <PE_ProficiencyLowTech>Low-tech</PE_ProficiencyLowTech>
-  <PE_ProficiencyFirearm>Firearm</PE_ProficiencyFirearm>
-  <PE_ProficiencyHighTech>High-tech</PE_ProficiencyHighTech>
+  <PE_CannotEquipItem>{1} must be taught {0} proficiency.</PE_CannotEquipItem>
+  <PE_ProficiencyLowTech>low-tech</PE_ProficiencyLowTech>
+  <PE_ProficiencyFirearm>firearm</PE_ProficiencyFirearm>
+  <PE_ProficiencyHighTech>high-tech</PE_ProficiencyHighTech>
 
   <!-- Class Qualification -->
   <PE_StudentNotQualifiedProficiency>{0} does not have the required {1} proficiency.</PE_StudentNotQualifiedProficiency>

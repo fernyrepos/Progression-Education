@@ -15,7 +15,12 @@
   </Operation>
 
 
-
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/label</xpath>
+    <value>
+      <label>blackboard (1x2)</label>
+    </value>
+  </Operation>
 
 
   <Operation Class="PatchOperationReplace">
@@ -41,9 +46,64 @@
   <Operation Class="PatchOperationAdd">
     <xpath>/Defs/ThingDef[defName="SchoolDesk"]</xpath>
     <value>
-      <uiOrder>8</uiOrder>
+      <uiOrder>7</uiOrder>
     </value>
   </Operation>
 
+
+  <Operation Class="PatchOperationConditional">
+ <xpath>/Defs/ThingDef[defName="SchoolDesk"]/researchPrerequisites</xpath>
+    <match Class="PatchOperationReplace">
+ <xpath>/Defs/ThingDef[defName="SchoolDesk"]/researchPrerequisites</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/ThingDef[defName="SchoolDesk"]</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </nomatch>
+  </Operation>
+
+  <Operation Class="PatchOperationConditional">
+ <xpath>/Defs/ThingDef[defName="Blackboard"]/researchPrerequisites</xpath>
+    <match Class="PatchOperationReplace">
+ <xpath>/Defs/ThingDef[defName="Blackboard"]/researchPrerequisites</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/ThingDef[defName="Blackboard"]</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </nomatch>
+  </Operation>
+
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/graphicData/texPath</xpath>
+    <value>
+      <texPath>Buildings/LessonBoards/Blackboard</texPath>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="SchoolDesk"]/graphicData/texPath</xpath>
+    <value>
+      <texPath>Buildings/LessonDesks/LessonDesk</texPath>
+    </value>
+  </Operation>
 
 </Patch>

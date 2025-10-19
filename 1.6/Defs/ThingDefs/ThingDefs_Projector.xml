@@ -33,6 +33,9 @@
       <li>BuildingsMisc</li>
     </thingCategories>
     <tickerType>Normal</tickerType>
+    <researchPrerequisites>
+        <li>Ferny_IndustrialEducation</li>
+    </researchPrerequisites>
     <soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <comps>

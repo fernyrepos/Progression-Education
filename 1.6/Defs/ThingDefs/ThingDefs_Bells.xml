@@ -23,6 +23,7 @@
     <costList>
       <Steel>50</Steel>
     </costList>
+    <uiOrder>0.2</uiOrder>
     <building>
       <isEdifice>false</isEdifice>
     </building>
@@ -61,6 +62,7 @@
       <Flammability>0.3</Flammability>
       <Mass>8</Mass>
     </statBases>
+    <uiOrder>0.3</uiOrder>
     <size>(1,1)</size>
     <researchPrerequisites>
         <li>Ferny_IndustrialEducation</li>

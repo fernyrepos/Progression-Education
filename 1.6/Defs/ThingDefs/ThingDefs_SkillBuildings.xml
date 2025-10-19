@@ -4,7 +4,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_StrikingBoard</defName>
         <label>striking board</label>
-        <description>todo.</description>
+        <description>A plank embedded in the ground, with a dampening rope wrapped around its top half capable of taking direct blows. Can be used to train melee skills in classes.</description>
         <statBases>
             <MaxHitPoints>150</MaxHitPoints>
             <WorkToBuild>2500</WorkToBuild>
@@ -15,6 +15,8 @@
         <stuffCategories>
             <li>Woody</li>
         </stuffCategories>
+        <uiIconOffset>(0, 0.1)</uiIconOffset>
+        <uiIconScale>1.2</uiIconScale>
         <costStuffCount>75</costStuffCount>
         <altitudeLayer>BuildingOnTop</altitudeLayer>
         <passability>PassThroughOnly</passability>
@@ -23,6 +25,9 @@
         <rotatable>false</rotatable>
         <hasInteractionCell>True</hasInteractionCell>
         <interactionCellOffset>(0,0,1)</interactionCellOffset>
+        <researchPrerequisites>
+            <li>Stonecutting</li>
+        </researchPrerequisites>
         <designationCategory>Ferny_Education</designationCategory>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
@@ -43,10 +48,10 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_Cadaver</defName>
         <label>cadaver</label>
-        <description>todo.</description>
+        <description>A medical-grade cloth recreation of a baseliner, down to the individual muscles. Students can train their medical skills by performing practice surgeries on it.</description>
         <statBases>
             <MaxHitPoints>150</MaxHitPoints>
-            <WorkToBuild>2500</WorkToBuild>
+            <WorkToBuild>30000</WorkToBuild>
             <Mass>25</Mass>
             <Flammability>0.7</Flammability>
             <Beauty>-3</Beauty>
@@ -58,11 +63,16 @@
 		<costList>
             <WoodLog>30</WoodLog>
             <Steel>8</Steel>
-            <Cloth>20</Cloth>
+            <Cloth>100</Cloth>
 		</costList>
+        <uiIconOffset>(0, 0.15)</uiIconOffset>
+        <uiIconScale>1.35</uiIconScale>
         <fillPercent>0.4</fillPercent>
         <hasInteractionCell>True</hasInteractionCell>
         <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+        <researchPrerequisites>
+            <li>Ferny_IndustrialEducation</li>
+        </researchPrerequisites>
         <designationCategory>Ferny_Education</designationCategory>
         <!-- <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
@@ -83,7 +93,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_ShootingTarget</defName>
         <label>practice target</label>
-        <description>A target for practicing shooting skills.</description>
+        <description>A metallic target equipped with a practice rifle. Students can shoot the target to train their shooting skills.</description>
         <statBases>
             <MaxHitPoints>100</MaxHitPoints>
             <WorkToBuild>1000</WorkToBuild>
@@ -91,9 +101,9 @@
             <Flammability>1.0</Flammability>
             <Beauty>-5</Beauty>
         </statBases>
+        <uiIconScale>3.5</uiIconScale>
         <stuffCategories>
             <li>Metallic</li>
-            <li>Woody</li>
         </stuffCategories>
         <researchPrerequisites>
             <li>Ferny_IndustrialEducation</li>
