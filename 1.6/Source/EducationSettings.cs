@@ -8,6 +8,7 @@ namespace ProgressionEducation
         public float globalLearningSpeedModifier = 1f;
         public float skillClassesLearningSpeedModifier = 1f;
         public float proficiencyClassesLearningSpeedModifier = 1f;
+        public float daycareClassesLearningSpeedModifier = 1f;
         public bool enableProficiencySystem = true;
         public bool debugMode = false;
         public override void ExposeData()
@@ -16,6 +17,7 @@ namespace ProgressionEducation
             Scribe_Values.Look(ref globalLearningSpeedModifier, "globalLearningSpeedModifier", 1f);
             Scribe_Values.Look(ref skillClassesLearningSpeedModifier, "skillClassesLearningSpeedModifier", 1f);
             Scribe_Values.Look(ref proficiencyClassesLearningSpeedModifier, "proficiencyClassesLearningSpeedModifier", 1f);
+            Scribe_Values.Look(ref daycareClassesLearningSpeedModifier, "daycareClassesLearningSpeedModifier", 1f);
             Scribe_Values.Look(ref enableProficiencySystem, "enableProficiencySystem", true);
             Scribe_Values.Look(ref debugMode, "debugMode", false);
         }
@@ -30,6 +32,8 @@ namespace ProgressionEducation
             skillClassesLearningSpeedModifier = listing.Slider(skillClassesLearningSpeedModifier, 0.1f, 3.0f);
             listing.Label("PE_ProficiencyClassesLearningSpeed".Translate() + ": " + (proficiencyClassesLearningSpeedModifier * 100).ToString("F0") + "%");
             proficiencyClassesLearningSpeedModifier = listing.Slider(proficiencyClassesLearningSpeedModifier, 0.1f, 3.0f);
+            listing.Label("PE_DaycareClassesLearningSpeed".Translate() + ": " + (daycareClassesLearningSpeedModifier * 100).ToString("F0") + "%");
+            daycareClassesLearningSpeedModifier = listing.Slider(daycareClassesLearningSpeedModifier, 0.1f, 3.0f);
             listing.CheckboxLabeled("PE_EnableProficiencySystem".Translate(), ref enableProficiencySystem);
 
             listing.Gap(12f);

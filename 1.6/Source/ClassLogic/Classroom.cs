@@ -67,8 +67,7 @@ namespace ProgressionEducation
 
         private float CalculateBestBoardBonus(List<Thing> boards)
         {
-            float bestBonus = 1f;
-
+            float bestBonus = 0f;
             foreach (var boardThing in boards)
             {
                 var learningBoard = boardThing.TryGetComp<CompLearningBoard>();
@@ -78,15 +77,8 @@ namespace ProgressionEducation
                 {
                     qualityBonus = learningBoard.Props.GetQualityBonus(compQuality.Quality);
                 }
-                float materialBonus = 1f;
-                if (boardThing.Stuff != null)
-                {
-                    materialBonus = learningBoard.Props.GetTechLevelBonus(boardThing.Stuff.techLevel);
-                }
-                float boardBonus = qualityBonus * materialBonus;
-                bestBonus = Math.Max(bestBonus, boardBonus);
+                bestBonus = Math.Max(bestBonus, qualityBonus);
             }
-
             return bestBonus;
         }
 

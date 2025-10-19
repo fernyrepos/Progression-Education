@@ -17,23 +17,10 @@ namespace ProgressionEducation
         }
     }
 
-    public class TechBonusRecord
-    {
-        public TechLevel techLevel;
-        public float bonus;
-
-        public void LoadDataFromXmlCustom(System.Xml.XmlNode xmlRoot)
-        {
-            techLevel = ParseHelper.FromString<TechLevel>(xmlRoot.Name);
-            bonus = ParseHelper.FromString<float>(xmlRoot.InnerText);
-        }
-    }
 
     public class CompProperties_LearningBoard : CompProperties
     {
         public List<QualityBonusRecord> qualityBonuses = [];
-        public List<TechBonusRecord> techBonuses = [];
-
         public CompProperties_LearningBoard()
         {
             compClass = typeof(CompLearningBoard);
@@ -42,12 +29,6 @@ namespace ProgressionEducation
         public float GetQualityBonus(QualityCategory quality)
         {
             var bonus = qualityBonuses.FirstOrDefault(qb => qb.quality == quality);
-            return bonus?.bonus ?? 1f;
-        }
-
-        public float GetTechLevelBonus(TechLevel techLevel)
-        {
-            var bonus = techBonuses.FirstOrDefault(tb => tb.techLevel == techLevel);
             return bonus?.bonus ?? 1f;
         }
     }
@@ -114,6 +95,15 @@ namespace ProgressionEducation
                 EducationLog.Message($"Learning board '{parent.Label}' spawned in a new room. Creating new classroom: '{classroom.name}'.");
                 Find.WindowStack.Add(new Dialog_RenameClassroom(classroom, true));
             }
+        }
+
+        public override string CompInspectStringExtra()
+        {
+            if (classroom != null)
+            {
+                return $"{"PE_Classroom".Translate()} {classroom.name}";
+            }
+            return base.CompInspectStringExtra();
         }
     }
 }

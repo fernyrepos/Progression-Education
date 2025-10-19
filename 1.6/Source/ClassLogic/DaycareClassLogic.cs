@@ -52,8 +52,8 @@ namespace ProgressionEducation
         {
             if (student.needs?.learning != null)
             {
-                float learningRateFactor = LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier();
-                student.needs.learning.Learn(1.2E-05f * learningRateFactor);
+                float learningRateFactor = LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier() * EducationSettings.Instance.daycareClassesLearningSpeedModifier;
+                student.needs.learning.Learn(1.2E-05f * learningRateFactor * 3f);
             }
             base.ApplyLearningTick(student);
         }
@@ -76,8 +76,8 @@ namespace ProgressionEducation
             {
                 return;
             }
-            float num = LearningDesireDefOf.Lessontaking.xpPerTick * LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier();
-            student.skills.Learn(taughtSkill, num);
+            float num = LearningDesireDefOf.Lessontaking.xpPerTick * LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier() * EducationSettings.Instance.daycareClassesLearningSpeedModifier;
+            student.skills.Learn(taughtSkill, num * 3f);
         }
 
         private SkillDef ChooseSkill(StudyGroup studyGroup)

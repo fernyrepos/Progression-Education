@@ -204,6 +204,17 @@ namespace ProgressionEducation
                 Text.Anchor = TextAnchor.MiddleLeft;
                 var nameRect = new Rect(colorRect.xMax + 8f, classroomRect.y, classroomRect.width - 80f, classroomRect.height);
                 Widgets.Label(nameRect, classroom.name);
+                
+                if (Widgets.ButtonInvisible(nameRect))
+                {
+                    if (classroom.LearningBoard != null && classroom.LearningBoard.parent != null)
+                    {
+                        Find.Selector.Select(classroom.LearningBoard.parent);
+                        Current.Game.CurrentMap = classroom.LearningBoard.parent.Map;
+                        Find.CameraDriver.JumpToCurrentMapLoc(classroom.LearningBoard.parent.DrawPos + new Vector3(-6f, 0f, 0f));
+                    }
+                }
+                
                 Text.Anchor = TextAnchor.UpperLeft;
 
                 var renameButtonRect = new Rect(classroomRect.xMax - 72f, classroomRect.y + ((ClassroomRowHeight - 32f) / 2f), 32f, 32f);

@@ -107,6 +107,7 @@
   <PE_GlobalLearningSpeed>Global learning speed</PE_GlobalLearningSpeed>
   <PE_SkillClassesLearningSpeed>Skill classes learning speed</PE_SkillClassesLearningSpeed>
   <PE_ProficiencyClassesLearningSpeed>Proficiency classes learning speed</PE_ProficiencyClassesLearningSpeed>
+  <PE_DaycareClassesLearningSpeed>Daycare classes learning speed</PE_DaycareClassesLearningSpeed>
   <PE_EnableProficiencySystem>Enable proficiency system</PE_EnableProficiencySystem>
   <PE_EnableDebugMode>Enable debug mode</PE_EnableDebugMode>
 
