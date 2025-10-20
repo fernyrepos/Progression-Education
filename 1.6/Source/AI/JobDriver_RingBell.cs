@@ -17,13 +17,25 @@ namespace ProgressionEducation
         public override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOn(() => pawn.mindState.duty.def != DefsOf.PE_RingBellDuty);
+            this.FailOn(() => 
+            {
+                var compPower = job.targetA.Thing.TryGetComp<CompPowerTrader>();
+                if (compPower != null && !compPower.PowerOn)
+                {
+                    EducationLog.Message($"Pawn {pawn.LabelShort} bell lost power. Sending 'MemoClassCancelled' memo to lord.");
+                    pawn.GetLord()?.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
+                    return true;
+                }
+                return false;
+            });
             this.FailOn(() =>
             {
-                if (pawn.GetLord()?.LordJob is LordJob_AttendClass lordJob)
+                var lord = pawn.GetLord();
+                if (lord is null || lord.LordJob is not LordJob_AttendClass lordJob)
                 {
-                    return lordJob.studyGroup.teacher != pawn;
+                    return true;
                 }
-                return true;
+                return lordJob.studyGroup.teacher != pawn;
             });
             yield return Toils_Reserve.Reserve(TargetIndex.A);
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
@@ -35,24 +47,20 @@ namespace ProgressionEducation
                     var bellComp = bell.TryGetComp<CompBell>();
                     bellComp.RingBell();
                 },
-                defaultDuration = job.GetTarget(TargetIndex.A).Thing.TryGetComp<CompBell>().Props.ticksToRing,
-                defaultCompleteMode = ToilCompleteMode.Delay,
-                handlingFacing = true
             };
             ringBell.AddFinishAction(delegate
             {
                 EducationLog.Message($"Pawn {pawn.LabelShort} finished ringing bell. Sending 'BellRung' memo to lord.");
-                pawn.GetLord().ReceiveMemo(LordJob_AttendClass.MemoBellRung);
+                pawn.GetLord()?.ReceiveMemo(LordJob_AttendClass.MemoBellRung);
             });
             yield return ringBell;
-
             Toil waitAtBell = new()
             {
                 initAction = delegate
                 {
                     pawn.rotationTracker.FaceTarget(job.targetA.Thing);
                 },
-                defaultDuration = 600,
+                defaultDuration = job.GetTarget(TargetIndex.A).Thing.TryGetComp<CompBell>().Props.ticksToRing,
                 defaultCompleteMode = ToilCompleteMode.Delay,
                 handlingFacing = true
             };
