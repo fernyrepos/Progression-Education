@@ -6,7 +6,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_StoneSchoolDesk</defName>
         <label>rough school desk</label>
-        <description>todo.</description>
+        <description>An uncomfortable desk where students can learn in general classes. Functions at low speed for most lessons.</description>
         <graphicData>
             <texPath>Buildings/LessonDesks/LessonSlab</texPath>
             <graphicClass>Graphic_Multi</graphicClass>

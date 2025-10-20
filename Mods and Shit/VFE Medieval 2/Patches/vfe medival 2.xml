@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- VFE MEDIEVAL 2 PATCHES -->
+
+<!-- MELEE -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Melee"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VFEM2_TrainingDummy</li>
+  </value>
+</Operation>
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Shooting"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VFEM2_ArcheryTarget</li>
+  </value>
+</Operation>
+
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Shooting"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VFEM2_ArcheryTarget</li>
+  </value>
+</Operation>
+
+
+
+  <Operation Class="PatchOperationConditional">
+ <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/researchPrerequisites</xpath>
+    <match Class="PatchOperationReplace">
+ <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/researchPrerequisites</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </nomatch>
+  </Operation>
+
+
+<Operation Class="PatchOperationReplace">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="VFEM2_TrainingDummy"]/designationCategory</xpath>
+    <value>
+        <designationCategory>Ferny_Education</designationCategory>
+    </value>
+</Operation>
+<Operation Class="PatchOperationReplace">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/designationCategory</xpath>
+    <value>
+        <designationCategory>Ferny_Education</designationCategory>
+    </value>
+</Operation>
+
+
+
+
+
+
+<!-- <Operation Class="PatchOperationReplace">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/size</xpath>
+    <value>
+        <size>(1,5)</size>
+    </value>
+</Operation> -->
+<Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="VFEM2_ArcheryTarget"]</xpath>
+    <value>
+        <size>(1,5)</size>
+        <hasInteractionCell>True</hasInteractionCell>
+        <interactionCellOffset>(0,0,2)</interactionCellOffset>
+        <uiIconScale>3.5</uiIconScale>
+    </value>
+</Operation>
+<Operation Class="PatchOperationAdd">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/graphicData</xpath>
+    <value>
+      <drawOffsetNorth>(0, 0, -2)</drawOffsetNorth>
+      <drawOffsetSouth>(0, 0, 2)</drawOffsetSouth>
+      <drawOffsetEast>(-2, 0, 0)</drawOffsetEast>
+      <drawOffsetWest>(2, 0, 0)</drawOffsetWest>
+    </value>
+</Operation>
+<Operation Class="PatchOperationReplace">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/label</xpath>
+    <value>
+        <label>archery station</label>
+    </value>
+</Operation>
+
+</Patch>

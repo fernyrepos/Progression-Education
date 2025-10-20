@@ -52,5 +52,7 @@
         <li>vanillaexpanded.vfeproduction</li>
         <li>oskarpotocki.vfe.tribals</li>
         <li>ferny.progressionagriculture</li>
+        <li>vanillaexpanded.vfecore</li>
+        <li>oskarpotocki.vfe.medieval2</li>
     </loadAfter>
 </ModMetaData>

@@ -26,7 +26,7 @@
   <Operation Class="PatchOperationReplace">
     <xpath>/Defs/ThingDef[defName="SchoolDesk"]/description</xpath>
     <value>
-      <description>A desk where students can learn in classes.</description>
+      <description>A desk where students can learn in general classes. Functions at a good speed for most lessons.</description>
     </value>
   </Operation>
   <Operation Class="PatchOperationReplace">
