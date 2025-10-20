@@ -92,7 +92,7 @@
 
     <ThingDef ParentName="BuildingBase">
         <defName>PE_ShootingTarget</defName>
-        <label>practice target</label>
+        <label>firearm station</label>
         <description>A metallic target equipped with a practice rifle. Students can fire at the target to train their shooting skills.</description>
         <statBases>
             <MaxHitPoints>100</MaxHitPoints>

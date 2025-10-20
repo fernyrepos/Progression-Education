@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- VE FURNITURE PATCHES -->
+
+<!-- MELEE -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Melee"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>Joy_PunchingBag</li>
+  </value>
+</Operation>
+
+<Operation Class="PatchOperationReplace">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="Joy_PunchingBag"]/designationCategory</xpath>
+    <value>
+        <designationCategory>Ferny_Education</designationCategory>
+    </value>
+</Operation>
+
+
+</Patch>
