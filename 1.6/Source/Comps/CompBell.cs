@@ -8,6 +8,7 @@ namespace ProgressionEducation
     public class CompProperties_Bell : CompProperties
     {
         public bool isAutomatic = false;
+        public SoundDef soundDef;
 
         public CompProperties_Bell()
         {
@@ -47,14 +48,7 @@ namespace ProgressionEducation
 
         public void RingBell()
         {
-            if (ShouldRingAutomatically)
-            {
-                DefsOf.PE_ElectricSchoolBellSound.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
-            }
-            else
-            {
-                DefsOf.PE_SchoolBellSound.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
-            }
+            Props.soundDef.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
         }
     }
 }
