@@ -17,7 +17,7 @@ namespace ProgressionEducation
         public override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOn(() => pawn.mindState.duty.def != DefsOf.PE_RingBellDuty);
-            this.FailOn(() => 
+            this.FailOn(() =>
             {
                 var compPower = job.targetA.Thing.TryGetComp<CompPowerTrader>();
                 if (compPower != null && !compPower.PowerOn)
@@ -48,11 +48,6 @@ namespace ProgressionEducation
                     bellComp.RingBell();
                 },
             };
-            ringBell.AddFinishAction(delegate
-            {
-                EducationLog.Message($"Pawn {pawn.LabelShort} finished ringing bell. Sending 'BellRung' memo to lord.");
-                pawn.GetLord()?.ReceiveMemo(LordJob_AttendClass.MemoBellRung);
-            });
             yield return ringBell;
             Toil waitAtBell = new()
             {
@@ -64,6 +59,11 @@ namespace ProgressionEducation
                 defaultCompleteMode = ToilCompleteMode.Delay,
                 handlingFacing = true
             };
+            waitAtBell.AddFinishAction(delegate
+            {
+                EducationLog.Message($"Pawn {pawn.LabelShort} finished ringing bell. Sending 'BellRung' memo to lord.");
+                pawn.GetLord()?.ReceiveMemo(LordJob_AttendClass.MemoBellRung);
+            });
             yield return waitAtBell;
         }
     }
