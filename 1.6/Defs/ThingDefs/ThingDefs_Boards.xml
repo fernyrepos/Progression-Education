@@ -113,7 +113,7 @@
         </statBases>
         <size>(3,1)</size>
         <researchPrerequisites>
-            <li>ComplexFurniture</li>
+        <li>Ferny_NeolithicEducation</li>
         </researchPrerequisites>
         <costStuffCount>30</costStuffCount>
         <uiOrder>3</uiOrder>

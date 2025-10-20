@@ -121,7 +121,8 @@
         </placeWorkers>
         <comps>
             <li Class="ProgressionEducation.CompProperties_WeaponTrainingBench">
-                <weaponDef>PE_Gun_AssaultRifleTraining</weaponDef>
+                <!-- <weaponDef>PE_Gun_AssaultRifleTraining</weaponDef> -->
+                <weaponDef>PE_PracticeShortBow</weaponDef>
             </li>
         </comps>
         <size>(1,5)</size>

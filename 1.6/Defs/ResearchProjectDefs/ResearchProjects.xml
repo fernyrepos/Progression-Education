@@ -4,10 +4,10 @@
 	<ResearchProjectDef>
 		<defName>Ferny_NeolithicEducation</defName>
 		<label>basic schooltech</label>
-		<description>Educate students with</description>
+		<description>Educate students with basic school equipment.</description>
 		<baseCost>300</baseCost>
 		<prerequisites>
-			<li>StandardGravtech</li>
+			<li>Stonecutting</li>
 		</prerequisites>
 		<researchViewX>2.50</researchViewX>
 		<researchViewY>0.10</researchViewY>
@@ -22,9 +22,10 @@
 		<defName>Ferny_IndustrialEducation</defName>
 		<label>modern schooltech</label>
 		<description>Discover more effective ways to educate with modern technology.</description>
-		<baseCost>900</baseCost>
+		<baseCost>1000</baseCost>
 		<prerequisites>
 			<li>Electricity</li>
+			<li>Ferny_NeolithicEducation</li>
 		</prerequisites>
 		<researchViewX>3.00</researchViewX>
 		<researchViewY>0.10</researchViewY>
@@ -39,6 +40,7 @@
 		<baseCost>2000</baseCost>
 		<prerequisites>
 			<li>Fabrication</li>
+			<li>Ferny_IndustrialEducation</li>
 		</prerequisites>
 		<researchViewX>9.00</researchViewX>
 		<researchViewY>0.70</researchViewY>
