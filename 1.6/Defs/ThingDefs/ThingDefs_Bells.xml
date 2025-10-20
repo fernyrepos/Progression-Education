@@ -40,6 +40,7 @@
     </researchPrerequisites>
     <comps>
       <li Class="ProgressionEducation.CompProperties_Bell">
+        <ticksToRing>60</ticksToRing>
         <soundDef>PE_SchoolBell</soundDef>
       </li>
     </comps>
@@ -90,7 +91,7 @@
         <basePowerConsumption>50</basePowerConsumption>
       </li>
       <li Class="ProgressionEducation.CompProperties_Bell">
-        <isAutomatic>true</isAutomatic>
+        <ticksToRing>0</ticksToRing>
         <soundDef>PE_ElectricSchoolBell</soundDef>
       </li>
     </comps>
@@ -136,6 +137,7 @@
     </researchPrerequisites>
     <comps>
       <li Class="ProgressionEducation.CompProperties_Bell">
+        <ticksToRing>60</ticksToRing>
         <soundDef>PE_TribalBell</soundDef>
       </li>
     </comps>

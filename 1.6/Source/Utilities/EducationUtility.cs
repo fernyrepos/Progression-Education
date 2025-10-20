@@ -12,7 +12,7 @@ namespace ProgressionEducation
             {
                 return false;
             }
-            return CompBell.AllBells.Any(b => b.parent.Map == map && (!checkForPower || !b.Props.isAutomatic || b.IsPowered));
+            return CompBell.AllBells.Any(b => b.parent.Map == map && (!checkForPower || !b.ShouldRingAutomatically || b.IsPowered));
         }
 
         public static bool IsSchoolDesk(this ThingDef def)

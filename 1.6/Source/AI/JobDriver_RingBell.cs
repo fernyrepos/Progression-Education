@@ -35,6 +35,8 @@ namespace ProgressionEducation
                     var bellComp = bell.TryGetComp<CompBell>();
                     bellComp.RingBell();
                 },
+                defaultDuration = job.GetTarget(TargetIndex.A).Thing.TryGetComp<CompBell>().Props.ticksToRing,
+                defaultCompleteMode = ToilCompleteMode.Delay,
                 handlingFacing = true
             };
             ringBell.AddFinishAction(delegate

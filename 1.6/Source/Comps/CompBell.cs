@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
 using Verse.Sound;
@@ -7,7 +7,7 @@ namespace ProgressionEducation
 {
     public class CompProperties_Bell : CompProperties
     {
-        public bool isAutomatic = false;
+        public int ticksToRing = 0;
         public SoundDef soundDef;
 
         public CompProperties_Bell()
@@ -29,7 +29,7 @@ namespace ProgressionEducation
             }
         }
 
-        public bool ShouldRingAutomatically => Props.isAutomatic && IsPowered;
+        public bool ShouldRingAutomatically => Props.ticksToRing == 0 && IsPowered;
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
