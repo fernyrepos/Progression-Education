@@ -48,20 +48,30 @@ namespace ProgressionEducation
             }
 
             var listOutRect = new Rect(rect.x, rect.y + HeaderHeight + WindowPadding, rect.width, rect.height - (HeaderHeight + WindowPadding));
-            var listContentRect = new Rect(0f, 0f, listOutRect.width - 16f, studyGroups.Count * (ClassRowHeight + WindowPadding));
-
-            Widgets.BeginScrollView(listOutRect, ref classScrollPosition, listContentRect);
-
-            float curY = 0f;
-            for (int i = 0; i < studyGroups.Count; i++)
+            
+            if (studyGroups.Count == 0)
             {
-                var studyGroup = studyGroups[i];
-                var classRect = new Rect(0f, curY, listContentRect.width, ClassRowHeight);
-                DrawClassRow(classRect, studyGroup);
-                curY += ClassRowHeight + WindowPadding;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(listOutRect, "PE_NoClassesScheduled".Translate());
+                Text.Anchor = TextAnchor.UpperLeft;
             }
+            else
+            {
+                var listContentRect = new Rect(0f, 0f, listOutRect.width - 16f, studyGroups.Count * (ClassRowHeight + WindowPadding));
 
-            Widgets.EndScrollView();
+                Widgets.BeginScrollView(listOutRect, ref classScrollPosition, listContentRect);
+
+                float curY = 0f;
+                for (int i = 0; i < studyGroups.Count; i++)
+                {
+                    var studyGroup = studyGroups[i];
+                    var classRect = new Rect(0f, curY, listContentRect.width, ClassRowHeight);
+                    DrawClassRow(classRect, studyGroup);
+                    curY += ClassRowHeight + WindowPadding;
+                }
+
+                Widgets.EndScrollView();
+            }
         }
 
         private void DrawClassRow(Rect rect, StudyGroup studyGroup)

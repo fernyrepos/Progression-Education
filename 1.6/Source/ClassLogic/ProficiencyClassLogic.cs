@@ -158,8 +158,6 @@ namespace ProgressionEducation
                 Find.WindowStack.Add(new FloatMenu(options));
             }
             curY += 30f;
-
-            DrawBenchRequirementUI(rect, ref curY);
         }
 
         public override string TeacherTooltipFor(Pawn pawn)

@@ -142,8 +142,6 @@ namespace ProgressionEducation
                     curY += 30f;
                 }
             }
-
-            DrawBenchRequirementUI(rect, ref curY);
         }
 
         public override string TeacherTooltipFor(Pawn pawn)

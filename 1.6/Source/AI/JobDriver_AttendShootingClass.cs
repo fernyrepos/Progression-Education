@@ -54,7 +54,7 @@ namespace ProgressionEducation
                 {
                     if (weapon is null)
                     {
-                        weapon = ThingMaker.MakeThing(DefsOf.PE_Gun_AssaultRifleTraining, GenStuff.DefaultStuffFor(DefsOf.PE_Gun_AssaultRifleTraining));
+                        weapon = GetWeaponForTraining();
                     }
                     var cell = TargetA.Thing.OccupiedRect().OrderByDescending(c => c.DistanceToSquared(pawn.Position)).FirstOrDefault();
                     FireProjectile(pawn, weapon, cell);
@@ -65,6 +65,13 @@ namespace ProgressionEducation
             learningToil.defaultCompleteMode = ToilCompleteMode.Never;
             learningToil.socialMode = RandomSocialMode.Off;
             return learningToil;
+        }
+
+        private Thing GetWeaponForTraining()
+        {
+            var comp = TargetA.Thing.TryGetComp<CompWeaponTrainingBench>();
+            var weaponToUse = comp.WeaponDef;
+            return ThingMaker.MakeThing(weaponToUse, GenStuff.DefaultStuffFor(weaponToUse));
         }
 
         public void DrawEquipment(Vector3 rootLoc, Rot4 pawnRotation, PawnRenderFlags flags)
@@ -83,7 +90,7 @@ namespace ProgressionEducation
             drawLoc += rootLoc + new Vector3(0f, 0f, 0.4f).RotatedBy(num);
             if (weapon is null)
             {
-                weapon = ThingMaker.MakeThing(DefsOf.PE_Gun_AssaultRifleTraining, GenStuff.DefaultStuffFor(DefsOf.PE_Gun_AssaultRifleTraining));
+                weapon = GetWeaponForTraining();
             }
             DrawEquipmentAiming(weapon, drawLoc, num);
         }

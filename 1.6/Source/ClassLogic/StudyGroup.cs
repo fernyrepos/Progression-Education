@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -78,6 +78,21 @@ namespace ProgressionEducation
                 return new AcceptanceReport("PE_NoBell".Translate());
             }
 
+            return AcceptanceReport.WasAccepted;
+        }
+
+        public AcceptanceReport AreWorkspacesAvailable()
+        {
+            string benchLabel = subjectLogic.BenchLabel;
+            if (!string.IsNullOrEmpty(benchLabel) && subjectLogic.BenchCount < students.Count)
+            {
+                return new AcceptanceReport("PE_NotEnoughBenches".Translate(benchLabel, students.Count, subjectLogic.BenchCount));
+            }
+
+            if (!EducationUtility.HasBellOnMap(Map, false))
+            {
+                return new AcceptanceReport("PE_NoBell".Translate());
+            }
             return AcceptanceReport.WasAccepted;
         }
 
@@ -177,7 +192,6 @@ namespace ProgressionEducation
                 
                 if (attendClassDriver is JobDriver_AttendMeleeClass)
                 {
-                    // Melee class students can be anywhere adjacent to the desk
                     if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing).Contains(student.Position))
                     {
                         return false;

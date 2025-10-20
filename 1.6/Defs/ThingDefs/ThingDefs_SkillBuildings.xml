@@ -14,10 +14,10 @@
         </statBases>
         <uiIconOffset>(0, 0.1)</uiIconOffset>
         <uiIconScale>1.2</uiIconScale>
-		<costList>
+        <costList>
             <WoodLog>1</WoodLog>
             <Cloth>5</Cloth>
-		</costList>
+        </costList>
         <altitudeLayer>BuildingOnTop</altitudeLayer>
         <passability>PassThroughOnly</passability>
         <pathCost>42</pathCost>
@@ -60,11 +60,11 @@
         <altitudeLayer>BuildingOnTop</altitudeLayer>
         <passability>PassThroughOnly</passability>
         <pathCost>42</pathCost>
-		<costList>
+        <costList>
             <WoodLog>30</WoodLog>
             <Steel>8</Steel>
             <Cloth>100</Cloth>
-		</costList>
+        </costList>
         <uiIconOffset>(0, 0.15)</uiIconOffset>
         <uiIconScale>1.35</uiIconScale>
         <fillPercent>0.4</fillPercent>
@@ -119,6 +119,11 @@
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
         </placeWorkers>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_WeaponTrainingBench">
+                <weaponDef>PE_Gun_AssaultRifleTraining</weaponDef>
+            </li>
+        </comps>
         <size>(1,5)</size>
         <graphicData>
             <texPath>Buildings/Tools/ShootingTarget</texPath>

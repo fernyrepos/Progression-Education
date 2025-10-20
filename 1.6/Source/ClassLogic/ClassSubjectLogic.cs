@@ -16,6 +16,25 @@ namespace ProgressionEducation
 
         public abstract string Description { get; }
         public virtual bool IsInfinite => false;
+        public virtual void AddRequirements(List<string> requirements)
+        {
+            string benchLabel = BenchLabel;
+            if (!string.IsNullOrEmpty(benchLabel))
+            {
+                int count = studyGroup.students.Count;
+                int benchCount = BenchCount;
+                string presentText = "";
+                if (benchCount < count || benchCount < 1)
+                {
+                    presentText = $" <color=red>{"PE_Present".Translate(benchCount)}</color>";
+                }
+                if (benchCount < 1 && count < 1)
+                {
+                    count = 1;
+                }
+                requirements.Add($"{count}x {benchLabel}{presentText}");
+            }
+        }
         public int BenchCount
         {
             get

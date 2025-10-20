@@ -167,7 +167,7 @@ namespace ProgressionEducation
             }
             curY += 30f;
             studyGroup.subjectLogic.DrawConfigurationUI(viewRect, ref curY, map, this);
-            DrawGeneralRequirements(viewRect, ref curY);
+            DrawRequirements(viewRect, ref curY);
 
             Widgets.Label(new Rect(viewRect.x, curY, 150f, 25f), "PE_Classroom".Translate());
             if (Widgets.ButtonText(new Rect(viewRect.x + 160f, curY, 200f, 25f), studyGroup.classroom?.name ?? "PE_SelectClassroom".Translate()))
@@ -236,32 +236,43 @@ namespace ProgressionEducation
             return options;
         }
 
-        private void DrawGeneralRequirements(Rect viewRect, ref float curY)
+        private Vector2 scrollPosition = Vector2.zero;
+        private void DrawRequirements(Rect viewRect, ref float curY)
         {
+            var requirements = new List<string>();
+            studyGroup.subjectLogic.AddRequirements(requirements);
             if (studyGroup.classroom != null)
             {
                 int learningBoardCount = studyGroup.classroom.LearningBoard != null ? 1 : 0;
                 string learningBoardPresentText = "";
                 if (learningBoardCount < 1)
                 {
+                    var oldColor = GUI.color;
                     GUI.color = Color.red;
-                    learningBoardPresentText = " " + "PE_Present".Translate(learningBoardCount);
+                    learningBoardPresentText = $" {"PE_Present".Translate(learningBoardCount)}";
+                    GUI.color = oldColor;
                 }
-                Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_LearningBoard".Translate()}{learningBoardPresentText}");
-                GUI.color = Color.white;
-                curY += 25f;
+                requirements.Add($"1x {"PE_LearningBoard".Translate()}{learningBoardPresentText}");
             }
             if (!EducationUtility.HasBellOnMap(map, false))
             {
+                var oldColor = GUI.color;
                 GUI.color = Color.red;
-                Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_Bell".Translate()} ({"PE_NotPresent".Translate()})");
-                GUI.color = Color.white;
+                string bellNotPresentText = $" {"PE_NotPresent".Translate()}";
+                GUI.color = oldColor;
+                requirements.Add($"1x {"PE_Bell".Translate()}{bellNotPresentText}");
             }
             else
             {
-                Widgets.Label(new Rect(viewRect.x + 10f, curY, 300f, 25f), $"1x {"PE_Bell".Translate()}");
+                requirements.Add($"1x {"PE_Bell".Translate()}");
             }
-            curY += 30f;
+
+            string fullRequirementsText = string.Join("\n", requirements);
+            Widgets.Label(new Rect(viewRect.x, curY, viewRect.width, 25f), "PE_Requirements".Translate());
+            var requirementHeight = 75;
+            Rect requirementsTextRect = new Rect(viewRect.x + 160f, curY, viewRect.width - 160f, requirementHeight);
+            Widgets.LabelScrollable(requirementsTextRect, fullRequirementsText, ref scrollPosition);
+            curY += requirementHeight;
         }
 
         private void ValidateAndRemovePawns()

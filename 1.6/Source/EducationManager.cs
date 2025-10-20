@@ -144,6 +144,14 @@ namespace ProgressionEducation
                 return;
             }
 
+            var workspaceReport = studyGroup.AreWorkspacesAvailable();
+            if (!workspaceReport.Accepted)
+            {
+                Messages.Message($"{"PE_ClassCancelledToday".Translate(studyGroup.className)} {workspaceReport.Reason}", MessageTypeDefOf.NegativeEvent);
+                EducationLog.Message($"Class '{studyGroup.className}' cancelled due to insufficient workspaces: {workspaceReport.Reason}");
+                return;
+            }
+
             var lord = studyGroup.teacher.GetLord();
             if (lord != null && lord.LordJob is LordJob_AttendClass)
             {

@@ -18,7 +18,6 @@ namespace ProgressionEducation
 
         public override void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog)
         {
-            DrawBenchRequirementUI(rect, ref curY);
         }
 
         public override float CalculateProgressPerTick()
