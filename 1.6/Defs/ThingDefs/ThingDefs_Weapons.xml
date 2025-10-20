@@ -72,8 +72,7 @@
     <defName>PE_PracticeShortBow</defName>
     <label>training bow</label>
     <description>A weapon designed purely for education. Its projectiles deal no damage.</description>
-    <smeltable>false</smeltable>
-    <graphicData>
+    <smeltable>false</smeltable>    <graphicData>
       <texPath>Things/Item/Equipment/WeaponRanged/BowShort</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
