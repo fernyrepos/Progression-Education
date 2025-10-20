@@ -99,11 +99,11 @@
 
   <ThingDef ParentName="BuildingBase">
     <defName>PE_TribalBell</defName>
-    <label>tribal bell</label>
-    <description>A loud tribal bell used to signal the start of classes. A teacher will manually ring this to call students.</description>
+    <label>class chime</label>
+    <description>A quiet tribal bell used to signal the start of classes. A teacher will manually ring this to call students.</description>
     <thingClass>Building</thingClass>
     <graphicData>
-      <texPath>Buildings/Tools/SchoolBell</texPath>
+      <texPath>Buildings/Tools/TribalBell</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(1,1)</drawSize>
     </graphicData>

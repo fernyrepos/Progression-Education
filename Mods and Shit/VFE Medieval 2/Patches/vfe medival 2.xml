@@ -45,6 +45,25 @@
       </value>
     </nomatch>
   </Operation>
+  <Operation Class="PatchOperationConditional">
+ <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/researchPrerequisites</xpath>
+    <match Class="PatchOperationReplace">
+ <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/researchPrerequisites</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </nomatch>
+  </Operation>
 
 
 <Operation Class="PatchOperationReplace">
@@ -78,6 +97,11 @@
     <success>Always</success>
     <xpath>Defs/ThingDef[defName="VFEM2_ArcheryTarget"]</xpath>
     <value>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_WeaponTrainingBench">
+                <weaponDef>PE_PracticeShortBow</weaponDef>
+            </li>
+        </comps>
         <size>(1,5)</size>
         <hasInteractionCell>True</hasInteractionCell>
         <interactionCellOffset>(0,0,2)</interactionCellOffset>
