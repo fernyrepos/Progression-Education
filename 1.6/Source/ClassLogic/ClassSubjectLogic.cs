@@ -42,7 +42,7 @@ namespace ProgressionEducation
                 var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
                 var validBenches = GetValidLearningBenches();
                 var count = facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
-                Log.Message($"Found {count} valid benches for class '{studyGroup.className}'");
+                EducationLog.Message($"Found {count} valid benches for class '{studyGroup.className}'");
                 return count;
             }
         }
@@ -85,7 +85,7 @@ namespace ProgressionEducation
                         bool assigned = assignmentsManager.TryAssign(existingTeacher, createClassDialog.StudentRole, out _);
                         if (assigned)
                         {
-                            Log.Message($"Reassigned previous teacher {existingTeacher} to student role in class '{studyGroup.className}'");
+                            EducationLog.Message($"Reassigned previous teacher {existingTeacher} to student role in class '{studyGroup.className}'");
                         }
                         else
                         {
@@ -94,12 +94,12 @@ namespace ProgressionEducation
                     }
                     else
                     {
-                        Log.Message($"Unassigning previous teacher {existingTeacher} from class '{studyGroup.className}' because they are no longer qualified as a student.");
+                        EducationLog.Message($"Unassigning previous teacher {existingTeacher} from class '{studyGroup.className}' because they are no longer qualified as a student.");
                     }
                 }
                 else
                 {
-                    Log.Message($"No existing teacher assigned for class '{studyGroup.className}'");
+                    EducationLog.Message($"No existing teacher assigned for class '{studyGroup.className}'");
                 }
                 assignmentsManager.TryAssign(bestTeacher, teacherRole, out _);
             }
@@ -119,12 +119,12 @@ namespace ProgressionEducation
                 Log.Warning($"Cannot auto-assign students for class '{studyGroup.className}' because it lacks a learning board.");
                 return;
             }
-            Log.Message($"Auto-assigning students and teacher for class '{studyGroup.className}'");
+            EducationLog.Message($"Auto-assigning students and teacher for class '{studyGroup.className}'");
             
             UnassignUnqualifiedPawns(createClassDialog);
             AssignBestTeacher(createClassDialog);
             HandleRoleAutoAssignment(createClassDialog, createClassDialog.StudentRole, BenchCount);
-            Log.Message($"Auto-assigned students and teacher for class '{studyGroup.className}'");
+            EducationLog.Message($"Auto-assigned students and teacher for class '{studyGroup.className}'");
         }
         public abstract string TeacherTooltipFor(Pawn pawn);
         public abstract string StudentTooltipFor(Pawn pawn);
@@ -141,7 +141,7 @@ namespace ProgressionEducation
                     if (!canAccept.Accepted)
                     {
                         createClassDialog.AssignmentsManager.TryUnassignAnyRole(pawn);
-                        Log.Message($"Unassigning {pawn} from {role} because they are no longer qualified: {canAccept.Reason}");
+                        EducationLog.Message($"Unassigning {pawn} from {role} because they are no longer qualified: {canAccept.Reason}");
                     }
                 }
             }
@@ -176,7 +176,7 @@ namespace ProgressionEducation
         protected void HandleRoleAutoAssignment(Dialog_CreateClass createClassDialog, ClassRole role, int maxCount)
         {
             var assignedPawns = createClassDialog.AssignmentsManager.AssignedPawns(role).ToList();
-            Log.Message($"Handling role auto-assignment for {role} with {assignedPawns.Count} assigned pawns and a max count of {maxCount}");
+            EducationLog.Message($"Handling role auto-assignment for {role} with {assignedPawns.Count} assigned pawns and a max count of {maxCount}");
             if (assignedPawns.Count > maxCount)
             {
                 int pawnsToUnassign = assignedPawns.Count - maxCount;

@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -203,6 +203,69 @@ namespace ProgressionEducation
                 }
             }
             return true;
+        }
+
+        public AcceptanceReport ValidateClassStatus()
+        {
+            if (classroom is null || classroom.LearningBoard?.parent == null || classroom.LearningBoard.parent.Map == null)
+            {
+                return new AcceptanceReport("PE_NoLearningBoard".Translate());
+            }
+
+            var workspaceReport = AreWorkspacesAvailable();
+            if (!workspaceReport.Accepted)
+            {
+                return workspaceReport;
+            }
+
+            if (!teacher.Spawned || teacher.Map != classroom.LearningBoard.parent.Map)
+            {
+                return new AcceptanceReport("PE_TeacherOffMap".Translate());
+            }
+
+            var teacherRole = GetTeacherRole();
+            var teacherQualification = teacherRole.CanAcceptPawn(teacher);
+            if (!teacherQualification.Accepted)
+            {
+                return teacherQualification;
+            }
+
+            var studentRole = GetStudentRole();
+            List<Pawn> studentsOffMap = [];
+            List<Pawn> unqualifiedStudents = [];
+
+            foreach (var student in students)
+            {
+                if (!student.Spawned || student.Map != classroom.LearningBoard.parent.Map)
+                {
+                    studentsOffMap.Add(student);
+                    continue;
+                }
+
+                var studentQualification = studentRole.CanAcceptPawn(student);
+                if (!studentQualification.Accepted)
+                {
+                    unqualifiedStudents.Add(student);
+                    continue;
+                }
+            }
+
+            if (studentsOffMap.Count > 0)
+            {
+                return new AcceptanceReport("PE_StudentsOffMap".Translate());
+            }
+
+            if (unqualifiedStudents.Count > 0)
+            {
+                return new AcceptanceReport("PE_StudentsUnqualified".Translate());
+            }
+
+            if (students.Count == 0)
+            {
+                return new AcceptanceReport("PE_NoStudents".Translate());
+            }
+
+            return AcceptanceReport.WasAccepted;
         }
     }
 }

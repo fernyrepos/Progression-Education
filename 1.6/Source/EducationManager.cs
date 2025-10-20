@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,20 +135,35 @@ namespace ProgressionEducation
             TimeAssignmentUtility.ApplyScheduleToPawns(studyGroup, allParticipants);
         }
 
+        private HashSet<StudyGroup> checkedStudyGroups = new();
         public void TryInitiateClassForStudyGroup(StudyGroup studyGroup)
         {
+            checkedStudyGroups ??= new HashSet<StudyGroup>();
             var currentAssignment = studyGroup.teacher.timetable.CurrentAssignment;
             if (!currentAssignment.IsStudyGroupAssignment() || currentAssignment.defName != studyGroup.timeAssignmentDefName)
             {
-                EducationLog.Message($"Current assignment for teacher {studyGroup.teacher.LabelShort} is not a study group assignment.");
+                checkedStudyGroups.Remove(studyGroup);
+                return;
+            }
+            if (checkedStudyGroups.Contains(studyGroup))
+            {
+                return;
+            }
+            checkedStudyGroups.Add(studyGroup);
+
+            var validationReport = studyGroup.ValidateClassStatus();
+            if (!validationReport.Accepted)
+            {
+                Messages.Message($"{"PE_ClassCancelledToday".Translate(studyGroup.className)} {validationReport.Reason}", MessageTypeDefOf.NegativeEvent);
+                EducationLog.Message($"Class '{studyGroup.className}' cancelled due to validation failure: {validationReport.Reason}");
                 return;
             }
 
-            var workspaceReport = studyGroup.AreWorkspacesAvailable();
-            if (!workspaceReport.Accepted)
+            var classroomMap = studyGroup.classroom.LearningBoard.parent.Map;
+            
+            if (!EducationUtility.HasBellOnMap(classroomMap, true))
             {
-                Messages.Message($"{"PE_ClassCancelledToday".Translate(studyGroup.className)} {workspaceReport.Reason}", MessageTypeDefOf.NegativeEvent);
-                EducationLog.Message($"Class '{studyGroup.className}' cancelled due to insufficient workspaces: {workspaceReport.Reason}");
+                EducationLog.Message($"No bell found on map for class '{studyGroup.className}'. Cannot initiate class.");
                 return;
             }
 
@@ -158,14 +173,7 @@ namespace ProgressionEducation
                 EducationLog.Message($"Teacher {studyGroup.teacher.LabelShort} is already in a LordJob_AttendClass. Not initiating another class.");
                 return;
             }
-            if (!studyGroup.teacher.Spawned || studyGroup.teacher.Map != studyGroup.classroom.LearningBoard.parent.Map)
-            {
-                Messages.Message("PE_ClassCancelledOffMap".Translate(studyGroup.className), MessageTypeDefOf.NegativeEvent);
-                EducationLog.Message($"Teacher for class '{studyGroup.className}' is off the map. Class cancelled.");
-                return;
-            }
             
-            var classroomMap = studyGroup.classroom.LearningBoard.parent.Map;
             bool existingLordFound = false;
             foreach (var existingLord in classroomMap.lordManager.lords)
             {
@@ -183,61 +191,6 @@ namespace ProgressionEducation
                 return;
             }
 
-            if (studyGroup.classroom is null || studyGroup.classroom.LearningBoard?.parent == null || studyGroup.classroom.LearningBoard.parent.Map == null)
-            {
-                EducationLog.Message($"Classroom or learning board is null for class '{studyGroup.className}'. Cannot initiate class.");
-                return;
-            }
-            
-            if (!EducationUtility.HasBellOnMap(classroomMap, true))
-            {
-                EducationLog.Message($"No bell found on map for class '{studyGroup.className}'. Cannot initiate class.");
-                return;
-            }
-            var teacherRole = studyGroup.GetTeacherRole();
-            var teacherQualification = teacherRole.CanAcceptPawn(studyGroup.teacher);
-            if (!teacherQualification.Accepted)
-            {
-                Messages.Message("PE_TeacherUnassigned".Translate(studyGroup.teacher.LabelShort, teacherQualification.Reason), MessageTypeDefOf.RejectInput);
-                EducationLog.Message($"Teacher {studyGroup.teacher.LabelShort} no longer qualifies for class '{studyGroup.className}'. Cannot initiate class.");
-                return;
-            }
-            var studentRole = studyGroup.GetStudentRole();
-            List<Pawn> qualifiedStudents = [];
-            List<Pawn> studentsOffMap = [];
-
-            foreach (var student in studyGroup.students)
-            {
-                if (!student.Spawned || student.Map != studyGroup.classroom.LearningBoard.parent.Map)
-                {
-                    studentsOffMap.Add(student);
-                    continue;
-                }
-                
-                var studentQualification = studentRole.CanAcceptPawn(student);
-                if (studentQualification.Accepted)
-                {
-                    qualifiedStudents.Add(student);
-                }
-                else
-                {
-                    Messages.Message("PE_StudentUnqualified".Translate(student.LabelShort, studentQualification.Reason), MessageTypeDefOf.RejectInput);
-                    EducationLog.Message($"Student {student.LabelShort} no longer qualifies for class '{studyGroup.className}': {studentQualification.Reason}");
-                }
-            }
-            if (studentsOffMap.Count > 0)
-            {
-                Messages.Message("PE_ClassCancelledOffMap".Translate(studyGroup.className), MessageTypeDefOf.NegativeEvent);
-                EducationLog.Message($"Some students for class '{studyGroup.className}' are off the map. Class cancelled.");
-                return;
-            }
-            
-            if (qualifiedStudents.Count == 0)
-            {
-                EducationLog.Message($"No qualified students for class '{studyGroup.className}'. Cannot initiate class.");
-                return;
-            }
-
             LordJob_AttendClass lordJob = new(studyGroup);
             List<Pawn> initialPawns = [studyGroup.teacher];
             initialPawns.RemoveAll(p => p.GetLord() != null);
@@ -247,7 +200,7 @@ namespace ProgressionEducation
                 EducationLog.Message($"All participants for class '{studyGroup.className}' are already in other lords. Cannot initiate class.");
                 return;
             }
-            EducationLog.Message($"Initiating class '{studyGroup.className}' with teacher {studyGroup.teacher.LabelShort} and {qualifiedStudents.Count} qualified students.");
+            EducationLog.Message($"Initiating class '{studyGroup.className}' with teacher {studyGroup.teacher.LabelShort}.");
 
             if (studyGroup.classroom.restrictReservationsDuringClass)
             {

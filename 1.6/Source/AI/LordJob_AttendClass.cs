@@ -1,4 +1,7 @@
+using System;
+using System.Linq;
 using Verse;
+using Verse.AI;
 using Verse.AI.Group;
 
 namespace ProgressionEducation
@@ -40,6 +43,15 @@ namespace ProgressionEducation
                 lord.ReceiveMemo(MemoClassTimeFinished);
                 EducationLog.Message($"Class '{studyGroup.className}' is finished: teacher is no longer scheduled for class.");
             }
+            else
+            {
+                var validationReport = studyGroup.ValidateClassStatus();
+                if (!validationReport.Accepted)
+                {
+                    EducationLog.Message($"Class '{studyGroup.className}' is being cancelled: {validationReport.Reason}");
+                    lord.ReceiveMemo(MemoClassCancelled);
+                }
+            }
         }
 
         public override StateGraph CreateGraph()
@@ -52,6 +64,17 @@ namespace ProgressionEducation
             Transition ringToAttendTransition = new(ringBellToil, attendClassToil);
             ringToAttendTransition.AddTrigger(new Trigger_Memo(MemoBellRung));
             ringToAttendTransition.AddPreAction(new TransitionAction_AddStudentsToLord(studyGroup));
+            ringToAttendTransition.AddPostAction(new TransitionAction_Custom((Action)delegate
+            {
+                var members = studyGroup.students.Concat(studyGroup.teacher).ToList();
+                foreach (var member in members)
+                {
+                    if (member.jobs.curDriver?.asleep ?? false)
+                    {
+                        member.jobs.StopAll();
+                    }
+                }
+            }));
             stateGraph.AddTransition(ringToAttendTransition);
             LordToil_End endToil = new();
             stateGraph.AddToil(endToil);
