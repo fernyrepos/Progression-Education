@@ -10,7 +10,7 @@ namespace ProgressionEducation
         {
             foreach (var classroom in EducationManager.Instance.Classrooms)
             {
-                if (classroom.LearningBoard.parent.GetRoom() == room)
+                if (classroom.LearningBoard != null && classroom.LearningBoard.parent.GetRoom() == room)
                 {
                     __result = classroom.name;
                     return;

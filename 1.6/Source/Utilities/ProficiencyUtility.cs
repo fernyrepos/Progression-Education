@@ -1,8 +1,6 @@
 using RimWorld;
-using System.Collections.Generic;
 using System.Linq;
 using Verse;
-using Verse.AI;
 
 namespace ProgressionEducation
 {
@@ -40,23 +38,6 @@ namespace ProgressionEducation
             }
 
             return traitDef == DefsOf.PE_HighTechProficiency ? ProficiencyLevel.HighTech : ProficiencyLevel.LowTech;
-        }
-
-        public static List<IntVec3> GetWaypointsInFrontOfBoard(Thing board, Pawn pawn)
-        {
-            var map = pawn.Map;
-            var waypoints = new HashSet<IntVec3>();
-            foreach (var cell in board.OccupiedRect())
-            {
-                var forward = cell + board.Rotation.FacingCell;
-                waypoints.AddRange(new[] {
-                    forward,
-                    forward + board.Rotation.RighthandCell,
-                    forward - board.Rotation.RighthandCell
-                });
-            }
-
-            return waypoints.Where(c => c.InBounds(map) && c.GetFirstBuilding(map) == null && c.Walkable(map) && pawn.CanReach(c, PathEndMode.OnCell, Danger.Deadly)).ToList();
         }
 
         public static TraitDef GetProficiencyForTechLevel(TechLevel techLevel)

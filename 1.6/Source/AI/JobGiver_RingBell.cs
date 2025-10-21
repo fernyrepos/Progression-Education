@@ -39,7 +39,7 @@ namespace ProgressionEducation
                 }
                 else
                 {
-                    var waypoints = ProficiencyUtility.GetWaypointsInFrontOfBoard(studyGroup.classroom.LearningBoard.parent, pawn);
+                    var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(studyGroup.classroom.LearningBoard.parent, pawn);
                     if (waypoints.Any())
                     {
                         EducationLog.Message($"-> No bell found. Found classroom board. Creating job to go to it.");

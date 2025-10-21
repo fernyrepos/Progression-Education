@@ -139,13 +139,16 @@ namespace ProgressionEducation
             }
             if (Widgets.ButtonText(new Rect(viewRect.x + 160f, curY, 200f, 25f), subjectLabel))
             {
-                List<FloatMenuOption> options =
-                [
-                    new FloatMenuOption("PE_SubjectSkill".Translate(), () => {
-                        studyGroup.subjectLogic = skillClassLogic;
-                        studyGroup.subjectLogic.AutoAssignStudents(this);
-                    }),
-                    new FloatMenuOption("PE_SubjectProficiency".Translate(), () => {
+                List<FloatMenuOption> options = [];
+                options.Add(new FloatMenuOption("PE_SubjectSkill".Translate(), () =>
+                {
+                    studyGroup.subjectLogic = skillClassLogic;
+                    studyGroup.subjectLogic.AutoAssignStudents(this);
+                }));
+                if (EducationSettings.Instance.enableProficiencySystem)
+                {
+                    options.Add(new FloatMenuOption("PE_SubjectProficiency".Translate(), () =>
+                    {
                         studyGroup.subjectLogic = proficiencyClassLogic;
                         if (proficiencyClassLogic.proficiencyFocus == ProficiencyLevel.Firearm)
                         {
@@ -156,13 +159,13 @@ namespace ProgressionEducation
                             studyGroup.semesterGoal = ProficiencyClassLogic.HighTechTeachingDuration;
                         }
                         studyGroup.subjectLogic.AutoAssignStudents(this);
-                    }),
-                    new FloatMenuOption("PE_SubjectDaycare".Translate(), () =>
+                    }));
+                }
+                options.Add(new FloatMenuOption("PE_SubjectDaycare".Translate(), () =>
                 {
                     studyGroup.subjectLogic = daycareClassLogic;
                     studyGroup.subjectLogic.AutoAssignStudents(this);
-                })
-                ];
+                }));
                 Find.WindowStack.Add(new FloatMenu(options));
             }
             curY += 30f;
@@ -269,7 +272,7 @@ namespace ProgressionEducation
 
             string fullRequirementsText = string.Join("\n", requirements);
             Widgets.Label(new Rect(viewRect.x, curY, viewRect.width, 25f), "PE_Requirements".Translate());
-            var requirementHeight = 75;
+            var requirementHeight = Mathf.Min(300, Text.CalcHeight(fullRequirementsText, viewRect.width - 160f));
             Rect requirementsTextRect = new Rect(viewRect.x + 160f, curY, viewRect.width - 160f, requirementHeight);
             Widgets.LabelScrollable(requirementsTextRect, fullRequirementsText, ref scrollPosition);
             curY += requirementHeight;

@@ -30,14 +30,12 @@ namespace ProgressionEducation
         private List<StudyGroup> studyGroups = [];
         private int nextClassroomId;
         private int nextStudyGroupId;
-        private bool retroactivelyApplied = false;
-
         public EducationManager(World world) : base(world)
         {
         }
 
-        public List<Classroom> Classrooms => classrooms;
-        public List<StudyGroup> StudyGroups => studyGroups;
+        public List<Classroom> Classrooms => classrooms ??= new List<Classroom>();
+        public List<StudyGroup> StudyGroups => studyGroups ??= new List<StudyGroup>();
 
         public override void ExposeData()
         {
@@ -45,7 +43,6 @@ namespace ProgressionEducation
             Scribe_Collections.Look(ref studyGroups, "studyGroups", LookMode.Deep);
             Scribe_Values.Look(ref nextClassroomId, "nextClassroomId");
             Scribe_Values.Look(ref nextStudyGroupId, "nextStudyGroupId");
-            Scribe_Values.Look(ref retroactivelyApplied, "retroactivelyApplied", defaultValue: false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 studyGroups ??= [];
@@ -102,12 +99,6 @@ namespace ProgressionEducation
         {
             base.FinalizeInit(fromLoad);
             EducationLog.Message("Finalizing EducationManager init");
-            if (!retroactivelyApplied)
-            {
-                retroactivelyApplied = true;
-                EducationLog.Message("Applying proficiency traits to existing humanlike pawns");
-                ApplyProficiencyTraitsToHumanlikePawns();
-            }
             TimeAssignmentUtility.RemoveAllDynamicTimeAssignmentDefs();
             foreach (var studyGroup in studyGroups)
             {
@@ -249,18 +240,6 @@ namespace ProgressionEducation
                         EducationLog.Message($"Interrupted pawn {pawn.LabelShort} who was using a learning bench during class initiation.");
                     }
                 }
-            }
-        }
-
-        private void ApplyProficiencyTraitsToHumanlikePawns()
-        {
-            var humanlikePawns = PawnsFinder.AllMapsWorldAndTemporary_Alive.Where(pawn =>
-                pawn.RaceProps.Humanlike &&
-                pawn.story?.traits != null).ToList();
-
-            foreach (var pawn in humanlikePawns)
-            {
-                ProficiencyUtility.ApplyProficiencyTraitToPawn(pawn);
             }
         }
     }

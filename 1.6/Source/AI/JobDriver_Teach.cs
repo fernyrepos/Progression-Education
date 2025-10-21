@@ -48,7 +48,7 @@ namespace ProgressionEducation
             {
                 initAction = () =>
                 {
-                    var waypoints = ProficiencyUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
+                    var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
                     if (waypoints.Any())
                     {
                         job.SetTarget(TargetIndex.B, waypoints.RandomElement());
@@ -86,7 +86,7 @@ namespace ProgressionEducation
             yield return teachAtWaypoint;
             yield return Toils_Jump.JumpIf(gotoWaypoint, delegate
             {
-                var waypoints = ProficiencyUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
+                var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
                 job.SetTarget(TargetIndex.B, waypoints.RandomElement());
                 return true;
             });
@@ -100,7 +100,7 @@ namespace ProgressionEducation
             if (studyGroup.subjectLogic.IsInfinite is false)
             {
                 float semesterProgress = studyGroup.CalculateProgressPerTick();
-                studyGroup.AddProgress(semesterProgress);                
+                studyGroup.AddProgress(semesterProgress);
             }
 
             foreach (var student in studyGroup.students)
@@ -108,13 +108,13 @@ namespace ProgressionEducation
                 studyGroup.subjectLogic.ApplyTeachingTick(student, this);
             }
         }
-        
+
         public override void Notify_Starting()
         {
             base.Notify_Starting();
             var learningBoard = job.GetTarget(TargetIndex.A).Thing;
 
-            var waypoints = ProficiencyUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
+            var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
             if (waypoints.Count > 0)
             {
                 pawn.jobs.curJob.targetB = waypoints[0];
