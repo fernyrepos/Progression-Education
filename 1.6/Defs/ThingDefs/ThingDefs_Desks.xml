@@ -26,7 +26,7 @@
         <uiOrder>9</uiOrder>
         <minifiedDef>MinifiedThing</minifiedDef>
         <interactionCellIcon>DiningChair</interactionCellIcon>
-        <interactionCellOffset>(0,0,1)</interactionCellOffset>
+        <interactionCellOffset>(1,0,-1)</interactionCellOffset>
         <hasInteractionCell>true</hasInteractionCell>
         <thingCategories>
             <li>BuildingsFurniture</li>
@@ -67,7 +67,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_TouchscreenSchoolDesk</defName>
         <label>touchscreen school desk</label>
-        <description>todo.</description>
+        <description>A touchscreen display table where students can sit and learn in general classes. Interactive examples appear on the screen to help students learn at lightning fast speed.</description>
         <graphicData>
             <texPath>Buildings/LessonDesks/TouchscreenSchoolDesk</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -87,7 +87,7 @@
         <uiOrder>10</uiOrder>
         <minifiedDef>MinifiedThing</minifiedDef>
         <interactionCellIcon>DiningChair</interactionCellIcon>
-        <interactionCellOffset>(0,0,1)</interactionCellOffset>
+        <interactionCellOffset>(1,0,-1)</interactionCellOffset>
         <hasInteractionCell>true</hasInteractionCell>
         <drawerType>MapMeshOnly</drawerType>
         <descriptionHyperlinks>
