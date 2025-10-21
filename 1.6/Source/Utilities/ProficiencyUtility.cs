@@ -54,7 +54,7 @@ namespace ProgressionEducation
 
         public static void ApplyProficiencyTraitToPawn(Pawn pawn)
         {
-            if (pawn?.story?.traits == null || pawn.DevelopmentalStage == DevelopmentalStage.Newborn || pawn.Faction != Faction.OfPlayerSilentFail)
+            if (pawn?.story?.traits == null || pawn.DevelopmentalStage == DevelopmentalStage.Newborn)
             {
                 return;
             }
