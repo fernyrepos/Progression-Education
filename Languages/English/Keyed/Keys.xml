@@ -132,7 +132,7 @@
 
   <!-- New Messages -->
   <PE_ClassCancelledToday>{0} class cancelled today,</PE_ClassCancelledToday>
-  <PE_NoClassesScheduled>No classes scheduled. Click the plus button to create a class</PE_NoClassesScheduled>
+  <PE_NoClassesScheduled>No classes scheduled. Click the plus button to create a class.</PE_NoClassesScheduled>
   <PE_TriedToEquipButCouldNotDueToLackOfProficiency>{0} tried to equip {1} but couldn't due to lack of proficiency</PE_TriedToEquipButCouldNotDueToLackOfProficiency>
   <PE_CreateClassroomFirst>Create a classroom first.</PE_CreateClassroomFirst>
 
