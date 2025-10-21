@@ -48,7 +48,7 @@ namespace ProgressionEducation
             base.PostSpawnSetup(respawningAfterLoad);
             if (this.parent.BeingTransportedOnGravship) return;
             
-            if (!respawningAfterLoad)
+            if (!respawningAfterLoad || classroom == null)
             {
                 InitializeClassroom();
             }
