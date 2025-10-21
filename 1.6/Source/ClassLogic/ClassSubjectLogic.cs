@@ -53,12 +53,19 @@ namespace ProgressionEducation
         public abstract void GrantCompletionRewards();
         public abstract AcceptanceReport IsTeacherQualified(Pawn teacher);
         public abstract AcceptanceReport IsStudentQualified(Pawn student);
+        public abstract float LearningSpeedModifier { get; }
+
         public virtual void ApplyLearningTick(Pawn student)
         {
             if (student.DevelopmentalStage == DevelopmentalStage.Child)
             {
                 float growthPointsPerTick = student.ageTracker.GrowthPointsPerDay / 60000f;
                 student.ageTracker.growthPoints += growthPointsPerTick;
+            }
+            if (student.needs?.learning != null)
+            {
+                float learningRateFactor = LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier() * LearningSpeedModifier;
+                student.needs.learning.Learn(1.2E-05f * learningRateFactor * 3f);
             }
         }
 

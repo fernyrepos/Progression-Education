@@ -9,6 +9,7 @@ namespace ProgressionEducation
     [HotSwappable]
     public class SkillClassLogic : ClassSubjectLogic
     {
+        public override float LearningSpeedModifier => EducationSettings.Instance.skillClassesLearningSpeedModifier;
         private SkillDef _skillFocus;
         public SkillDef SkillFocus
         {
@@ -66,8 +67,7 @@ namespace ProgressionEducation
             }
             var classroom = studyGroup.classroom;
             float classRoomModifier = classroom.CalculateLearningModifier();
-            float modMultiplier = EducationSettings.Instance.skillClassesLearningSpeedModifier;
-            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * modMultiplier;
+            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * LearningSpeedModifier;
             return progress;
         }
 

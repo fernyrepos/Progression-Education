@@ -9,6 +9,7 @@ namespace ProgressionEducation
     [HotSwappable]
     public class ProficiencyClassLogic : ClassSubjectLogic
     {
+        public override float LearningSpeedModifier => EducationSettings.Instance.proficiencyClassesLearningSpeedModifier;
         public const int FirearmTeachingDuration = 60000;
         public const int HighTechTeachingDuration = 120000;
         private ProficiencyLevel _proficiencyFocus = ProficiencyLevel.Firearm;
@@ -87,8 +88,7 @@ namespace ProgressionEducation
         {
             var classroom = studyGroup.classroom;
             float classRoomModifier = classroom.CalculateLearningModifier();
-            float modMultiplier = EducationSettings.Instance.proficiencyClassesLearningSpeedModifier;
-            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * modMultiplier;
+            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * LearningSpeedModifier;
             return progress;
         }
 

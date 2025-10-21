@@ -47,15 +47,7 @@ namespace ProgressionEducation
             return true;
         }
 
-        public override void ApplyLearningTick(Pawn student)
-        {
-            if (student.needs?.learning != null)
-            {
-                float learningRateFactor = LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier() * EducationSettings.Instance.daycareClassesLearningSpeedModifier;
-                student.needs.learning.Learn(1.2E-05f * learningRateFactor * 3f);
-            }
-            base.ApplyLearningTick(student);
-        }
+        public override float LearningSpeedModifier => EducationSettings.Instance.daycareClassesLearningSpeedModifier;
 
         public override void ApplyTeachingTick(Pawn student, JobDriver_Teach jobDriver)
         {
@@ -75,7 +67,7 @@ namespace ProgressionEducation
             {
                 return;
             }
-            float num = LearningDesireDefOf.Lessontaking.xpPerTick * LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier() * EducationSettings.Instance.daycareClassesLearningSpeedModifier;
+            float num = LearningDesireDefOf.Lessontaking.xpPerTick * LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier() * LearningSpeedModifier;
             student.skills.Learn(taughtSkill, num * 3f);
         }
 

@@ -54,7 +54,7 @@ namespace ProgressionEducation
 
         public static void ApplyProficiencyTraitToPawn(Pawn pawn)
         {
-            if (pawn?.story?.traits == null || pawn.DevelopmentalStage == DevelopmentalStage.Newborn)
+            if (pawn?.story?.traits == null || pawn.DevelopmentalStage == DevelopmentalStage.Newborn || pawn.Faction != Faction.OfPlayer)
             {
                 return;
             }
@@ -157,7 +157,7 @@ namespace ProgressionEducation
 
        public static bool CanEquipItem(this Pawn pawn, Thing equipment)
        {
-           if (!EducationSettings.Instance.enableProficiencySystem)
+           if (!EducationSettings.Instance.enableProficiencySystem || pawn.Faction != Faction.OfPlayer)
            {
                return true;
            }
