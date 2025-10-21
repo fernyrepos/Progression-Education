@@ -80,8 +80,23 @@
         <designationCategory>Ferny_Education</designationCategory>
     </value>
 </Operation>
-
-
+<Operation Class="PatchOperationReplace">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/building</xpath>
+    <value>
+      <building>
+        <joyKind>Gaming_Dexterity</joyKind>
+        <watchBuildingStandDistanceRange>2</watchBuildingStandDistanceRange>
+        <watchBuildingStandRectWidth>1</watchBuildingStandRectWidth>
+        <watchBuildingInSameRoom>true</watchBuildingInSameRoom>
+        <artificialForMeditationPurposes>false</artificialForMeditationPurposes>
+      </building>
+    </value>
+</Operation>
+<Operation Class="PatchOperationRemove">
+    <success>Always</success>
+    <xpath>Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/placeWorkers</xpath>
+</Operation>
 
 
 
