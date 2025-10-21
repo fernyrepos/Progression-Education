@@ -7,7 +7,7 @@
 <Operation Class="PatchOperationAdd">
   <xpath>Defs/SkillDef[defName="Cooking"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
   <value>
-    <li>VCE_ElectricHauteSEction</li>
+    <li>VCE_ElectricHauteSection</li>
   </value>
 </Operation>
 
