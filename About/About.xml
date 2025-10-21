@@ -39,7 +39,7 @@
         <li>brrainz.harmony</li>
 		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
 
-        <!-- MOD COMPAT PATCHES -->
+        <!-- WORKBENCH PATCHES -->
         <li>xmb.ancienturbanruins.mo</li>
         <li>van.foodfamine</li>
         <li>dankpyon.medieval.overhaul</li>
@@ -54,5 +54,8 @@
         <li>ferny.progressionagriculture</li>
         <li>vanillaexpanded.vfecore</li>
         <li>oskarpotocki.vfe.medieval2</li>
+    
+        <!-- GEAR PATCHES -->
+        <li>vanillaexpanded.vwe</li>
     </loadAfter>
 </ModMetaData>
