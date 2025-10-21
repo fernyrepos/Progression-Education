@@ -44,7 +44,14 @@ namespace ProgressionEducation
             var addButtonRect = new Rect(rect.xMax - HeaderHeight, rect.y, HeaderHeight, HeaderHeight);
             if (Widgets.ButtonImage(addButtonRect, TexButton.Plus))
             {
-                Find.WindowStack.Add(new Dialog_CreateClass(Find.CurrentMap));
+                if (educationManager.Classrooms.Count == 0)
+                {
+                    Messages.Message("PE_CreateClassroomFirst".Translate(), MessageTypeDefOf.RejectInput);
+                }
+                else
+                {
+                    Find.WindowStack.Add(new Dialog_CreateClass(Find.CurrentMap));
+                }
             }
 
             var listOutRect = new Rect(rect.x, rect.y + HeaderHeight + WindowPadding, rect.width, rect.height - (HeaderHeight + WindowPadding));
