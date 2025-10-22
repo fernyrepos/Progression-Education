@@ -40,7 +40,7 @@
     </researchPrerequisites>
     <comps>
       <li Class="ProgressionEducation.CompProperties_Bell">
-        <ticksToRing>10000</ticksToRing>
+        <ticksToRing>5000</ticksToRing>
         <soundDef>PE_TribalBell</soundDef>
       </li>
     </comps>
