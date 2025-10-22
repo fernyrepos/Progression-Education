@@ -70,7 +70,7 @@ namespace ProgressionEducation
                 var members = studyGroup.students.Concat(studyGroup.teacher).ToList();
                 foreach (var member in members)
                 {
-                    if (member.jobs.curDriver?.asleep ?? false || member.jobs.curDriver is JobDriver_Meditate)
+                    if (member.jobs.curDriver?.asleep ?? false || member.jobs.curDriver is JobDriver_Meditate || member.jobs.curDriver?.job?.jobGiver is JobGiver_GetJoy)
                     {
                         member.jobs.StopAll();
                     }
