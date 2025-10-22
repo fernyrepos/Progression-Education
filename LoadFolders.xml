@@ -16,6 +16,7 @@
     <li IfModActive="vanillaexpanded.vfecore">Mods and Shit/VE Furniture</li>
     <li IfModActive="oskarpotocki.vfe.medieval2">Mods and Shit/VFE Medieval 2</li>
     <li IfModActive="vanillaexpanded.vwe">Mods and Shit/VE Weapons</li>
+    <li IfModActive="vanillaexpanded.vcookebakery">Mods and Shit/VCE Bakery</li>
     <li>1.6</li>
   </v1.6>
 </loadFolders>
