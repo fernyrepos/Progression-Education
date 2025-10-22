@@ -219,7 +219,8 @@ namespace ProgressionEducation
                 return workspaceReport;
             }
 
-            if (!teacher.Spawned || teacher.Map != classroom.LearningBoard.parent.Map)
+            var learningBoardSourceMap = MapOrSourceMap(classroom.LearningBoard.parent);
+            if (!teacher.Spawned || MapOrSourceMap(teacher) != learningBoardSourceMap)
             {
                 return new AcceptanceReport("PE_TeacherOffMap".Translate());
             }
@@ -237,7 +238,7 @@ namespace ProgressionEducation
 
             foreach (var student in students)
             {
-                if (!student.Spawned || student.Map != classroom.LearningBoard.parent.Map)
+                if (!student.Spawned || MapOrSourceMap(student) != learningBoardSourceMap)
                 {
                     if (student.Map is not null && student.Map.Parent is PocketMapParent mapParent && mapParent.sourceMap == classroom.LearningBoard.parent.Map)
                     {
@@ -271,6 +272,16 @@ namespace ProgressionEducation
             }
 
             return AcceptanceReport.WasAccepted;
+
+            Map MapOrSourceMap(Thing thing)
+            {
+                Map map = thing.Map;
+                if (map.Parent is PocketMapParent { sourceMap: not null } pocketMapParent)
+                {
+                    return pocketMapParent.sourceMap;
+                }
+                return map;
+            }
         }
     }
 }

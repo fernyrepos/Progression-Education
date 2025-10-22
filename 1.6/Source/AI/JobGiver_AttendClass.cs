@@ -64,7 +64,7 @@ namespace ProgressionEducation
                 {
                     EducationLog.Message($"-> Found thing matching criteria: {thing.Label}");
                     TimeAssignmentUtility.allowUsing = true;
-                    if (pawn.CanReserve(thing) && pawn.CanReserveSittableOrSpot(JobDriver_AttendClass.DeskSpotStudent(thing)))
+                    if (pawn.CanReserve(thing) && pawn.CanReserveSittableOrSpot(JobDriver_AttendClass.DeskSpotStudent(thing), thing))
                     {
                         EducationLog.Message($"-> Pawn can reserve {thing.Label} and its spot. Returning it.");
                         TimeAssignmentUtility.allowUsing = false;
