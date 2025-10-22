@@ -81,9 +81,9 @@
 
   <!-- Proficiency & Equipment -->
   <PE_CannotEquipItem>Colonist must be taught {0} proficiency.</PE_CannotEquipItem>
-  <PE_ProficiencyLowTech>low gear</PE_ProficiencyLowTech>
-  <PE_ProficiencyFirearm>firearm</PE_ProficiencyFirearm>
-  <PE_ProficiencyHighTech>high-tech</PE_ProficiencyHighTech>
+  <PE_ProficiencyLowTech>Low gear</PE_ProficiencyLowTech>
+  <PE_ProficiencyFirearm>Firearm</PE_ProficiencyFirearm>
+  <PE_ProficiencyHighTech>High-tech</PE_ProficiencyHighTech>
 
   <!-- Class Qualification -->
   <PE_StudentNotQualifiedProficiency>{0} does not have the required {1} proficiency.</PE_StudentNotQualifiedProficiency>
