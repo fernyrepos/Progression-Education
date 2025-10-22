@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using RimWorld;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -69,7 +70,7 @@ namespace ProgressionEducation
                 var members = studyGroup.students.Concat(studyGroup.teacher).ToList();
                 foreach (var member in members)
                 {
-                    if (member.jobs.curDriver?.asleep ?? false)
+                    if (member.jobs.curDriver?.asleep ?? false || member.jobs.curDriver is JobDriver_Meditate)
                     {
                         member.jobs.StopAll();
                     }
