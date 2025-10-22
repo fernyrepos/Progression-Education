@@ -1,4 +1,5 @@
 using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -238,6 +239,10 @@ namespace ProgressionEducation
             {
                 if (!student.Spawned || student.Map != classroom.LearningBoard.parent.Map)
                 {
+                    if (student.Map is not null && student.Map.Parent is PocketMapParent mapParent && mapParent.sourceMap == classroom.LearningBoard.parent.Map)
+                    {
+                        continue;
+                    }
                     studentsOffMap.Add(student);
                     continue;
                 }
