@@ -27,6 +27,7 @@
 	</modDependencies>
     <incompatibleWith>
         <li>dame.arcanetechnology</li>
+        <li>konstantynopolitaneczka.choosethelesson</li>
     </incompatibleWith>
     <loadAfter>
         <!-- CORE STUFF -->
@@ -55,7 +56,7 @@
         <li>vanillaexpanded.vfecore</li>
         <li>oskarpotocki.vfe.medieval2</li>
         <li>vanillaexpanded.vcookebakery</li>
-        
+
         <!-- GEAR PATCHES -->
         <li>vanillaexpanded.vwe</li>
     </loadAfter>
