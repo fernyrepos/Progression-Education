@@ -1,3 +1,4 @@
+using System;
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace ProgressionEducation
         public int startHour;
         public int endHour;
         public string timeAssignmentDefName;
+        private static readonly Type t_MapParent_Vehicle =
+            GenTypes.GetTypeInAnyAssembly("VehicleMapFramework.MapParent_Vehicle", "VehicleMapFramework");
 
         public StudyGroup()
         {
@@ -276,9 +279,10 @@ namespace ProgressionEducation
             Map MapOrSourceMap(Thing thing)
             {
                 Map map = thing.Map;
-                if (map.Parent is PocketMapParent { sourceMap: not null } pocketMapParent)
+                Map sourceMap = map.PocketMapParent?.sourceMap;
+                if (sourceMap != null && map.Parent.GetType().SameOrSubclassOf(t_MapParent_Vehicle))
                 {
-                    return pocketMapParent.sourceMap;
+                    return sourceMap;
                 }
                 return map;
             }
