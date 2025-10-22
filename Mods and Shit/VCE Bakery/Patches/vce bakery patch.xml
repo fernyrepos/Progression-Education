@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- VCE BAKERY PATCHES -->
+
+<!-- COOKING -->
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/SkillDef[defName="Cooking"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
+  <value>
+    <li>VCE_BakeryOven_Electric</li>
+    <li>VCE_BakeryOven_Fueled</li>
+  </value>
+</Operation>
+
+</Patch>
