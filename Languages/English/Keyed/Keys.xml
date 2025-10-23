@@ -29,16 +29,16 @@
   <PE_SemesterGoal>Semester goal</PE_SemesterGoal>
   <PE_ConfirmDeleteClass>Are you sure you would like to delete this class? This will reset all learning progress.</PE_ConfirmDeleteClass>
   <PE_StudyTimeNeeded>Continuous study time needed: {0}</PE_StudyTimeNeeded>
-  <PE_Requirements>Requirements:</PE_Requirements>
+  <PE_Requirements>Requirements</PE_Requirements>
   <PE_LearningBoard>learning board</PE_LearningBoard>
   <PE_Bell>bell</PE_Bell>
   <PE_SchoolDesks>school desks</PE_SchoolDesks>
-  <PE_ClassHours>Class hours:</PE_ClassHours>
+  <PE_ClassHours>Class hours</PE_ClassHours>
   <PE_Present>({0} present)</PE_Present>
   <PE_NotPresent>not present on map</PE_NotPresent>
   <PE_StartHour>Start hour</PE_StartHour>
   <PE_EndHour>End hour</PE_EndHour>
-  <PE_Classroom>Classroom:</PE_Classroom>
+  <PE_Classroom>Classroom</PE_Classroom>
   <PE_SelectClassroom>Select classroom</PE_SelectClassroom>
   <PE_NoClassroomsAvailable>No classrooms available.</PE_NoClassroomsAvailable>
   <PE_NotEnoughBenches>Not enough {0} available. Required: {1}, Have: {2}.</PE_NotEnoughBenches>
@@ -126,7 +126,7 @@
   <PE_ClassroomSettings>Classroom settings</PE_ClassroomSettings>
   <PE_RestrictReservationsDuringClass>Disallow traditional work in classroom</PE_RestrictReservationsDuringClass>
   <PE_RestrictReservationsDuringClass_Desc>If enabled, pawns will not be able to use classroom furniture (desks, etc.).</PE_RestrictReservationsDuringClass_Desc>
-  
+
   <!-- Off-Map Messages -->
   <PE_ClassCancelledOffMap>{0} class cancelled today as members are off map.</PE_ClassCancelledOffMap>
 
