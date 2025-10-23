@@ -21,7 +21,7 @@
 
   <!-- Create Class Dialog -->
   <PE_CreateClass>Create a class</PE_CreateClass>
-  <PE_CreateClassDesc>Set up a new class session with a teacher and students.</PE_CreateClassDesc>
+  <PE_CreateClassDesc>Create a new class semester. Teachers with higher social skills teach faster, and the longer a class stays together the more effective it becomes. Daycares are for children only, and teach random skills.</PE_CreateClassDesc>
   <PE_ClassName>Class name</PE_ClassName>
   <PE_Subject>Subject</PE_Subject>
   <PE_SkillFocus>Skill focus</PE_SkillFocus>
