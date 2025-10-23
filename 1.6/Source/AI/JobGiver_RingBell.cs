@@ -1,5 +1,6 @@
 using RimWorld;
 using System.Linq;
+using RimWorld.Planet;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -39,11 +40,15 @@ namespace ProgressionEducation
                 }
                 else
                 {
-                    var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(studyGroup.classroom.LearningBoard.parent, pawn);
+                    var learningBoard = studyGroup.classroom.LearningBoard.parent;
+                    var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
                     if (waypoints.Any())
                     {
                         EducationLog.Message($"-> No bell found. Found classroom board. Creating job to go to it.");
-                        return JobMaker.MakeJob(JobDefOf.GotoWander, waypoints.RandomElement());
+                        IntVec3 waypoint = waypoints.RandomElement();
+                        Job job = JobMaker.MakeJob(JobDefOf.GotoWander, waypoint);
+                        job.globalTarget = new GlobalTargetInfo(waypoint, learningBoard.Map);
+                        return job;
                     }
                 }
             }

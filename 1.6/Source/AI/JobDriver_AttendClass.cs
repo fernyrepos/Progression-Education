@@ -1,5 +1,6 @@
 using RimWorld;
 using System.Collections.Generic;
+using RimWorld.Planet;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -33,7 +34,9 @@ namespace ProgressionEducation
                 }
                 return true;
             });
-            yield return Toils_Goto.GotoCell(DeskSpotStudent(TargetA.Thing), PathEndMode.OnCell);
+            IntVec3 deskSpot = DeskSpotStudent(TargetA.Thing);
+            job.globalTarget = new GlobalTargetInfo(deskSpot, TargetA.Thing.Map);
+            yield return Toils_Goto.GotoCell(deskSpot, PathEndMode.OnCell);
             yield return MakeLearningToil();
         }
 

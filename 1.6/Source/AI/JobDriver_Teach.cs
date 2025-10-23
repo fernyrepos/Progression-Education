@@ -52,6 +52,7 @@ namespace ProgressionEducation
                     if (waypoints.Any())
                     {
                         job.SetTarget(TargetIndex.B, waypoints.RandomElement());
+                        job.globalTarget = job.targetB.ToGlobalTargetInfo(learningBoard.Map);
                         pawn.pather.StartPath(job.GetTarget(TargetIndex.B), PathEndMode.OnCell);
                     }
                 },
