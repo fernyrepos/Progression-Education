@@ -157,12 +157,7 @@ namespace ProgressionEducation
 
        public static bool CanEquipItem(this Pawn pawn, Thing equipment)
        {
-           if (!EducationSettings.Instance.enableProficiencySystem || pawn.Faction != Faction.OfPlayerSilentFail)
-           {
-               return true;
-           }
-
-           if (pawn.story?.traits == null)
+           if (!EducationSettings.Instance.enableProficiencySystem || pawn.Faction != Faction.OfPlayerSilentFail || PawnGenerator.IsBeingGenerated(pawn) || pawn.story?.traits == null || pawn.story.traits.allTraits.Any(x => x.def == DefsOf.PE_LowTechProficiency || x.def == DefsOf.PE_FirearmProficiency || x.def == DefsOf.PE_HighTechProficiency) is false)
            {
                return true;
            }
