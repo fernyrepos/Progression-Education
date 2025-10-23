@@ -1,3 +1,4 @@
+using System;
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace ProgressionEducation
         public int startHour;
         public int endHour;
         public string timeAssignmentDefName;
+        private static readonly Type t_MapParent_Vehicle =
+            GenTypes.GetTypeInAnyAssembly("VehicleMapFramework.MapParent_Vehicle", "VehicleMapFramework");
 
         public StudyGroup()
         {
@@ -219,7 +222,8 @@ namespace ProgressionEducation
                 return workspaceReport;
             }
 
-            if (!teacher.Spawned || teacher.Map != classroom.LearningBoard.parent.Map)
+            var learningBoardSourceMap = MapOrSourceMap(classroom.LearningBoard.parent);
+            if (!teacher.Spawned || MapOrSourceMap(teacher) != learningBoardSourceMap)
             {
                 return new AcceptanceReport("PE_TeacherOffMap".Translate());
             }
@@ -237,7 +241,7 @@ namespace ProgressionEducation
 
             foreach (var student in students)
             {
-                if (!student.Spawned || student.Map != classroom.LearningBoard.parent.Map)
+                if (!student.Spawned || MapOrSourceMap(student) != learningBoardSourceMap)
                 {
                     if (student.Map is not null && student.Map.Parent is PocketMapParent mapParent && mapParent.sourceMap == classroom.LearningBoard.parent.Map)
                     {
@@ -271,6 +275,17 @@ namespace ProgressionEducation
             }
 
             return AcceptanceReport.WasAccepted;
+
+            Map MapOrSourceMap(Thing thing)
+            {
+                Map map = thing.Map;
+                Map sourceMap = map.PocketMapParent?.sourceMap;
+                if (sourceMap != null && map.Parent.GetType().SameOrSubclassOf(t_MapParent_Vehicle))
+                {
+                    return sourceMap;
+                }
+                return map;
+            }
         }
     }
 }

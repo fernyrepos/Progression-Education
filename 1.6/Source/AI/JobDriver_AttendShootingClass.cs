@@ -56,7 +56,8 @@ namespace ProgressionEducation
                     {
                         weapon = GetWeaponForTraining();
                     }
-                    var cell = TargetA.Thing.OccupiedRect().OrderByDescending(c => c.DistanceToSquared(pawn.Position)).FirstOrDefault();
+
+                    var cell = TargetA.Thing.DrawPos.ToIntVec3();
                     FireProjectile(pawn, weapon, cell);
                     ticksUntilNextAction = Rand.Range(60, 120);
                 }
