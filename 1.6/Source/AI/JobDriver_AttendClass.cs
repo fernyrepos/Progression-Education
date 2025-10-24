@@ -35,7 +35,6 @@ namespace ProgressionEducation
                 return true;
             });
             IntVec3 deskSpot = DeskSpotStudent(TargetA.Thing);
-            job.globalTarget = new GlobalTargetInfo(deskSpot, TargetA.Thing.Map);
             yield return Toils_Goto.GotoCell(deskSpot, PathEndMode.OnCell);
             yield return MakeLearningToil();
         }

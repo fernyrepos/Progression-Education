@@ -72,6 +72,10 @@ namespace ProgressionEducation
                 {
                     if (member.jobs.curDriver?.asleep ?? false || member.jobs.curDriver is JobDriver_Meditate || member.jobs.curDriver?.job?.jobGiver is JobGiver_GetJoy)
                     {
+                        if (member.Deathresting)
+                        {
+                            continue;
+                        }
                         member.jobs.StopAll();
                     }
                 }

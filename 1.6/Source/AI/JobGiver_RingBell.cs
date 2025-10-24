@@ -47,7 +47,6 @@ namespace ProgressionEducation
                         EducationLog.Message($"-> No bell found. Found classroom board. Creating job to go to it.");
                         IntVec3 waypoint = waypoints.RandomElement();
                         Job job = JobMaker.MakeJob(JobDefOf.GotoWander, waypoint);
-                        job.globalTarget = new GlobalTargetInfo(waypoint, learningBoard.Map);
                         return job;
                     }
                 }

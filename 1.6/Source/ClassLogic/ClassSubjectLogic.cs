@@ -172,11 +172,7 @@ namespace ProgressionEducation
                 GUI.color = Color.red;
                 presentText = " " + "PE_Present".Translate(benchCount);
             }
-            if (benchCount < 1 && count < 1)
-            {
-                count = 1;
-            }
-            Widgets.Label(new Rect(rect.x + 10f, curY, 300f, 25f), $"{count}x {label}{presentText}");
+            Widgets.Label(new Rect(rect.x + 10f, curY, 300f, 25f), $"{benchCount}x {label}{presentText}");
             GUI.color = Color.white;
             curY += 25f;
         }

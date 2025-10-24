@@ -136,17 +136,16 @@ namespace ProgressionEducation
                 checkedStudyGroups.Remove(studyGroup);
                 return;
             }
-            if (checkedStudyGroups.Contains(studyGroup))
-            {
-                return;
-            }
-            checkedStudyGroups.Add(studyGroup);
-
+            bool alreadyGivenMessage = checkedStudyGroups.Contains(studyGroup) is false;
             var validationReport = studyGroup.ValidateClassStatus();
             if (!validationReport.Accepted)
             {
-                Messages.Message($"{"PE_ClassCancelledToday".Translate(studyGroup.className)} {validationReport.Reason}", MessageTypeDefOf.NegativeEvent);
                 EducationLog.Message($"Class '{studyGroup.className}' cancelled due to validation failure: {validationReport.Reason}");
+                if (alreadyGivenMessage)
+                {
+                    Messages.Message($"{"PE_ClassCancelledToday".Translate(studyGroup.className)} {validationReport.Reason}", MessageTypeDefOf.NegativeEvent);
+                    checkedStudyGroups.Add(studyGroup);
+                }
                 return;
             }
 
