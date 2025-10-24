@@ -111,7 +111,10 @@
         <researchPrerequisites>
             <li>Ferny_SpacerEducation</li>
         </researchPrerequisites>
-        <costStuffCount>50</costStuffCount>
+        <costList>
+            <ComponentSpacer>2</ComponentSpacer>
+        </costList>
+        <costStuffCount>60</costStuffCount>
         <stuffCategories>
             <li>Metallic</li>
         </stuffCategories>
