@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ResearchProjectDef[defName="Gunsmithing"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ResearchGrantsTrait">
+        <trait>PE_FirearmProficiency</trait>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ResearchProjectDef[defName="Fabrication"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ResearchGrantsTrait">
+        <trait>PE_HighTechProficiency</trait>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>
