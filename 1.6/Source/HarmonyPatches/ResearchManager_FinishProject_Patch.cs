@@ -17,6 +17,7 @@ namespace ProgressionEducation
                 {
                     ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait);
                 }
+                Find.LetterStack.ReceiveLetter(extension.title, extension.desc, LetterDefOf.PositiveEvent);
             }
         }
     }
