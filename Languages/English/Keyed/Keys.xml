@@ -121,4 +121,5 @@
   <PE_NoBellToCreateClass>You must build a class bell or chime before you can create a class.</PE_NoBellToCreateClass>
   <PE_LearningBoardIsBlocked>{0} is blocked.</PE_LearningBoardIsBlocked>
   <PE_ScheduleShouldBeAtleastHourLong>Schedule should be at least hour long.</PE_ScheduleShouldBeAtleastHourLong>
+  <PE_Learning>Learning need: {0}</PE_Learning>
 </LanguageData>

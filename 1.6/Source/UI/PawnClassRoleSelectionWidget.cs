@@ -4,6 +4,7 @@ using Verse;
 
 namespace ProgressionEducation
 {
+    [HotSwappable]
     [StaticConstructorOnStartup]
     public class PawnClassRoleSelectionWidget : PawnRoleSelectionWidgetBase_Fixed<ClassRole>
     {
@@ -45,15 +46,12 @@ namespace ProgressionEducation
             {
                 return null;
             }
-            if (studyGroup.teacher == pawn)
+            var text = studyGroup.subjectLogic.BaseTooltipFor(pawn);
+            if (studyGroup.teacher != pawn)
             {
-                return studyGroup.subjectLogic.TeacherTooltipFor(pawn);
+                text += "\n" + studyGroup.subjectLogic.StudentTooltipFor(pawn);
             }
-            if (studyGroup.students.Contains(pawn))
-            {
-                return studyGroup.subjectLogic.StudentTooltipFor(pawn);
-            }
-            return null;
+            return text;
         }
 
         public override bool ShouldGrayOut(Pawn pawn, out TaggedString reason)

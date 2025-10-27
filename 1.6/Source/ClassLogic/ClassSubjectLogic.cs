@@ -80,7 +80,7 @@ namespace ProgressionEducation
                 .Where(p => teacherRole.CanAcceptPawn(p).Accepted)
                 .OrderByDescending(p => CalculateTeacherScore(p))
                 .FirstOrDefault();
-            
+
             if (bestTeacher != null)
             {
                 var existingTeacher = studyGroup.teacher;
@@ -127,13 +127,13 @@ namespace ProgressionEducation
                 return;
             }
             EducationLog.Message($"Auto-assigning students and teacher for class '{studyGroup.className}'");
-            
+
             UnassignUnqualifiedPawns(createClassDialog);
             AssignBestTeacher(createClassDialog);
             HandleRoleAutoAssignment(createClassDialog, createClassDialog.StudentRole, BenchCount);
             EducationLog.Message($"Auto-assigned students and teacher for class '{studyGroup.className}'");
         }
-        public abstract string TeacherTooltipFor(Pawn pawn);
+        public abstract string BaseTooltipFor(Pawn pawn);
         public abstract string StudentTooltipFor(Pawn pawn);
 
         protected void UnassignUnqualifiedPawns(Dialog_CreateClass createClassDialog)

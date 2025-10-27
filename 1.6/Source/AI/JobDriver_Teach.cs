@@ -11,7 +11,7 @@ namespace ProgressionEducation
     public class JobDriver_Teach : JobDriver_LessonBase
     {
         public SkillDef taughtSkill;
-        public int waitingTicks = 0;
+        public int waitingTicks;
 
         private StudyGroup StudyGroup
         {
@@ -44,7 +44,7 @@ namespace ProgressionEducation
             this.FailOn(() => pawn.mindState.duty.def != DefsOf.PE_TeachDuty);
             this.FailOn(() => StudyGroup == null || StudyGroup.teacher != pawn);
             var learningBoard = job.GetTarget(TargetIndex.A).Thing;
-
+            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             Toil wanderToil = new Toil
             {
                 initAction = () =>
@@ -55,9 +55,12 @@ namespace ProgressionEducation
                         job.SetTarget(TargetIndex.B, waypoints.RandomElement());
                         pawn.pather.StartPath(job.GetTarget(TargetIndex.B), PathEndMode.OnCell);
                     }
-                    waitingTicks = 0;
                 },
                 defaultCompleteMode = ToilCompleteMode.PatherArrival
+            };
+            wanderToil.tickAction = delegate
+            {
+                waitingTicks++;
             };
             wanderToil.FailOn(() => StudyGroup == null);
             yield return wanderToil;
@@ -97,6 +100,8 @@ namespace ProgressionEducation
             };
             teachAtWaypoint.AddPreInitAction(InitializeWeapon);
             yield return teachAtWaypoint;
+            yield return Toils_Jump.JumpIf(wanderToil, () => StudyGroup != null && !StudyGroup.ClassIsActive());
+
             yield return Toils_Jump.JumpIf(gotoWaypoint, delegate
             {
                 var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
@@ -108,19 +113,22 @@ namespace ProgressionEducation
         {
             var studyGroup = StudyGroup;
             PawnUtility.GainComfortFromCellIfPossible(pawn, 1, true);
-            pawn.skills.Learn(SkillDefOf.Social, 0.1f);
-
-            if (studyGroup.subjectLogic.IsInfinite is false)
+            if (studyGroup.ClassIsActive())
             {
-                float semesterProgress = studyGroup.CalculateProgressPerTick();
-                studyGroup.AddProgress(semesterProgress);
-            }
+                pawn.skills.Learn(SkillDefOf.Social, 0.1f);
 
-            foreach (var student in studyGroup.students)
-            {
-                if (IsStudentPresentAndAttending(student, studyGroup))
+                if (studyGroup.subjectLogic.IsInfinite is false)
                 {
-                    studyGroup.subjectLogic.ApplyTeachingTick(student, this);
+                    float semesterProgress = studyGroup.CalculateProgressPerTick();
+                    studyGroup.AddProgress(semesterProgress);
+                }
+
+                foreach (var student in studyGroup.students)
+                {
+                    if (IsStudentPresentAndAttending(student, studyGroup))
+                    {
+                        studyGroup.subjectLogic.ApplyTeachingTick(student, this);
+                    }
                 }
             }
         }
@@ -191,7 +199,7 @@ namespace ProgressionEducation
             base.ExposeData();
             Scribe_Defs.Look(ref taughtSkill, "taughtSkill");
             Scribe_Deep.Look(ref weapon, "weapon");
-            Scribe_Values.Look(ref waitingTicks, "waitingTicks", 0);
+            Scribe_Values.Look(ref waitingTicks, "waitingTicks");
         }
 
         public override void InitializeWeapon()

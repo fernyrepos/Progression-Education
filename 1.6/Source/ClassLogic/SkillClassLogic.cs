@@ -144,16 +144,22 @@ namespace ProgressionEducation
             }
         }
 
-        public override string TeacherTooltipFor(Pawn pawn)
+        public override string BaseTooltipFor(Pawn pawn)
         {
             var social = pawn.skills.GetSkill(SkillDefOf.Social);
             var intellectual = pawn.skills.GetSkill(SkillDefOf.Intellectual);
             var relevantSkill = SkillFocus != null ? pawn.skills.GetSkill(SkillFocus) : null;
-            string text = $"{social.def.LabelCap}: {social.Level}\n{intellectual.def.LabelCap}: {intellectual.Level}";
+            string text = $"{social.def.LabelCap}: {social.Level} ({social.passion.GetLabel()})\n{intellectual.def.LabelCap}: {intellectual.Level} ({intellectual.passion.GetLabel()})";
             if (relevantSkill != null && relevantSkill != social && relevantSkill != intellectual)
             {
                 text += $"\n{relevantSkill.def.LabelCap}: {relevantSkill.Level}";
             }
+            text = GetProgress(text);
+            return text;
+        }
+
+        private string GetProgress(string text)
+        {
             var map = studyGroup.Map;
             if (studyGroup.classroom != null && map != null)
             {
@@ -164,17 +170,13 @@ namespace ProgressionEducation
                     text += "\n\n" + "PE_EstimatedHourlyProgress".Translate() + ": " + num.ToString("F0") + " " + "PE_XpPerHour".Translate();
                 }
             }
+
             return text;
         }
 
         public override string StudentTooltipFor(Pawn pawn)
         {
-            if (SkillFocus != null)
-            {
-                var skill = pawn.skills.GetSkill(SkillFocus);
-                return $"{SkillFocus.LabelCap}: {skill.Level} ({skill.passion.GetLabel()})";
-            }
-            return null;
+            return "";
         }
 
         public override JobDef LearningJob

@@ -68,7 +68,7 @@ namespace ProgressionEducation
                     var teacherJobDriver = studyGroup.teacher?.jobs?.curDriver as JobDriver_Teach;
                     if (teacherJobDriver != null && teacherJobDriver.waitingTicks >= StudyGroup.MaxTeacherWaitingTicks && studyGroup.AllStudentsPresent() is false)
                     {
-                        Messages.Message("PE_ClassStartedWithoutAllStudents".Translate(studyGroup.className), MessageTypeDefOf.CautionInput);
+                        Messages.Message("PE_ClassPartiallyFunctioningWarning".Translate(studyGroup.className), MessageTypeDefOf.CautionInput);
                         partialAttendanceWarningShown = true;
                     }
                 }

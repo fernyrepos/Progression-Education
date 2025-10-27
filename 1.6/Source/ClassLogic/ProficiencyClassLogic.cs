@@ -160,7 +160,7 @@ namespace ProgressionEducation
             curY += 30f;
         }
 
-        public override string TeacherTooltipFor(Pawn pawn)
+        public override string BaseTooltipFor(Pawn pawn)
         {
             var social = pawn.skills.GetSkill(SkillDefOf.Social);
             var intellectual = pawn.skills.GetSkill(SkillDefOf.Intellectual);

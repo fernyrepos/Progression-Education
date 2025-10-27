@@ -16,6 +16,13 @@ namespace ProgressionEducation
             Scribe_Defs.Look(ref trait, "trait");
         }
 
+        public override void Randomize()
+        {
+            chance = 1;
+            context = PawnGenerationContext.PlayerStarter;
+            hideOffMap = false;
+        }
+
         public override void DoEditInterface(Listing_ScenEdit listing)
         {
             Rect scenPartRect = listing.GetScenPartRect(this, RowHeight);

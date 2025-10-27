@@ -92,7 +92,7 @@ namespace ProgressionEducation
             return p.GetStatValue(StatDefOf.SocialImpact, true);
         }
 
-        public override string TeacherTooltipFor(Pawn pawn)
+        public override string BaseTooltipFor(Pawn pawn)
         {
             return "";
         }
@@ -101,11 +101,11 @@ namespace ProgressionEducation
         {
             if (pawn.needs?.learning != null)
             {
-                return $"Learning: {pawn.needs.learning.CurLevelPercentage.ToStringPercent()}";
+                return "PE_Learning".Translate(pawn.needs.learning.CurLevelPercentage.ToStringPercent());
             }
             return "";
         }
-        
+
         public override void HandleStudentLifecycleEvents()
         {
             List<Pawn> studentsToRemove = [];
