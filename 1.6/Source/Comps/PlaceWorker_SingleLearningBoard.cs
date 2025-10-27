@@ -5,25 +5,46 @@ using Verse;
 
 namespace ProgressionEducation
 {
+    [HotSwappable]
     public class PlaceWorker_SingleLearningBoard : PlaceWorker
     {
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
             Room room = loc.GetRoom(map);
             if (room is null) return AcceptanceReport.WasAccepted;
-            List<Thing> thingsInRoom = room.ContainedAndAdjacentThings;
-            foreach (Thing thingInRoom in thingsInRoom)
+            if (room.PsychologicallyOutdoors)
             {
-                if (thingInRoom != thingToIgnore)
+                foreach (var nearby in GenRadial.RadialDistinctThingsAround(loc, map, 10, true))
                 {
-                    if (thingInRoom.TryGetComp<CompLearningBoard>() != null)
+                    if (thingToIgnore != nearby && nearby.GetRoom() == room)
                     {
-                        return new AcceptanceReport("PE_AlreadyHasLearningBoard".Translate());
+                        if (IsLearningBoard(nearby))
+                        {
+                            return new AcceptanceReport("PE_AlreadyHasLearningBoard".Translate());
+                        }
                     }
                 }
             }
-
+            else
+            {
+                List<Thing> thingsInRoom = room.ContainedAndAdjacentThings;
+                foreach (Thing thingInRoom in thingsInRoom)
+                {
+                    if (thingInRoom != thingToIgnore)
+                    {
+                        if (IsLearningBoard(thingInRoom))
+                        {
+                            return new AcceptanceReport("PE_AlreadyHasLearningBoard".Translate());
+                        }
+                    }
+                }
+            }
             return AcceptanceReport.WasAccepted;
+        }
+
+        private static bool IsLearningBoard(Thing nearby)
+        {
+            return nearby.def.HasComp<CompLearningBoard>() || nearby.def.entityDefToBuild is ThingDef thingDef && thingDef.HasComp<CompLearningBoard>();
         }
     }
 }
