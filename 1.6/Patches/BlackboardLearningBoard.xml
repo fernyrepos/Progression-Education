@@ -16,7 +16,13 @@
       </li>
     </value>
   </Operation>
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/placeWorkers</xpath>
+    <value>
+      <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
 
+    </value>
+  </Operation>
   <Operation Class="PatchOperationRemove">
     <xpath>Defs/ThingDef/comps/li[compClass="CompStatEntrySchoolDesk"]</xpath>
     <success>Always</success>
