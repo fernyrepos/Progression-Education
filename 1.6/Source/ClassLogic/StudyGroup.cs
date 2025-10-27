@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI;
+using Verse.AI.Group;
 
 namespace ProgressionEducation
 {
@@ -120,6 +121,12 @@ namespace ProgressionEducation
             {
                 students.Remove(student);
                 TimeAssignmentUtility.ClearScheduleFromPawns(this, new List<Pawn> { student });
+                var lord = student.GetLord();
+                if (lord != null && lord.LordJob is LordJob_AttendClass)
+                {
+                    lord.RemovePawn(student);
+                    student.jobs.StopAll();
+                }
             }
         }
 
@@ -244,6 +251,11 @@ namespace ProgressionEducation
             if (classroom is null || classroom.LearningBoard?.parent == null || classroom.LearningBoard.parent.Map == null)
             {
                 return new AcceptanceReport("PE_NoLearningBoard".Translate());
+            }
+            
+            if (classroom.LearningBoard.parent.InteractionCell.GetFirstBuilding(classroom.LearningBoard.parent.Map) != null)
+            {
+                return new AcceptanceReport("PE_LearningBoardIsBlocked".Translate(classroom.LearningBoard.parent));
             }
 
             var workspaceReport = AreWorkspacesAvailable();

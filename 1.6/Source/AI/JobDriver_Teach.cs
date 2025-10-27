@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -82,7 +82,17 @@ namespace ProgressionEducation
             {
                 defaultCompleteMode = ToilCompleteMode.Delay,
                 defaultDuration = 300,
-                initAction = () => pawn.rotationTracker.FaceCell(learningBoard.Position),
+                initAction = delegate
+                {
+                    if (StudyGroup.subjectLogic is ProficiencyClassLogic)
+                    {
+                        pawn.rotationTracker.FaceCell(pawn.Position + learningBoard.Rotation.FacingCell);
+                    }
+                    else
+                    {
+                        pawn.rotationTracker.FaceCell(learningBoard.Position);
+                    }
+                },
                 tickAction = DoTeachingTick
             };
             teachAtWaypoint.AddPreInitAction(InitializeWeapon);

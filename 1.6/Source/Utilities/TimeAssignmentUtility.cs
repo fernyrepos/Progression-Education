@@ -91,10 +91,7 @@ namespace ProgressionEducation
 
         public static void TryRepairTimetable(Pawn pawn)
         {
-            if (pawn.timetable.times == null)
-            {
-                pawn.timetable.times = new List<TimeAssignmentDef>();
-            }
+            if (pawn.timetable?.times is null) return;
             for (int i = 0; i < 24; i++)
             {
                 try

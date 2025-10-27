@@ -11,6 +11,7 @@ namespace ProgressionEducation
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 ProficiencyUtility.ApplyProficiencyTraitToPawn(__instance);
+                TimeAssignmentUtility.TryRepairTimetable(__instance);
             }
         }
     }

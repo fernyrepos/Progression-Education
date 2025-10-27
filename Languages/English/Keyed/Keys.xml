@@ -118,5 +118,5 @@
   <PE_RemovedFromDaycareOnAgeUp>{0} has aged up and has been removed from the "{1}" daycare.</PE_RemovedFromDaycareOnAgeUp>
   <PE_TeacherBellFailure>Class never started as teacher couldn't alert enough students within the scheduled time. Consider upgrading your school bell or lengthening the class session.</PE_TeacherBellFailure>
   <PE_NoBellToCreateClass>You must build a class bell or chime before you can create a class.</PE_NoBellToCreateClass>
-
+  <PE_LearningBoardIsBlocked>{0} is blocked.</PE_LearningBoardIsBlocked>
 </LanguageData>
