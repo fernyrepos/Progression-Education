@@ -103,7 +103,12 @@ namespace ProgressionEducation
 
             Text.Font = GameFont.Medium;
             var nameRect = new Rect(innerRect.x, innerRect.y, innerRect.width * 0.7f, 30f);
-            Widgets.Label(nameRect, studyGroup.className);
+            var name = studyGroup.className;
+            if (studyGroup.suspended)
+            {
+                name += " " + "PE_Suspended".Translate();
+            }
+            Widgets.Label(nameRect, name);
             Text.Font = GameFont.Small;
 
             string description = studyGroup.subjectLogic.Description;

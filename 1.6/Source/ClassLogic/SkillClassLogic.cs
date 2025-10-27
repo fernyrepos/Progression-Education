@@ -67,7 +67,7 @@ namespace ProgressionEducation
             }
             var classroom = studyGroup.classroom;
             float classRoomModifier = classroom.CalculateLearningModifier();
-            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * LearningSpeedModifier;
+            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * LearningSpeedModifier * 0.7f;
             return progress;
         }
 

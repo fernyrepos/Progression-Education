@@ -9,6 +9,7 @@ using Verse.AI.Group;
 
 namespace ProgressionEducation
 {
+    [HotSwappable]
     public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
     {
         public const int MaxTeacherWaitingTicks = GenDate.TicksPerHour * 2;
@@ -248,14 +249,15 @@ namespace ProgressionEducation
             {
                 return AcceptanceReport.WasRejected;
             }
-            if (classroom is null || classroom.LearningBoard?.parent == null || classroom.LearningBoard.parent.Map == null)
+            var learningBoard = classroom?.LearningBoard?.parent;
+            if (classroom is null || learningBoard?.Map == null)
             {
                 return new AcceptanceReport("PE_NoLearningBoard".Translate());
             }
-            
-            if (classroom.LearningBoard.parent.InteractionCell.GetFirstBuilding(classroom.LearningBoard.parent.Map) != null)
+            var facingCell = learningBoard.Position + learningBoard.Rotation.FacingCell;
+            if (facingCell.GetFirstBuilding(classroom.LearningBoard.parent.Map) != null)
             {
-                return new AcceptanceReport("PE_LearningBoardIsBlocked".Translate(classroom.LearningBoard.parent));
+                return new AcceptanceReport("PE_LearningBoardIsBlocked".Translate(classroom.LearningBoard.parent.def.label));
             }
 
             var workspaceReport = AreWorkspacesAvailable();

@@ -12,19 +12,6 @@ namespace ProgressionEducation
     {
         public SkillDef taughtSkill;
         public int waitingTicks;
-
-        private StudyGroup StudyGroup
-        {
-            get
-            {
-                if (pawn.GetLord()?.LordJob is LordJob_AttendClass lordJob)
-                {
-                    return lordJob.studyGroup;
-                }
-                return null;
-            }
-        }
-
         public override string GetReport()
         {
             if (!(StudyGroup?.ClassIsActive() ?? true))
@@ -85,6 +72,7 @@ namespace ProgressionEducation
             {
                 defaultCompleteMode = ToilCompleteMode.Delay,
                 defaultDuration = 300,
+                handlingFacing = true,
                 initAction = delegate
                 {
                     if (StudyGroup.subjectLogic is ProficiencyClassLogic)
@@ -198,7 +186,6 @@ namespace ProgressionEducation
         {
             base.ExposeData();
             Scribe_Defs.Look(ref taughtSkill, "taughtSkill");
-            Scribe_Deep.Look(ref weapon, "weapon");
             Scribe_Values.Look(ref waitingTicks, "waitingTicks");
         }
 

@@ -122,4 +122,5 @@
   <PE_LearningBoardIsBlocked>{0} is blocked.</PE_LearningBoardIsBlocked>
   <PE_ScheduleShouldBeAtleastHourLong>Schedule should be at least hour long.</PE_ScheduleShouldBeAtleastHourLong>
   <PE_Learning>Learning need: {0}</PE_Learning>
+  <PE_Suspended>(suspended)</PE_Suspended>
 </LanguageData>
