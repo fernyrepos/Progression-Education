@@ -11,5 +11,15 @@
   </value>
 </Operation>
 
+<!-- CRIB RESEARCH -->
+<Operation Class="PatchOperationReplace">
+  <xpath>Defs/ThingDef[defName="TribalCrib"]/researchPrerequisites</xpath>
+  <value>
+    <researchPrerequisites Inherit="False">
+      <li>VFET_Furniture</li>
+    </researchPrerequisites>  
+  </value>
+</Operation>
+
 
 </Patch>

@@ -1,5 +1,49 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+ <ThingDef ParentName="SansComfortBedBase">
+    <defName>TribalCrib</defName>
+    <label>rough crib</label>
+    <description>An unstable weaved bed perfect for a sleepy baby. A high quality crib will make a baby happy. Multiple cribs can be placed in a bedroom without turning it into a barracks.</description>
+    <comps>
+      <li Class="CompProperties_AffectedByFacilities">
+        <linkableFacilities>
+          <li MayRequire="Ludeon.RimWorld.Ideology">SleepAccelerator</li>
+        </linkableFacilities>
+      </li>
+    </comps>
+    <graphicData>
+      <texPath>Buildings/Cribs/TribalCrib</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shaderType>CutoutComplex</shaderType>
+      <drawSize>2.2</drawSize>
+      <shadowData>
+        <volume>(0.8,0.4,0.9)</volume>
+      </shadowData>
+    </graphicData>
+    <staticSunShadowHeight>0</staticSunShadowHeight>
+    <statBases>
+      <BirthRitualQualityOffset MayRequire="Ludeon.RimWorld.Biotech">0</BirthRitualQualityOffset>
+      <MaxHitPoints>70</MaxHitPoints>
+      <Beauty>1</Beauty>
+      <WorkToBuild>400</WorkToBuild>
+      <Mass>15</Mass>
+      <BedRestEffectiveness>1</BedRestEffectiveness>
+    </statBases>
+    <size>(1,1)</size>
+    <costStuffCount>25</costStuffCount>
+    <uiOrder>2024</uiOrder>
+    <building>
+      <bed_maxBodySize>0.25</bed_maxBodySize>
+      <bed_showSleeperBody>True</bed_showSleeperBody>
+      <bed_emptyCountsForBarracks>false</bed_emptyCountsForBarracks>
+      <bed_crib>True</bed_crib>
+      <bed_pawnDrawOffset>-0.15</bed_pawnDrawOffset>
+      <bed_DisplayOwnerType>false</bed_DisplayOwnerType>
+      <paintable>true</paintable>
+    </building>
+    <researchPrerequisites Inherit="False">
+    </researchPrerequisites>
+  </ThingDef>
 
   <ThingDef ParentName="SansComfortBedBase">
     <defName>RoyalCrib</defName>
@@ -42,52 +86,8 @@
       <bed_DisplayOwnerType>false</bed_DisplayOwnerType>
       <paintable>true</paintable>
     </building>
-    <researchPrerequisites Inherit="False">
-    </researchPrerequisites>
-  </ThingDef>
-
-  <ThingDef ParentName="SansComfortBedBase">
-    <defName>TribalCrib</defName>
-    <label>tribal crib</label>
-    <description>An unstable weaved bed perfect for a sleepy baby. A high quality crib will make a baby happy. Multiple cribs can be placed in a bedroom without turning it into a barracks.</description>
-    <comps>
-      <li Class="CompProperties_AffectedByFacilities">
-        <linkableFacilities>
-          <li MayRequire="Ludeon.RimWorld.Ideology">SleepAccelerator</li>
-        </linkableFacilities>
-      </li>
-    </comps>
-    <graphicData>
-      <texPath>Buildings/Cribs/TribalCrib</texPath>
-      <graphicClass>Graphic_Multi</graphicClass>
-      <shaderType>CutoutComplex</shaderType>
-      <drawSize>2.2</drawSize>
-      <shadowData>
-        <volume>(0.8,0.4,0.9)</volume>
-      </shadowData>
-    </graphicData>
-    <staticSunShadowHeight>0</staticSunShadowHeight>
-    <statBases>
-      <BirthRitualQualityOffset MayRequire="Ludeon.RimWorld.Biotech">0</BirthRitualQualityOffset>
-      <MaxHitPoints>70</MaxHitPoints>
-      <Beauty>1</Beauty>
-      <WorkToBuild>400</WorkToBuild>
-      <Mass>15</Mass>
-      <BedRestEffectiveness>1</BedRestEffectiveness>
-    </statBases>
-    <size>(1,1)</size>
-    <costStuffCount>25</costStuffCount>
-    <uiOrder>2024</uiOrder>
-    <building>
-      <bed_maxBodySize>0.25</bed_maxBodySize>
-      <bed_showSleeperBody>True</bed_showSleeperBody>
-      <bed_emptyCountsForBarracks>false</bed_emptyCountsForBarracks>
-      <bed_crib>True</bed_crib>
-      <bed_pawnDrawOffset>-0.15</bed_pawnDrawOffset>
-      <bed_DisplayOwnerType>false</bed_DisplayOwnerType>
-      <paintable>true</paintable>
-    </building>
-    <researchPrerequisites Inherit="False">
+    <researchPrerequisites>
+        <li>ComplexFurniture</li>
     </researchPrerequisites>
   </ThingDef>
 

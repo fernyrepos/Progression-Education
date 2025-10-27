@@ -46,9 +46,9 @@
     </nomatch>
   </Operation>
   <Operation Class="PatchOperationConditional">
- <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/researchPrerequisites</xpath>
+ <xpath>/Defs/ThingDef[defName="VFEM2_TrainingDummy"]/researchPrerequisites</xpath>
     <match Class="PatchOperationReplace">
- <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]/researchPrerequisites</xpath>
+ <xpath>/Defs/ThingDef[defName="VFEM2_TrainingDummy"]/researchPrerequisites</xpath>
       <value>
         <researchPrerequisites>
             <li>Ferny_NeolithicEducation</li>
@@ -56,7 +56,7 @@
       </value>
     </match>
     <nomatch Class="PatchOperationAdd">
-      <xpath>/Defs/ThingDef[defName="VFEM2_ArcheryTarget"]</xpath>
+      <xpath>/Defs/ThingDef[defName="VFEM2_TrainingDummy"]</xpath>
       <value>
         <researchPrerequisites>
             <li>Ferny_NeolithicEducation</li>

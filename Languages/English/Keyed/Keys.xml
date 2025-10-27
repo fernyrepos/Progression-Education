@@ -129,6 +129,7 @@
 
   <!-- Off-Map Messages -->
   <PE_ClassCancelledOffMap>{0} class cancelled today as members are off map.</PE_ClassCancelledOffMap>
+  <PE_StudentsOFFMap>as members are off map.</PE_StudentsOFFMap>
 
   <!-- New Messages -->
   <PE_ClassCancelledToday>{0} class cancelled today,</PE_ClassCancelledToday>

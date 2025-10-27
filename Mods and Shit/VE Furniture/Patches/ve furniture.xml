@@ -3,7 +3,7 @@
 
 <!-- VE FURNITURE PATCHES -->
 
-<!-- MELEE -->
+<!-- PUNCHING BAG -->
 <Operation Class="PatchOperationAdd">
   <xpath>Defs/SkillDef[defName="Melee"]/modExtensions/li[@Class="ProgressionEducation.SkillBuildingRequirement"]/requiredBuildings</xpath>
   <value>
@@ -19,5 +19,34 @@
     </value>
 </Operation>
 
+  <Operation Class="PatchOperationConditional">
+ <xpath>/Defs/ThingDef[defName="Joy_PunchingBag"]/researchPrerequisites</xpath>
+    <match Class="PatchOperationReplace">
+ <xpath>/Defs/ThingDef[defName="Joy_PunchingBag"]/researchPrerequisites</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>/Defs/ThingDef[defName="Joy_PunchingBag"]</xpath>
+      <value>
+        <researchPrerequisites>
+            <li>Ferny_NeolithicEducation</li>
+        </researchPrerequisites>
+      </value>
+    </nomatch>
+  </Operation>
+
+<!-- CRIB RESEARCH -->
+<Operation Class="PatchOperationReplace">
+  <xpath>Defs/ThingDef[defName="RoyalCrib"]/researchPrerequisites</xpath>
+  <value>
+    <researchPrerequisites Inherit="False">
+      <li>MF_RoyalFurniture</li>
+    </researchPrerequisites>  
+  </value>
+</Operation>
 
 </Patch>
