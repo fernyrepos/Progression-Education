@@ -109,12 +109,12 @@
   <PE_SuspendClass>Suspend class</PE_SuspendClass>
   <PE_ResumeClass>Resume class</PE_ResumeClass>
   <PE_ClassPartiallyFunctioningWarning>Class {0} will function at reduced efficiency because not all participants are present.</PE_ClassPartiallyFunctioningWarning>
-  <PE_ProficiencyClassNeverStarted>Class {0} never started as students didn't arrive.</PE_ProficiencyClassNeverStarted>
+  <PE_ProficiencyClassNeverStarted>Class {0} never started as not all students arrived in time.</PE_ProficiencyClassNeverStarted>
   <PE_AlreadyHasLearningBoard>This room already has a learning board.</PE_AlreadyHasLearningBoard>
   <PE_LearningBoardNearby>There is learning board nearby.</PE_LearningBoardNearby>
   <PE_NoTeacherForBell>No valid teacher found for classroom. Cannot ring bell.</PE_NoTeacherForBell>
   <PE_SelectTrait>Select proficiency trait</PE_SelectTrait>
-  <PE_ScenPart_ForcedProficiencyTrait>All starting colonists will have the {0} proficiency trait.</PE_ScenPart_ForcedProficiencyTrait>
+  <PE_ScenPart_ForcedProficiencyTrait>Starting colonists will be {0}.</PE_ScenPart_ForcedProficiencyTrait>
   <PE_ScenPart_ForcedProficiencyTrait_NoTrait>All starting colonists will have a proficiency trait.</PE_ScenPart_ForcedProficiencyTrait_NoTrait>
   <PE_RemovedFromDaycareOnAgeUp>{0} has aged up and has been removed from the "{1}" daycare.</PE_RemovedFromDaycareOnAgeUp>
   <PE_TeacherBellFailure>Class never started as teacher couldn't alert enough students within the scheduled time. Consider upgrading your school bell or lengthening the class session.</PE_TeacherBellFailure>
