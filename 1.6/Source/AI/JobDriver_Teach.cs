@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -11,6 +11,7 @@ namespace ProgressionEducation
     public class JobDriver_Teach : JobDriver_LessonBase
     {
         public SkillDef taughtSkill;
+        public int waitingTicks = 0;
 
         private StudyGroup StudyGroup
         {
@@ -54,6 +55,7 @@ namespace ProgressionEducation
                         job.SetTarget(TargetIndex.B, waypoints.RandomElement());
                         pawn.pather.StartPath(job.GetTarget(TargetIndex.B), PathEndMode.OnCell);
                     }
+                    waitingTicks = 0;
                 },
                 defaultCompleteMode = ToilCompleteMode.PatherArrival
             };
@@ -67,6 +69,7 @@ namespace ProgressionEducation
             {
                 PawnUtility.GainComfortFromCellIfPossible(pawn, 1, true);
                 pawn.rotationTracker.FaceCell(pawn.Position + learningBoard.Rotation.FacingCell);
+                waitingTicks++;
             };
             waitToil.FailOn(() => StudyGroup == null);
             yield return waitToil;
@@ -178,6 +181,7 @@ namespace ProgressionEducation
             base.ExposeData();
             Scribe_Defs.Look(ref taughtSkill, "taughtSkill");
             Scribe_Deep.Look(ref weapon, "weapon");
+            Scribe_Values.Look(ref waitingTicks, "waitingTicks", 0);
         }
 
         public override void InitializeWeapon()

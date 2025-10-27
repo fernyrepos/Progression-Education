@@ -10,6 +10,7 @@ namespace ProgressionEducation
 {
     public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
     {
+        public const int MaxTeacherWaitingTicks = GenDate.TicksPerHour * 2;
         public int id = -1;
         public Pawn teacher;
         public List<Pawn> students = [];
@@ -191,6 +192,23 @@ namespace ProgressionEducation
             {
                 return false;
             }
+
+            if (subjectLogic is SkillClassLogic)
+            {
+                var teachingPawn = teacher;
+                if (teachingPawn?.jobs?.curDriver is JobDriver_Teach teachDriver)
+                {
+                    if (teachDriver.waitingTicks >= MaxTeacherWaitingTicks)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return AllStudentsPresent();
+        }
+
+        public bool AllStudentsPresent()
+        {
             foreach (var student in students)
             {
                 if (student.Dead || student.Downed)
@@ -219,6 +237,10 @@ namespace ProgressionEducation
 
         public AcceptanceReport ValidateClassStatus()
         {
+            if (suspended)
+            {
+                return AcceptanceReport.WasRejected;
+            }
             if (classroom is null || classroom.LearningBoard?.parent == null || classroom.LearningBoard.parent.Map == null)
             {
                 return new AcceptanceReport("PE_NoLearningBoard".Translate());

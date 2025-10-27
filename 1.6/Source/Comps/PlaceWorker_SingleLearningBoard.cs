@@ -10,6 +10,7 @@ namespace ProgressionEducation
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
             Room room = loc.GetRoom(map);
+            if (room is null) return AcceptanceReport.WasAccepted;
             List<Thing> thingsInRoom = room.ContainedAndAdjacentThings;
             foreach (Thing thingInRoom in thingsInRoom)
             {

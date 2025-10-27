@@ -65,20 +65,10 @@ namespace ProgressionEducation
 
                 if (!partialAttendanceWarningShown && studyGroup.subjectLogic is SkillClassLogic)
                 {
-                    int totalPawns = studyGroup.students.Count + 1;
-                    int presentPawns = 0;
-
-                    foreach (var pawn in lord.ownedPawns)
+                    var teacherJobDriver = studyGroup.teacher?.jobs?.curDriver as JobDriver_Teach;
+                    if (teacherJobDriver != null && teacherJobDriver.waitingTicks >= StudyGroup.MaxTeacherWaitingTicks && studyGroup.AllStudentsPresent() is false)
                     {
-                        if (pawn.GetRoom() == studyGroup.classroom.LearningBoard.parent.GetRoom())
-                        {
-                            presentPawns++;
-                        }
-                    }
-
-                    if (presentPawns < totalPawns && presentPawns > 0)
-                    {
-                        Messages.Message("PE_ClassPartiallyFunctioningWarning".Translate(studyGroup.className), MessageTypeDefOf.CautionInput);
+                        Messages.Message("PE_ClassStartedWithoutAllStudents".Translate(studyGroup.className), MessageTypeDefOf.CautionInput);
                         partialAttendanceWarningShown = true;
                     }
                 }

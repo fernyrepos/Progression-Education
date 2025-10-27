@@ -21,7 +21,7 @@ namespace ProgressionEducation
         private static readonly Texture2D RenameIcon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename");
         private static readonly Texture2D ResheduleIcon = ContentFinder<Texture2D>.Get("UI/Reschedule");
         private static readonly Texture2D GearIcon = ContentFinder<Texture2D>.Get("UI/GearIcon");
-
+        private static readonly Texture2D ResumeIcon = ContentFinder<Texture2D>.Get("UI/Unpause");
         private static readonly Texture2D DeleteIcon = TexButton.Delete;
         private static readonly Texture2D ProgressBarFillTexture = SolidColorMaterials.NewSolidColorTexture(new Color(0.34f, 0.72f, 0.33f));
         public override void DoWindowContents(Rect inRect)
@@ -167,7 +167,7 @@ namespace ProgressionEducation
             Text.Anchor = TextAnchor.UpperLeft;
             
             var suspendButtonRect = new Rect(participantIconRect.x - 35, innerRect.y + 2, 24f, 24f);
-            var suspendIcon = TexButton.Suspend;
+            var suspendIcon = studyGroup.suspended ? ResumeIcon : TexButton.Suspend;
             var suspendTooltip = studyGroup.suspended ? "PE_ResumeClass".Translate() : "PE_SuspendClass".Translate();
             GUI.DrawTexture(suspendButtonRect, suspendIcon);
             TooltipHandler.TipRegion(suspendButtonRect, suspendTooltip);
