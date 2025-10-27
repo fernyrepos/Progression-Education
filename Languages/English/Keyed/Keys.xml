@@ -111,6 +111,7 @@
   <PE_ClassPartiallyFunctioningWarning>Class {0} will function at reduced efficiency because not all participants are present.</PE_ClassPartiallyFunctioningWarning>
   <PE_ProficiencyClassNeverStarted>Class {0} never started as students didn't arrive.</PE_ProficiencyClassNeverStarted>
   <PE_AlreadyHasLearningBoard>This room already has a learning board.</PE_AlreadyHasLearningBoard>
+  <PE_LearningBoardNearby>There is learning board nearby.</PE_LearningBoardNearby>
   <PE_NoTeacherForBell>No valid teacher found for classroom. Cannot ring bell.</PE_NoTeacherForBell>
   <PE_SelectTrait>Select proficiency trait</PE_SelectTrait>
   <PE_ScenPart_ForcedProficiencyTrait>All starting colonists will have the {0} proficiency trait.</PE_ScenPart_ForcedProficiencyTrait>
@@ -119,4 +120,5 @@
   <PE_TeacherBellFailure>Class never started as teacher couldn't alert enough students within the scheduled time. Consider upgrading your school bell or lengthening the class session.</PE_TeacherBellFailure>
   <PE_NoBellToCreateClass>You must build a class bell or chime before you can create a class.</PE_NoBellToCreateClass>
   <PE_LearningBoardIsBlocked>{0} is blocked.</PE_LearningBoardIsBlocked>
+  <PE_ScheduleShouldBeAtleastHourLong>Schedule should be at least hour long.</PE_ScheduleShouldBeAtleastHourLong>
 </LanguageData>

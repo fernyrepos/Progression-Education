@@ -53,7 +53,8 @@ namespace ProgressionEducation
             {
                 studyGroup.classroom = educationManager.Classrooms[0];
             }
-            closeOnClickedOutside = true;
+            this.closeOnAccept = false;
+            closeOnClickedOutside = false;
             absorbInputAroundWindow = true;
             forcePause = true;
             assignmentsManager.FillPawns();
@@ -64,6 +65,7 @@ namespace ProgressionEducation
 
         public override void DoWindowContents(Rect inRect)
         {
+            bool enter = Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter);
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 35f), "PE_CreateClass".Translate());
             Text.Font = GameFont.Small;
@@ -79,7 +81,7 @@ namespace ProgressionEducation
             {
                 Close();
             }
-            if (Widgets.ButtonText(new Rect(inRect.width - 150f, buttonY, 150f, 35f), "PE_Create".Translate()))
+            if (Widgets.ButtonText(new Rect(inRect.width - 150f, buttonY, 150f, 35f), "PE_Create".Translate()) || enter)
             {
                 StartClassCreation();
             }

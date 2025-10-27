@@ -20,7 +20,7 @@ namespace ProgressionEducation
                     {
                         if (IsLearningBoard(nearby))
                         {
-                            return new AcceptanceReport("PE_AlreadyHasLearningBoard".Translate());
+                            return new AcceptanceReport("PE_LearningBoardNearby".Translate());
                         }
                     }
                 }

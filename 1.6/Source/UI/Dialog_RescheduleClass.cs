@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -76,6 +76,10 @@ namespace ProgressionEducation
 
         private string CheckForConflicts(StudyGroup currentGroup, int startHour, int endHour)
         {
+            if (startHour == endHour)
+            {
+                return "PE_ScheduleShouldBeAtleastHourLong".Translate();
+            }
             List<Pawn> allParticipants = [currentGroup.teacher, .. currentGroup.students];
             foreach (var pawn in allParticipants)
             {
