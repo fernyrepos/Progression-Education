@@ -29,7 +29,7 @@ namespace ProgressionEducation
             learningToil.tickAction = delegate
             {
                 LordJob_AttendClass lordJob = pawn.GetLord()?.LordJob as LordJob_AttendClass;
-                if (lordJob == null || !lordJob.studyGroup.AllStudentsAreGathered())
+                if (lordJob == null || !lordJob.studyGroup.ClassIsActive())
                 {
                     return;
                 }

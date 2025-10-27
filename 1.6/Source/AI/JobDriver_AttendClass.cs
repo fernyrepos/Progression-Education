@@ -7,11 +7,11 @@ using Verse.AI.Group;
 
 namespace ProgressionEducation
 {
-    public class JobDriver_AttendClass : JobDriver
+    public class JobDriver_AttendClass : JobDriver_LessonBase
     {
         public override string GetReport()
         {
-            if (pawn.GetLord()?.LordJob is LordJob_AttendClass lordJob && !lordJob.studyGroup.AllStudentsAreGathered())
+            if (pawn.GetLord()?.LordJob is LordJob_AttendClass lordJob && !lordJob.studyGroup.ClassIsActive())
             {
                 return "PE_JobReport_WaitingForClass".Translate();
             }
@@ -49,7 +49,7 @@ namespace ProgressionEducation
                     PawnUtility.GainComfortFromCellIfPossible(pawn, 1);
                     var lordJob = (LordJob_AttendClass)pawn.GetLord().LordJob;
                     var studyGroup = lordJob.studyGroup;
-                    if (studyGroup.AllStudentsAreGathered())
+                    if (studyGroup.ClassIsActive())
                     {
                         studyGroup.subjectLogic.ApplyLearningTick(pawn);
                     }
@@ -59,6 +59,7 @@ namespace ProgressionEducation
                 handlingFacing = true
             };
         }
+
         public static IntVec3 DeskSpotStudent(Thing desk)
         {
             if (desk.InteractionCells.Any())
@@ -71,6 +72,5 @@ namespace ProgressionEducation
             }
             return desk.Position;
         }
-
     }
 }

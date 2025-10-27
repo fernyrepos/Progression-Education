@@ -21,12 +21,13 @@ namespace ProgressionEducation
         public int startHour;
         public int endHour;
         public string timeAssignmentDefName;
+        public bool suspended = false;
         private static readonly Type t_MapParent_Vehicle =
             GenTypes.GetTypeInAnyAssembly("VehicleMapFramework.MapParent_Vehicle", "VehicleMapFramework");
 
         public StudyGroup()
         {
-            
+
         }
 
         public StudyGroup(Pawn teacher, List<Pawn> students, string className, int semesterGoal, int startHour, int endHour)
@@ -117,6 +118,7 @@ namespace ProgressionEducation
             if (students.Contains(student))
             {
                 students.Remove(student);
+                TimeAssignmentUtility.ClearScheduleFromPawns(this, new List<Pawn> { student });
             }
         }
 
@@ -137,6 +139,7 @@ namespace ProgressionEducation
             Scribe_Values.Look(ref startHour, "startHour", 0);
             Scribe_Values.Look(ref endHour, "endHour", 0);
             Scribe_Values.Look(ref timeAssignmentDefName, "timeAssignmentDefName");
+            Scribe_Values.Look(ref suspended, "suspended", false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 var pawns = new List<Pawn>
@@ -177,8 +180,13 @@ namespace ProgressionEducation
 
         public Map Map => classroom?.LearningBoard?.parent?.Map;
 
-        public bool AllStudentsAreGathered()
+        public bool ClassIsActive()
         {
+            if (subjectLogic is DaycareClassLogic)
+            {
+                return true;
+            }
+
             if (students.NullOrEmpty())
             {
                 return false;
@@ -193,7 +201,7 @@ namespace ProgressionEducation
                 {
                     return false;
                 }
-                
+
                 if (attendClassDriver is JobDriver_AttendMeleeClass)
                 {
                     if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing).Contains(student.Position))

@@ -171,11 +171,8 @@ namespace ProgressionEducation
                     {
                         if (!assignments.Required(p))
                         {
-                            if (!assignments.TryAssignSpectate(p))
-                            {
-                                assignments.RemoveParticipant(p);
-                            }
-                            SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                            assignments.RemoveParticipant(p);
+                            SoundDefOf.Click.PlayOneShotOnCamera();
                         }
                     }, ShouldGrayOut);
                 }

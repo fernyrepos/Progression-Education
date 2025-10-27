@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-
-  <!-- General UI -->
   <PE_Create>Create</PE_Create>
   <PE_Select>Select</PE_Select>
   <PE_PasteHex>Paste hex</PE_PasteHex>
-
-  <!-- Main Education Tab -->
   <PE_Classes>Active classes</PE_Classes>
   <PE_Classrooms>Classrooms</PE_Classrooms>
   <PE_Participants>Participants</PE_Participants>
@@ -18,8 +14,6 @@
   <PE_Xp>{0} xp</PE_Xp>
   <PE_PerHour>/hour</PE_PerHour>
   <PE_ClassroomsDescription>Classrooms will appear here as you build them in your colony.</PE_ClassroomsDescription>
-
-  <!-- Create Class Dialog -->
   <PE_CreateClass>Create a class</PE_CreateClass>
   <PE_CreateClassDesc>Create a new class semester. Teachers with higher social skills teach faster, and the longer a class stays together the more effective it becomes. Daycares are for children only, and teach random skills.</PE_CreateClassDesc>
   <PE_ClassName>Class name</PE_ClassName>
@@ -49,49 +43,36 @@
   <PE_RescheduleClass>Reschedule class</PE_RescheduleClass>
   <PE_SkillFocusMissing>Skill focus is missing</PE_SkillFocusMissing>
   <PE_ScheduleTime>Schedule: {0}:00 - {1}:00</PE_ScheduleTime>
-  <!-- Manage Students Dialog -->
   <PE_ManageStudents>Manage students</PE_ManageStudents>
   <PE_RemoveStudents>Remove students</PE_RemoveStudents>
   <PE_RemoveFromClass>Remove from class</PE_RemoveFromClass>
   <PE_ConfirmRemoveStudent>Are you sure you want to remove {0} from this class? They cannot be added back.</PE_ConfirmRemoveStudent>
   <PE_ConfirmRemoveLastStudent>Removing this student will delete the class, as there will be no students left. Are you sure you want to proceed?</PE_ConfirmRemoveLastStudent>
-
-  <!-- Classroom Management -->
   <PE_EditClassroom>Edit classroom</PE_EditClassroom>
   <PE_ChangeColor>Change color</PE_ChangeColor>
   <PE_NameClassroom>Name classroom</PE_NameClassroom>
   <PE_NewClassroomCreated>New classroom: {0}</PE_NewClassroomCreated>
   <PE_NewClassroomCreatedDesc>You have created a classroom. Classes can be managed in the classrooms menu on the bottom bar.</PE_NewClassroomCreatedDesc>
-
-  <!-- Pawn Roles -->
   <PE_Spectators>Spectators</PE_Spectators>
   <PE_NotParticipating>Not participating</PE_NotParticipating>
   <PE_TeacherRole>teacher</PE_TeacherRole>
   <PE_StudentRole>Student</PE_StudentRole>
   <PE_TeacherRoleOnlyForAdults>Only adults can be teachers.</PE_TeacherRoleOnlyForAdults>
   <PE_TeacherRoleRequiresSocialSkill>Teachers must have social skills enabled.</PE_TeacherRoleRequiresSocialSkill>
-
-  <!-- In-Game Events & Letters -->
   <PE_ClassCancelled>Class cancelled: {0}</PE_ClassCancelled>
   <PE_ClassCancelledDesc>The class "{0}" has been cancelled because not all students could make it to class in time.</PE_ClassCancelledDesc>
   <PE_MissingStudents>Missing students: {0}</PE_MissingStudents>
   <PE_ClassCompleted>Class completed: {0}</PE_ClassCompleted>
   <PE_ClassCompletedDesc>The class "{0}" has successfully completed its semester.</PE_ClassCompletedDesc>
   <PE_ClassGraduates>Graduates: {0}</PE_ClassGraduates>
-
-  <!-- Proficiency & Equipment -->
   <PE_CannotEquipItem>Colonist must be taught {0} proficiency.</PE_CannotEquipItem>
   <PE_ProficiencyLowTech>Low gear</PE_ProficiencyLowTech>
   <PE_ProficiencyFirearm>Firearm</PE_ProficiencyFirearm>
   <PE_ProficiencyHighTech>High-tech</PE_ProficiencyHighTech>
-
-  <!-- Class Qualification -->
   <PE_StudentNotQualifiedProficiency>{0} does not have the required {1} proficiency.</PE_StudentNotQualifiedProficiency>
   <PE_StudentAlreadyHasProficiency>{0} already has the required or higher {1} proficiency.</PE_StudentAlreadyHasProficiency>
   <PE_CannotParticipateScheduled>Cannot participate: Scheduled at {0}:00-{1}:00 for the "{2}" class.</PE_CannotParticipateScheduled>
   <PE_CannotRescheduleScheduled>Cannot reschedule: {0} is already scheduled at {1}:00-{2}:00 for the "{3}" class.</PE_CannotRescheduleScheduled>
-
-  <!-- Class Logic & Qualifications -->
   <PE_TrainingProficiency>Teaching {0} proficiency</PE_TrainingProficiency>
   <PE_TeacherNotQualifiedProficiency>{0} does not have the required {1} proficiency to teach.</PE_TeacherNotQualifiedProficiency>
   <PE_TrainingSkill>Training {0} skill</PE_TrainingSkill>
@@ -99,20 +80,14 @@
   <PE_StudentSkillDisabled>{0}'s {1} skill is disabled and cannot be trained.</PE_StudentSkillDisabled>
   <PE_MustBeChild>Must be a child.</PE_MustBeChild>
   <PE_NoLearningNeed>No learning need.</PE_NoLearningNeed>
-
-  <!-- Job Reports -->
   <PE_JobReport_WaitingForStudents>Waiting for students</PE_JobReport_WaitingForStudents>
   <PE_JobReport_WaitingForClass>Waiting for class to start</PE_JobReport_WaitingForClass>
-
-  <!-- Mod Settings -->
   <PE_GlobalLearningSpeed>Global learning speed</PE_GlobalLearningSpeed>
   <PE_SkillClassesLearningSpeed>Skill classes learning speed</PE_SkillClassesLearningSpeed>
   <PE_ProficiencyClassesLearningSpeed>Proficiency classes learning speed</PE_ProficiencyClassesLearningSpeed>
   <PE_DaycareClassesLearningSpeed>Children learning need speed</PE_DaycareClassesLearningSpeed>
   <PE_EnableProficiencySystem>Enable proficiency system</PE_EnableProficiencySystem>
   <PE_EnableDebugMode>Enable debug mode</PE_EnableDebugMode>
-
-  <!-- Validation Messages -->
   <PE_EnterClassName>Enter a class name</PE_EnterClassName>
   <PE_SelectTeacher>Select a teacher</PE_SelectTeacher>
   <PE_SelectAtLeastOneStudent>Select at least one student</PE_SelectAtLeastOneStudent>
@@ -121,20 +96,27 @@
   <PE_NoBell>No bell found in map</PE_NoBell>
   <PE_BellNotPowered>Bell is not powered</PE_BellNotPowered>
   <PE_StudentUnqualified>{0} cannot participate in class: {1}</PE_StudentUnqualified>
-
-  <!-- Classroom Settings -->
   <PE_ClassroomSettings>Classroom settings</PE_ClassroomSettings>
   <PE_RestrictReservationsDuringClass>Disallow traditional work in classroom</PE_RestrictReservationsDuringClass>
   <PE_RestrictReservationsDuringClass_Desc>If enabled, pawns will not be able to use classroom furniture (desks, etc.).</PE_RestrictReservationsDuringClass_Desc>
-
-  <!-- Off-Map Messages -->
+  <PE_InterruptJobsDuringClass>Interrupt jobs during class</PE_InterruptJobsDuringClass>
+  <PE_InterruptJobsDuringClass_Desc>If enabled, pawns will be interrupted from their current jobs to attend class when the bell rings.</PE_InterruptJobsDuringClass_Desc>
   <PE_ClassCancelledOffMap>{0} class cancelled today as members are off map.</PE_ClassCancelledOffMap>
-  <PE_StudentsOFFMap>as members are off map.</PE_StudentsOFFMap>
-
-  <!-- New Messages -->
   <PE_ClassCancelledToday>{0} class cancelled today,</PE_ClassCancelledToday>
   <PE_NoClassesScheduled>No classes scheduled. Click the plus button to create a class.</PE_NoClassesScheduled>
   <PE_TriedToEquipButCouldNotDueToLackOfProficiency>{0} tried to equip {1} but couldn't due to lack of proficiency</PE_TriedToEquipButCouldNotDueToLackOfProficiency>
   <PE_CreateClassroomFirst>Create a classroom first.</PE_CreateClassroomFirst>
+  <PE_SuspendClass>Suspend class</PE_SuspendClass>
+  <PE_ResumeClass>Resume class</PE_ResumeClass>
+  <PE_ClassPartiallyFunctioningWarning>Class {0} will function at reduced efficiency because not all participants are present.</PE_ClassPartiallyFunctioningWarning>
+  <PE_ProficiencyClassNeverStarted>Class {0} never started as students didn't arrive.</PE_ProficiencyClassNeverStarted>
+  <PE_AlreadyHasLearningBoard>This room already has a learning board.</PE_AlreadyHasLearningBoard>
+  <PE_NoTeacherForBell>No valid teacher found for classroom. Cannot ring bell.</PE_NoTeacherForBell>
+  <PE_SelectTrait>Select proficiency trait</PE_SelectTrait>
+  <PE_ScenPart_ForcedProficiencyTrait>All starting colonists will have the {0} proficiency trait.</PE_ScenPart_ForcedProficiencyTrait>
+  <PE_ScenPart_ForcedProficiencyTrait_NoTrait>All starting colonists will have a proficiency trait.</PE_ScenPart_ForcedProficiencyTrait_NoTrait>
+  <PE_RemovedFromDaycareOnAgeUp>{0} has aged up and has been removed from the "{1}" daycare.</PE_RemovedFromDaycareOnAgeUp>
+  <PE_TeacherBellFailure>Class never started as teacher couldn't alert enough students within the scheduled time. Consider upgrading your school bell or lengthening the class session.</PE_TeacherBellFailure>
+  <PE_NoBellToCreateClass>You must build a school bell before you can create a class.</PE_NoBellToCreateClass>
 
 </LanguageData>

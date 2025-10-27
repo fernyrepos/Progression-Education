@@ -18,6 +18,12 @@ namespace ProgressionEducation
             }
 
             var studyGroup = lordJob.studyGroup;
+            if (studyGroup?.suspended == true)
+            {
+                EducationLog.Message($"-> Study group {studyGroup?.className} is suspended. Returning null.");
+                return null;
+            }
+
             Thing learningBoard = studyGroup.classroom.LearningBoard.parent;
 
             if (learningBoard != null)

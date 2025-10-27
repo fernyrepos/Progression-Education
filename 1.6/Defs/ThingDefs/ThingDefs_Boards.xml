@@ -52,6 +52,7 @@
         </stuffCategories>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
+            <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
         </placeWorkers>
         <building>
             <paintable>false</paintable>
@@ -123,6 +124,7 @@
         </stuffCategories>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
+            <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
         </placeWorkers>
         <building>
             <paintable>true</paintable>
@@ -194,6 +196,7 @@
         </stuffCategories>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
+            <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
         </placeWorkers>
         <building>
             <paintable>true</paintable>
@@ -265,6 +268,7 @@
         </stuffCategories>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
+            <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
         </placeWorkers>
         <building>
             <paintable>true</paintable>
@@ -335,6 +339,7 @@
         </stuffCategories>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
+            <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
         </placeWorkers>
         <building>
             <paintable>true</paintable>
@@ -405,6 +410,7 @@
         </stuffCategories>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
+            <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
         </placeWorkers>
         <building>
             <paintable>true</paintable>

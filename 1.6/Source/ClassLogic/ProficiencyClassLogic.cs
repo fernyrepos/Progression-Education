@@ -180,6 +180,19 @@ namespace ProgressionEducation
 
         public override string StudentTooltipFor(Pawn pawn)
         {
+            switch (proficiencyFocus)
+            {
+                case ProficiencyLevel.Firearm:
+                    if (pawn.story.traits.HasTrait(DefsOf.PE_FirearmProficiency))
+                        return "PE_AlreadyHasFirearmProficiency".Translate();
+                    else if (pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency))
+                        return "PE_AlreadyHasHighTechProficiency".Translate();
+                    break;
+                case ProficiencyLevel.HighTech:
+                    if (pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency))
+                        return "PE_AlreadyHasHighTechProficiency".Translate();
+                    break;
+            }
             return null;
         }
 
@@ -188,5 +201,6 @@ namespace ProgressionEducation
             base.ExposeData();
             Scribe_Values.Look(ref _proficiencyFocus, "proficiencyFocus");
         }
+
     }
 }

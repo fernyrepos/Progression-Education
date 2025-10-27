@@ -8,7 +8,7 @@ using Verse.AI.Group;
 namespace ProgressionEducation
 {
     [HotSwappable]
-    public class JobDriver_Teach : JobDriver
+    public class JobDriver_Teach : JobDriver_LessonBase
     {
         public SkillDef taughtSkill;
 
@@ -26,7 +26,7 @@ namespace ProgressionEducation
 
         public override string GetReport()
         {
-            if (!(StudyGroup?.AllStudentsAreGathered() ?? true))
+            if (!(StudyGroup?.ClassIsActive() ?? true))
             {
                 return "PE_JobReport_WaitingForStudents".Translate();
             }
@@ -71,10 +71,9 @@ namespace ProgressionEducation
             waitToil.FailOn(() => StudyGroup == null);
             yield return waitToil;
 
-            yield return Toils_Jump.JumpIf(wanderToil, () => StudyGroup != null && !StudyGroup.AllStudentsAreGathered());
+            yield return Toils_Jump.JumpIf(wanderToil, () => StudyGroup != null && !StudyGroup.ClassIsActive());
 
             var gotoWaypoint = Toils_Goto.GotoCell(TargetIndex.B, PathEndMode.OnCell);
-            gotoWaypoint.tickAction = DoTeachingTick;
             yield return gotoWaypoint;
             var teachAtWaypoint = new Toil
             {
@@ -105,8 +104,60 @@ namespace ProgressionEducation
 
             foreach (var student in studyGroup.students)
             {
-                studyGroup.subjectLogic.ApplyTeachingTick(student, this);
+                if (IsStudentPresentAndAttending(student, studyGroup))
+                {
+                    studyGroup.subjectLogic.ApplyTeachingTick(student, this);
+                }
             }
+        }
+
+        private bool IsStudentPresentAndAttending(Pawn student, StudyGroup studyGroup)
+        {
+            if (student?.Spawned is false || student.Dead || student.Downed)
+            {
+                return false;
+            }
+            if (student.Map != studyGroup.Map)
+            {
+                return false;
+            }
+            if (student.jobs?.curDriver is not JobDriver_AttendClass)
+            {
+                return false;
+            }
+            Thing learningBoard = studyGroup.classroom?.LearningBoard?.parent;
+            if (learningBoard != null)
+            {
+                Room studentRoom = student.GetRoom();
+                Room boardRoom = learningBoard.GetRoom();
+                if (studentRoom != boardRoom)
+                {
+                    return false;
+                }
+            }
+            if (studyGroup.ClassIsActive() == false)
+            {
+                if (student.jobs?.curDriver is JobDriver_AttendClass attendClassDriver)
+                {
+                    if (attendClassDriver is JobDriver_AttendMeleeClass)
+                    {
+                        if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing).Contains(student.Position))
+                        {
+                            return false;
+                        }
+                    }
+                    else if (student.Position != JobDriver_AttendClass.DeskSpotStudent(attendClassDriver.job.GetTarget(TargetIndex.A).Thing))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public override void Notify_Starting()
@@ -125,6 +176,30 @@ namespace ProgressionEducation
         {
             base.ExposeData();
             Scribe_Defs.Look(ref taughtSkill, "taughtSkill");
+            Scribe_Deep.Look(ref weapon, "weapon");
+        }
+
+        public override void InitializeWeapon()
+        {
+            var studyGroup = StudyGroup;
+            if (studyGroup?.subjectLogic is ProficiencyClassLogic proficiencyLogic)
+            {
+                ThingDef weaponDef = null;
+                switch (proficiencyLogic.proficiencyFocus)
+                {
+                    case ProficiencyLevel.Firearm:
+                        weaponDef = DefsOf.PE_Gun_FirearmTraining;
+                        break;
+                    case ProficiencyLevel.HighTech:
+                        weaponDef = DefsOf.PE_Gun_SpacerTraining;
+                        break;
+                }
+
+                if (weaponDef != null)
+                {
+                    weapon = ThingMaker.MakeThing(weaponDef, GenStuff.DefaultStuffFor(weaponDef));
+                }
+            }
         }
     }
 }

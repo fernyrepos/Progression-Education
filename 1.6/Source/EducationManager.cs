@@ -27,7 +27,7 @@ namespace ProgressionEducation
             }
         }
         private List<Classroom> classrooms = [];
-        private List<StudyGroup> studyGroups = [];
+        public List<StudyGroup> studyGroups = [];
         private int nextClassroomId;
         private int nextStudyGroupId;
         public EducationManager(World world) : base(world)
@@ -71,6 +71,16 @@ namespace ProgressionEducation
 
         public void RemoveClassroom(Classroom classroom)
         {
+            var studyGroupsToRemove = studyGroups.Where(sg => sg.classroom == classroom).ToList();
+            foreach (var studyGroup in studyGroupsToRemove)
+            {
+                List<Pawn> allParticipants = [studyGroup.teacher, .. studyGroup.students];
+                EducationLog.Message($"Removing study group '{studyGroup.className}' due to classroom removal. Cleaning up timetables for participants: {allParticipants.ToStringSafeEnumerable()}");
+
+                TimeAssignmentUtility.ClearScheduleFromPawns(studyGroup, allParticipants);
+                TimeAssignmentUtility.RemoveTimeAssignmentDef(studyGroup);
+            }
+            
             studyGroups.RemoveAll(sg => sg.classroom == classroom);
             classrooms.Remove(classroom);
             EducationLog.Message($"Classroom removed: {classroom.GetUniqueLoadID()}");

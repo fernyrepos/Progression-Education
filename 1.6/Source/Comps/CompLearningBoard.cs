@@ -77,14 +77,19 @@ namespace ProgressionEducation
             }
         }
 
-        private void InitializeClassroom()
+        public void InitializeClassroom()
         {
+            if (parent.Faction != Faction.OfPlayer)
+            {
+                return;
+            }
+
             var room = parent.GetRoom();
             var otherBoard = room.ContainedThings(parent.def)
                                  .Select(t => t.TryGetComp<CompLearningBoard>())
                                  .FirstOrDefault(c => c != null && c != this && c.classroom != null);
-
-            if (otherBoard != null)
+ 
+             if (otherBoard != null)
             {
                 classroom = otherBoard.classroom;
                 EducationLog.Message($"Learning board '{parent.Label}' spawned in room with existing classroom. Linking to '{classroom.name}'.");
