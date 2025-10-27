@@ -31,10 +31,6 @@ namespace ProgressionEducation
                 num = (vector - pawn.DrawPos).AngleFlat();
             }
             drawLoc += rootLoc + new Vector3(0f, 0f, 0.4f).RotatedBy(num);
-            if (weapon == null)
-            {
-                InitializeWeapon();
-            }
             DrawEquipmentAiming(weapon, drawLoc, num);
         }
 

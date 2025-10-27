@@ -82,6 +82,7 @@ namespace ProgressionEducation
                 initAction = () => pawn.rotationTracker.FaceCell(learningBoard.Position),
                 tickAction = DoTeachingTick
             };
+            teachAtWaypoint.AddPreInitAction(InitializeWeapon);
             yield return teachAtWaypoint;
             yield return Toils_Jump.JumpIf(gotoWaypoint, delegate
             {
@@ -188,7 +189,7 @@ namespace ProgressionEducation
                 switch (proficiencyLogic.proficiencyFocus)
                 {
                     case ProficiencyLevel.Firearm:
-                        weaponDef = DefsOf.PE_Gun_FirearmTraining;
+                        weaponDef = DefsOf.PE_Gun_AssaultRifleTraining;
                         break;
                     case ProficiencyLevel.HighTech:
                         weaponDef = DefsOf.PE_Gun_SpacerTraining;

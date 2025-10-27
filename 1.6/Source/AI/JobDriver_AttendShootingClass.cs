@@ -27,6 +27,7 @@ namespace ProgressionEducation
             learningToil.initAction = delegate
             {
                 ticksUntilNextAction = Rand.Range(60, 120);
+                InitializeWeapon();
             };
 
             learningToil.tickAction = delegate
@@ -50,8 +51,6 @@ namespace ProgressionEducation
 
                 if (ticksUntilNextAction <= 0)
                 {
-                    InitializeWeapon();
-
                     var cell = TargetA.Thing.DrawPos.ToIntVec3();
                     FireProjectile(pawn, weapon, cell);
                     ticksUntilNextAction = Rand.Range(60, 120);

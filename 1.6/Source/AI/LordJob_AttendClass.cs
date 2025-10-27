@@ -30,9 +30,9 @@ namespace ProgressionEducation
         public override void LordJobTick()
         {
             base.LordJobTick();
-            if (studyGroup.teacher.Dead || studyGroup.teacher.Downed || studyGroup.teacher.InMentalState)
+            if (studyGroup?.teacher is null || studyGroup.teacher.Dead || studyGroup.teacher.Downed || studyGroup.teacher.InMentalState)
             {
-                EducationLog.Message($"Class '{studyGroup.className}' is being cancelled: teacher is dead, downed, or in mental state.");
+                EducationLog.Message($"Class '{studyGroup?.className}' is being cancelled: teacher is dead, downed, or in mental state.");
                 lord.ReceiveMemo(MemoClassCancelledTeacherIncapacitated);
             }
             else if (studyGroup.teacher.GetLord() != lord)
@@ -67,7 +67,7 @@ namespace ProgressionEducation
             ringToAttendTransition.AddTrigger(new Trigger_Memo(MemoBellRung));
             ringToAttendTransition.AddPreAction(new TransitionAction_Custom((Action)delegate
             {
-                var members = studyGroup.students.Concat(studyGroup.teacher).ToList();
+                var members = studyGroup.students.ToList();
                 foreach (var member in members)
                 {
                     Job curJob = member.CurJob;

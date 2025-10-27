@@ -20,9 +20,9 @@ namespace ProgressionEducation
         public static TraitDef PE_LowTechProficiency;
         public static TraitDef PE_FirearmProficiency;
         public static TraitDef PE_HighTechProficiency;
-        
+
         public static ThingDef PE_Gun_SpacerTraining;
-        public static ThingDef PE_Gun_FirearmTraining;
+        public static ThingDef PE_Gun_AssaultRifleTraining;
 
         public static MainButtonDef Schedule;
 

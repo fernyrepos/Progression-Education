@@ -86,6 +86,8 @@ namespace ProgressionEducation
 
         public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd)
         {
+            if (pawn.story?.traits is null || pawn.DevelopmentalStage == DevelopmentalStage.Newborn) return;
+            
             var traits = pawn.story.traits.allTraits.Where(t => t.def == DefsOf.PE_LowTechProficiency || t.def == DefsOf.PE_FirearmProficiency || t.def == DefsOf.PE_HighTechProficiency).ToList();
             foreach (var t in traits)
             {

@@ -18,6 +18,11 @@ namespace ProgressionEducation
             }
 
             var studyGroup = lordJob.studyGroup;
+            if (studyGroup is null)
+            {
+                EducationLog.Message($"-> Study group {studyGroup?.className} is null. Returning null.");
+                return null;
+            }
             if (studyGroup?.suspended == true)
             {
                 EducationLog.Message($"-> Study group {studyGroup?.className} is suspended. Returning null.");

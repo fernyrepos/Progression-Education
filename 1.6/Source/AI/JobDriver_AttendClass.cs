@@ -30,7 +30,7 @@ namespace ProgressionEducation
             {
                 if (pawn.GetLord()?.LordJob is LordJob_AttendClass lordJob)
                 {
-                    return !lordJob.studyGroup.students.Contains(pawn);
+                    return lordJob.studyGroup is null || !lordJob.studyGroup.students.Contains(pawn);
                 }
                 return true;
             });

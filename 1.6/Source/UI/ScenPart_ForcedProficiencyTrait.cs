@@ -52,7 +52,7 @@ namespace ProgressionEducation
             {
                 return;
             }
-            if (trait != null && pawn.story?.traits != null)
+            if (trait != null)
             {
                 ProficiencyUtility.GrantProficiencyTrait(pawn, trait);
             }

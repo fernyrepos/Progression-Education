@@ -43,7 +43,6 @@ namespace ProgressionEducation
                 if (facility is null) return 0;
                 var validBenches = GetValidLearningBenches();
                 var count = facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
-                EducationLog.Message($"Found {count} valid benches for class '{studyGroup.className}'");
                 return count;
             }
         }

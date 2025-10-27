@@ -43,7 +43,6 @@ namespace ProgressionEducation
             float bestBoardBonus = CalculateBestBoardBonus(learningBoards);
             float totalProjectorBonus = CalculateTotalProjectorBonus(projectors);
             float deskSpeedModifier = CalculateAverageDeskSpeedModifier();
-            EducationLog.Message($"Classroom '{name}' Learning Modifier Calculation: Best Board Bonus = {bestBoardBonus}, Total Projector Bonus = {totalProjectorBonus}, Desk Speed Modifier = {deskSpeedModifier}");
             return bestBoardBonus * (1f + totalProjectorBonus) * deskSpeedModifier;
         }
 

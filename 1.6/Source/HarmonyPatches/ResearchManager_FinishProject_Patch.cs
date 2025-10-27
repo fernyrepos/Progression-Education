@@ -10,24 +10,12 @@ namespace ProgressionEducation
     {
         public static void Postfix(ResearchProjectDef proj)
         {
-            if (proj.HasModExtension<ResearchGrantsTrait>())
+            var extension = proj.GetModExtension<ResearchGrantsTrait>();
+            if (extension != null)
             {
-                ResearchGrantsTrait extension = proj.GetModExtension<ResearchGrantsTrait>();
-                TraitDef traitDef = extension.trait;
-                
-                if (traitDef != null)
+                foreach (Pawn pawn in PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
                 {
-                    List<Pawn> pawns = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction;
-                    foreach (Pawn pawn in pawns)
-                    {
-                        if (pawn.RaceProps.Humanlike && pawn.Faction == Faction.OfPlayer && !pawn.Dead && pawn.story != null)
-                        {
-                            if (!pawn.story.traits.HasTrait(traitDef))
-                            {
-                                pawn.story.traits.GainTrait(new Trait(traitDef));
-                            }
-                        }
-                    }
+                    ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait);
                 }
             }
         }
