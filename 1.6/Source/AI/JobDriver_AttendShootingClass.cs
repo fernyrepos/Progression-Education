@@ -13,13 +13,11 @@ namespace ProgressionEducation
     public class JobDriver_AttendShootingClass : JobDriver_AttendClass
     {
         private int ticksUntilNextAction;
-        public Thing weapon;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref ticksUntilNextAction, "ticksUntilNextAction", 0);
-            Scribe_Deep.Look(ref weapon, "weapon");
         }
 
         protected override Toil MakeLearningToil()
@@ -34,7 +32,7 @@ namespace ProgressionEducation
             learningToil.tickAction = delegate
             {
                 LordJob_AttendClass lordJob = pawn.GetLord()?.LordJob as LordJob_AttendClass;
-                if (lordJob == null || !lordJob.studyGroup.AllStudentsAreGathered())
+                if (lordJob == null || !lordJob.studyGroup.ClassIsActive())
                 {
                     return;
                 }
@@ -52,10 +50,7 @@ namespace ProgressionEducation
 
                 if (ticksUntilNextAction <= 0)
                 {
-                    if (weapon is null)
-                    {
-                        weapon = GetWeaponForTraining();
-                    }
+                    InitializeWeapon();
 
                     var cell = TargetA.Thing.DrawPos.ToIntVec3();
                     FireProjectile(pawn, weapon, cell);
@@ -68,65 +63,13 @@ namespace ProgressionEducation
             return learningToil;
         }
 
-        private Thing GetWeaponForTraining()
+        public override void InitializeWeapon()
         {
             var comp = TargetA.Thing.TryGetComp<CompWeaponTrainingBench>();
             var weaponToUse = comp.WeaponDef;
-            return ThingMaker.MakeThing(weaponToUse, GenStuff.DefaultStuffFor(weaponToUse));
+            weapon = ThingMaker.MakeThing(weaponToUse, GenStuff.DefaultStuffFor(weaponToUse));
         }
 
-        public void DrawEquipment(Vector3 rootLoc, Rot4 pawnRotation, PawnRenderFlags flags)
-        {
-            if (pawn.pather.Moving)
-            {
-                return;
-            }
-            Vector3 drawLoc = new Vector3(0f, (pawnRotation == Rot4.North) ? (-0.00289575267f) : 0.03474903f, 0f);
-            Vector3 vector = TargetA.Thing.DrawPos;
-            float num = 0f;
-            if ((vector - pawn.DrawPos).MagnitudeHorizontalSquared() > 0.001f)
-            {
-                num = (vector - pawn.DrawPos).AngleFlat();
-            }
-            drawLoc += rootLoc + new Vector3(0f, 0f, 0.4f).RotatedBy(num);
-            if (weapon is null)
-            {
-                weapon = GetWeaponForTraining();
-            }
-            DrawEquipmentAiming(weapon, drawLoc, num);
-        }
-
-        public void DrawEquipmentAiming(Thing eq, Vector3 drawLoc, float aimAngle)
-        {
-            Mesh mesh = null;
-            float num = aimAngle - 90f;
-            if (aimAngle > 20f && aimAngle < 160f)
-            {
-                mesh = MeshPool.plane10;
-                num += eq.def.equippedAngleOffset;
-            }
-            else if (aimAngle > 200f && aimAngle < 340f)
-            {
-                mesh = MeshPool.plane10Flip;
-                num -= 180f;
-                num -= eq.def.equippedAngleOffset;
-            }
-            else
-            {
-                mesh = MeshPool.plane10;
-                num += eq.def.equippedAngleOffset;
-            }
-            num %= 360f;
-            CompEquippable compEquippable = eq.TryGetComp<CompEquippable>();
-            if (compEquippable != null)
-            {
-                EquipmentUtility.Recoil(eq.def, EquipmentUtility.GetRecoilVerb(compEquippable.AllVerbs), out var drawOffset, out var angleOffset, aimAngle);
-                drawLoc += drawOffset;
-                num += angleOffset;
-            }
-            Graphic_StackCount graphic_StackCount = eq.Graphic as Graphic_StackCount;
-            Graphics.DrawMesh(material: (graphic_StackCount == null) ? eq.Graphic.MatSingle : graphic_StackCount.SubGraphicForStackCount(1, eq.def).MatSingle, mesh: mesh, position: drawLoc, rotation: Quaternion.AngleAxis(num, Vector3.up), layer: 0);
-        }
         private static void FireProjectile(Pawn caster, Thing eq, IntVec3 targetCell)
         {
             var verbProps = eq.TryGetComp<CompEquippable>()?.PrimaryVerb?.verbProps;
@@ -139,7 +82,7 @@ namespace ProgressionEducation
             ThingDef projectileDef = verbProps.defaultProjectile;
             Thing projectile = ThingMaker.MakeThing(projectileDef);
             GenSpawn.Spawn(projectile, caster.Position, caster.Map, Rot4.Random);
-            
+
             if (verbProps.muzzleFlashScale > 0.01f)
             {
                 FleckMaker.Static(caster.Position, caster.Map, FleckDefOf.ShotFlash, verbProps.muzzleFlashScale);
@@ -152,7 +95,7 @@ namespace ProgressionEducation
             {
                 verbProps.soundCastTail.PlayOneShotOnCamera(caster.Map);
             }
-            
+
             var cell = vector.ToIntVec3();
             Projectile proj = (Projectile)projectile;
             proj.Launch(caster, caster.DrawPos, new LocalTargetInfo(cell), new LocalTargetInfo(cell), ProjectileHitFlags.IntendedTarget, equipment: null);

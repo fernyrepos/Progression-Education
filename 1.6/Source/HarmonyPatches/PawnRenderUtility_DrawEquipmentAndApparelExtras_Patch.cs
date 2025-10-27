@@ -13,9 +13,9 @@ namespace ProgressionEducation
         [HarmonyPriority(Priority.First)]
         public static bool Prefix(Pawn pawn, Vector3 drawPos, Rot4 facing, PawnRenderFlags flags)
         {
-            if (pawn.jobs?.curDriver is JobDriver_AttendShootingClass attendShootingClass)
+            if (pawn.jobs?.curDriver is JobDriver_LessonBase lessonDriver)
             {
-                attendShootingClass.DrawEquipment(drawPos, facing, flags);
+                lessonDriver.DrawEquipment(drawPos, facing, flags);
                 return false;
             }
             return true;

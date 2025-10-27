@@ -46,6 +46,11 @@
 		<researchViewY>0.70</researchViewY>
 		<tab>Main</tab>
 		<techLevel>Spacer</techLevel>
+          <modExtensions>
+            <li Class="ProgressionEducation.ResearchGrantsTrait">
+              <trait>PE_HighTechProficiency</trait>
+            </li>
+          </modExtensions>
 	</ResearchProjectDef>
 
 </Defs>

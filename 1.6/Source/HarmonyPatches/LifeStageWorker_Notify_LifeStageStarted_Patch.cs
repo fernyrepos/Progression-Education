@@ -1,6 +1,7 @@
 using HarmonyLib;
 using RimWorld;
 using Verse;
+using System.Linq;
 
 namespace ProgressionEducation
 {
@@ -12,6 +13,18 @@ namespace ProgressionEducation
             if (previousLifeStage != null && previousLifeStage.developmentalStage == DevelopmentalStage.Newborn && pawn.DevelopmentalStage == DevelopmentalStage.Child)
             {
                 ProficiencyUtility.ApplyProficiencyTraitToPawn(pawn);
+            }
+
+            if (previousLifeStage != null && previousLifeStage.developmentalStage == DevelopmentalStage.Child && pawn.DevelopmentalStage != DevelopmentalStage.Child)
+            {
+                foreach (var studyGroup in EducationManager.Instance.studyGroups.ToList())
+                {
+                    if (studyGroup.subjectLogic is DaycareClassLogic && studyGroup.students.Contains(pawn))
+                    {
+                        studyGroup.RemoveStudent(pawn);
+                        Messages.Message("PE_RemovedFromDaycareOnAgeUp".Translate(pawn.LabelShort, studyGroup.className), pawn, MessageTypeDefOf.PositiveEvent);
+                    }
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.AI.Group;
 
 namespace ProgressionEducation
 {
@@ -47,6 +48,10 @@ namespace ProgressionEducation
                 if (educationManager.Classrooms.Count == 0)
                 {
                     Messages.Message("PE_CreateClassroomFirst".Translate(), MessageTypeDefOf.RejectInput);
+                }
+                else if (!EducationUtility.HasBellOnMap(Find.CurrentMap, false))
+                {
+                    Messages.Message("PE_NoBellToCreateClass".Translate(), MessageTypeDefOf.RejectInput);
                 }
                 else
                 {
@@ -160,6 +165,30 @@ namespace ProgressionEducation
             Text.Anchor = TextAnchor.MiddleLeft;
             Widgets.Label(participantCountRect, studyGroup.students.Count.ToString());
             Text.Anchor = TextAnchor.UpperLeft;
+            
+            var suspendButtonRect = new Rect(participantIconRect.x - 35, innerRect.y + 2, 24f, 24f);
+            var suspendIcon = TexButton.Suspend;
+            var suspendTooltip = studyGroup.suspended ? "PE_ResumeClass".Translate() : "PE_SuspendClass".Translate();
+            GUI.DrawTexture(suspendButtonRect, suspendIcon);
+            TooltipHandler.TipRegion(suspendButtonRect, suspendTooltip);
+            if (Widgets.ButtonImage(suspendButtonRect, suspendIcon))
+            {
+                studyGroup.suspended = !studyGroup.suspended;
+                if (studyGroup.suspended)
+                {
+                    var map = studyGroup.Map;
+                    if (map != null)
+                    {
+                        Lord lordToCancel = map.lordManager.lords.FirstOrDefault(l =>
+                            l.LordJob is LordJob_AttendClass lordJob && lordJob.studyGroup == studyGroup);
+
+                        if (lordToCancel != null)
+                        {
+                            lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
+                        }
+                    }
+                }
+            }
         }
 
         private void DrawScheduleInfo(Rect rect, StudyGroup studyGroup)

@@ -32,9 +32,18 @@ namespace ProgressionEducation
             TooltipHandler.TipRegion(new Rect(15f, curY, inRect.width - 30f, rowHeight), "PE_RestrictReservationsDuringClass_Desc".Translate());
             
             curY += rowHeight + 10f;
+            Widgets.CheckboxLabeled(new Rect(15f, curY, inRect.width - 30f, rowHeight), "PE_InterruptJobsDuringClass".Translate(), ref classroom.interruptJobs);
+            TooltipHandler.TipRegion(new Rect(15f, curY, inRect.width - 30f, rowHeight), "PE_InterruptJobsDuringClass_Desc".Translate());
+            
+            curY += rowHeight + 10f;
             Rect buttonRect = new Rect((inRect.width - 150f) / 2f, inRect.height - 40f, 150f, 35f);
             if (Widgets.ButtonText(buttonRect, "Close".Translate()))
             {
+                Close();
+            }
+            if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return)
+            {
+                Event.current.Use();
                 Close();
             }
         }

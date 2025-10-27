@@ -99,6 +99,10 @@ namespace ProgressionEducation
 
         public override string StudentTooltipFor(Pawn pawn)
         {
+            if (pawn.needs?.learning != null)
+            {
+                return $"Learning: {pawn.needs.learning.CurLevelPercentage.ToStringPercent()}";
+            }
             return "";
         }
         

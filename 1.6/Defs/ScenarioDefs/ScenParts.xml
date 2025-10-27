@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ScenPartDef>
+    <defName>PE_ForcedProficiencyTrait</defName>
+    <label>start with proficiency trait</label>
+    <scenPartClass>ProgressionEducation.ScenPart_ForcedProficiencyTrait</scenPartClass>
+    <category>PlayerPawnModifier</category>
+    <selectionWeight>1.0</selectionWeight>
+    <summaryPriority>460</summaryPriority>
+  </ScenPartDef>
+
+</Defs>

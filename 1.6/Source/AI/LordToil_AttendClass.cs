@@ -8,6 +8,7 @@ namespace ProgressionEducation
     public class LordToil_AttendClass : LordToil
     {
         private readonly StudyGroup studyGroup;
+        private bool partialAttendanceWarningShown = false;
 
         public LordToil_AttendClass(StudyGroup studyGroup)
         {
@@ -56,6 +57,32 @@ namespace ProgressionEducation
             }
             else
             {
+                if (studyGroup.ClassIsActive())
+                {
+                    var lordJob = lord.LordJob as LordJob_AttendClass;
+                    lordJob.classStartedSuccessfully = true;
+                }
+
+                if (!partialAttendanceWarningShown && studyGroup.subjectLogic is SkillClassLogic)
+                {
+                    int totalPawns = studyGroup.students.Count + 1;
+                    int presentPawns = 0;
+
+                    foreach (var pawn in lord.ownedPawns)
+                    {
+                        if (pawn.GetRoom() == studyGroup.classroom.LearningBoard.parent.GetRoom())
+                        {
+                            presentPawns++;
+                        }
+                    }
+
+                    if (presentPawns < totalPawns && presentPawns > 0)
+                    {
+                        Messages.Message("PE_ClassPartiallyFunctioningWarning".Translate(studyGroup.className), MessageTypeDefOf.CautionInput);
+                        partialAttendanceWarningShown = true;
+                    }
+                }
+
                 foreach (var student in studyGroup.students)
                 {
                     if (student.CurJob is Job job && job.def != DefsOf.PE_AttendClass && student.mindState.IsIdle)

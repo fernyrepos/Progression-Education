@@ -171,7 +171,8 @@ namespace ProgressionEducation
         {
             if (SkillFocus != null)
             {
-                return $"{SkillFocus.LabelCap}: {pawn.skills.GetSkill(SkillFocus).Level}";
+                var skill = pawn.skills.GetSkill(SkillFocus);
+                return $"{SkillFocus.LabelCap}: {skill.Level} ({skill.passion.GetLabel()})";
             }
             return null;
         }

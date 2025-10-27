@@ -162,20 +162,24 @@ namespace ProgressionEducation
                return true;
            }
 
-           var proficiencyRequirement = equipment.def.GetModExtension<ItemProficiencyRequirement>();
-           TraitDef requiredProficiency = null;
-           if (proficiencyRequirement == null || proficiencyRequirement.requiredProficiency == null)
-           {
-               var techLevel = GetTechLevelFor(equipment.def);
-               requiredProficiency = GetProficiencyForTechLevel(techLevel);
-           }
-           else
-           {
-               requiredProficiency = proficiencyRequirement.requiredProficiency;
-           }
+            var proficiencyRequirement = equipment.def.GetModExtension<ItemProficiencyRequirement>();
+            TraitDef requiredProficiency = null;
+            if (proficiencyRequirement == null || proficiencyRequirement.requiredProficiency == null)
+            {
+                var techLevel = GetTechLevelFor(equipment.def);
+                requiredProficiency = GetProficiencyForTechLevel(techLevel);
+            }
+            else
+            {
+                requiredProficiency = proficiencyRequirement.requiredProficiency;
+            }
 
-           if (requiredProficiency != null)
-           {
+            if (requiredProficiency != null)
+            {
+               if (equipment is Apparel && requiredProficiency == DefsOf.PE_FirearmProficiency)
+               {
+                   return true;
+               }
                bool canEquip = false;
                if (requiredProficiency == DefsOf.PE_HighTechProficiency)
                {
