@@ -99,8 +99,8 @@
   <PE_ClassroomSettings>Classroom settings</PE_ClassroomSettings>
   <PE_RestrictReservationsDuringClass>Disallow traditional work in classroom</PE_RestrictReservationsDuringClass>
   <PE_RestrictReservationsDuringClass_Desc>If enabled, pawns will not be able to use classroom furniture (desks, etc.).</PE_RestrictReservationsDuringClass_Desc>
-  <PE_InterruptJobsDuringClass>Interrupt jobs during class</PE_InterruptJobsDuringClass>
-  <PE_InterruptJobsDuringClass_Desc>If enabled, pawns will be interrupted from their current jobs to attend class when the bell rings.</PE_InterruptJobsDuringClass_Desc>
+  <PE_InterruptJobsDuringClass>Interrupt all jobs to attend classes here</PE_InterruptJobsDuringClass>
+  <PE_InterruptJobsDuringClass_Desc>If enabled, pawns will interrupt all of their current jobs to attend class in this classroom when the bell rings.</PE_InterruptJobsDuringClass_Desc>
   <PE_ClassCancelledOffMap>{0} class cancelled today as members are off map.</PE_ClassCancelledOffMap>
   <PE_ClassCancelledToday>{0} class cancelled today,</PE_ClassCancelledToday>
   <PE_NoClassesScheduled>No classes scheduled. Click the plus button to create a class.</PE_NoClassesScheduled>
@@ -117,6 +117,6 @@
   <PE_ScenPart_ForcedProficiencyTrait_NoTrait>All starting colonists will have a proficiency trait.</PE_ScenPart_ForcedProficiencyTrait_NoTrait>
   <PE_RemovedFromDaycareOnAgeUp>{0} has aged up and has been removed from the "{1}" daycare.</PE_RemovedFromDaycareOnAgeUp>
   <PE_TeacherBellFailure>Class never started as teacher couldn't alert enough students within the scheduled time. Consider upgrading your school bell or lengthening the class session.</PE_TeacherBellFailure>
-  <PE_NoBellToCreateClass>You must build a school bell before you can create a class.</PE_NoBellToCreateClass>
+  <PE_NoBellToCreateClass>You must build a class bell or chime before you can create a class.</PE_NoBellToCreateClass>
 
 </LanguageData>
