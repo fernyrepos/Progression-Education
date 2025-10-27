@@ -2,7 +2,7 @@
 <Defs>
 
   <ThingDef ParentName="BaseGun">
-    <defName>PE_AssaultRifleTraining</defName>
+    <defName>PE_Gun_AssaultRifleTraining</defName>
     <label>training rifle</label>
     <description>A weapon designed purely for education. Its projectiles deal no damage.</description>
     <smeltable>false</smeltable>
