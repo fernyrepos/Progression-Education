@@ -86,6 +86,7 @@ namespace ProgressionEducation
 
         public override float CalculateProgressPerTick()
         {
+            if (studyGroup.teacher is null) return 0f;
             var classroom = studyGroup.classroom;
             float classRoomModifier = classroom.CalculateLearningModifier();
             float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * LearningSpeedModifier;

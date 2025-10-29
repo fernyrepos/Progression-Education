@@ -199,6 +199,14 @@ namespace ProgressionEducation
         {
             base.ExposeData();
             Scribe_Defs.Look(ref _skillFocus, "skillFocus");
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (_skillFocus is null)
+                {
+                    EducationManager.Instance.RemoveStudyGroup(studyGroup);
+                    Log.Error(studyGroup?.className + " had no skill focus, removing it...");
+                }
+            }
         }
 
         public override HashSet<ThingDef> GetValidLearningBenches()
