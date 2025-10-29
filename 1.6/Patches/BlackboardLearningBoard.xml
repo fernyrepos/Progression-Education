@@ -20,7 +20,6 @@
     <xpath>/Defs/ThingDef[defName="Blackboard"]/placeWorkers</xpath>
     <value>
       <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
-
     </value>
   </Operation>
   <Operation Class="PatchOperationRemove">

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
@@ -177,6 +177,38 @@ namespace ProgressionEducation
 
         public string BaseLabel => className;
 
+        public void Suspend(bool suspend)
+        {
+            if (suspended != suspend)
+            {
+                suspended = suspend;
+                var participants = new List<Pawn> { teacher }.Concat(students).ToList();
+                if (suspend)
+                {
+                    TimeAssignmentUtility.ClearScheduleFromPawns(this, participants);
+                }
+                else
+                {
+                    TimeAssignmentUtility.ApplyScheduleToPawns(this, participants);
+                }
+
+                if (suspended)
+                {
+                    var map = Map;
+                    if (map != null)
+                    {
+                        Lord lordToCancel = map.lordManager.lords.FirstOrDefault(l =>
+                            l.LordJob is LordJob_AttendClass lordJob && lordJob.studyGroup == this);
+
+                        if (lordToCancel != null)
+                        {
+                            lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
+                        }
+                    }
+                }
+            }
+        }
+
         public TeacherRole GetTeacherRole()
         {
             return new TeacherRole(this);
@@ -255,7 +287,8 @@ namespace ProgressionEducation
                 return new AcceptanceReport("PE_NoLearningBoard".Translate());
             }
             var facingCell = learningBoard.Position + learningBoard.Rotation.FacingCell;
-            if (facingCell.GetFirstBuilding(classroom.LearningBoard.parent.Map) != null)
+            var blockingBuilding = facingCell.GetFirstBuilding(classroom.LearningBoard.parent.Map);
+            if (blockingBuilding != null && blockingBuilding.def.passability != Traversability.Standable)
             {
                 return new AcceptanceReport("PE_LearningBoardIsBlocked".Translate(classroom.LearningBoard.parent.def.label));
             }

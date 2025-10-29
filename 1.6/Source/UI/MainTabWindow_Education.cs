@@ -178,21 +178,7 @@ namespace ProgressionEducation
             TooltipHandler.TipRegion(suspendButtonRect, suspendTooltip);
             if (Widgets.ButtonImage(suspendButtonRect, suspendIcon))
             {
-                studyGroup.suspended = !studyGroup.suspended;
-                if (studyGroup.suspended)
-                {
-                    var map = studyGroup.Map;
-                    if (map != null)
-                    {
-                        Lord lordToCancel = map.lordManager.lords.FirstOrDefault(l =>
-                            l.LordJob is LordJob_AttendClass lordJob && lordJob.studyGroup == studyGroup);
-
-                        if (lordToCancel != null)
-                        {
-                            lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
-                        }
-                    }
-                }
+                studyGroup.Suspend(!studyGroup.suspended);
             }
         }
 
