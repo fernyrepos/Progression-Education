@@ -45,13 +45,13 @@ namespace ProgressionEducation
             var addButtonRect = new Rect(rect.xMax - HeaderHeight, rect.y, HeaderHeight, HeaderHeight);
             if (Widgets.ButtonImage(addButtonRect, TexButton.Plus))
             {
-                if (educationManager.Classrooms.Count == 0)
-                {
-                    Messages.Message("PE_CreateClassroomFirst".Translate(), MessageTypeDefOf.RejectInput);
-                }
-                else if (!EducationUtility.HasBellOnMap(Find.CurrentMap, false))
+                if (!EducationUtility.HasBellOnMap(Find.CurrentMap, false))
                 {
                     Messages.Message("PE_NoBellToCreateClass".Translate(), MessageTypeDefOf.RejectInput);
+                }
+                else if (educationManager.Classrooms.Count == 0)
+                {
+                    Messages.Message("PE_CreateClassroomFirst".Translate(), MessageTypeDefOf.RejectInput);
                 }
                 else
                 {
