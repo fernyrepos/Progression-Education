@@ -84,20 +84,38 @@ namespace ProgressionEducation
             }
         }
 
-        public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd)
+        public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd, bool preventDowngrade = false)
         {
             if (pawn.story?.traits is null || pawn.DevelopmentalStage == DevelopmentalStage.Newborn) return;
-            
-            var traits = pawn.story.traits.allTraits.Where(t => t.def == DefsOf.PE_LowTechProficiency || t.def == DefsOf.PE_FirearmProficiency || t.def == DefsOf.PE_HighTechProficiency).ToList();
-            foreach (var t in traits)
+
+            var existingTraits = pawn.story.traits.allTraits.Where(t =>
+                t.def == DefsOf.PE_LowTechProficiency ||
+                t.def == DefsOf.PE_FirearmProficiency ||
+                t.def == DefsOf.PE_HighTechProficiency).ToList();
+
+            if (preventDowngrade)
             {
-                pawn.story.traits.allTraits.Remove(t);
+                var newProficiencyLevel = TraitDefToProficiencyLevel(traitToAdd);
+                if (existingTraits.Any())
+                {
+                    var maxExistingLevel = existingTraits.Max(t => TraitDefToProficiencyLevel(t.def));
+                    if (newProficiencyLevel <= maxExistingLevel)
+                    {
+                        return;
+                    }
+                }
             }
+
+            foreach (var oldTrait in existingTraits)
+            {
+                pawn.story.traits.allTraits.Remove(oldTrait);
+            }
+
             var trait = new Trait(traitToAdd);
             pawn.story.traits.GainTrait(trait);
             pawn.story.traits.allTraits.Remove(trait);
             pawn.story.traits.allTraits.Insert(0, trait);
-       }
+        }
 
        private static Dictionary<ThingDef, TechLevel> cachedTechLevelValues = new Dictionary<ThingDef, TechLevel>();
 

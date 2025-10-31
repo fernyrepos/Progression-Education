@@ -15,7 +15,7 @@ namespace ProgressionEducation
             {
                 foreach (Pawn pawn in PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
                 {
-                    ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait);
+                    ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait, true);
                 }
                 Find.LetterStack.ReceiveLetter(extension.title, extension.desc, LetterDefOf.PositiveEvent);
             }
