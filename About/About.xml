@@ -28,6 +28,7 @@
     <incompatibleWith>
         <li>dame.arcanetechnology</li>
         <li>konstantynopolitaneczka.choosethelesson</li>
+        <li>carnysenpai.enableoversizedweapons</li>
     </incompatibleWith>
     <loadAfter>
         <!-- CORE STUFF -->
