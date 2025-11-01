@@ -59,6 +59,10 @@ namespace ProgressionEducation
             {
                 return;
             }
+            if (!EducationSettings.Instance.enableProficiencySystem)
+            {
+                return;
+            }
             if (trait != null)
             {
                 ProficiencyUtility.GrantProficiencyTrait(pawn, trait);

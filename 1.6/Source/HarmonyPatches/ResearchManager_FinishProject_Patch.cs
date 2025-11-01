@@ -10,6 +10,10 @@ namespace ProgressionEducation
     {
         public static void Postfix(ResearchProjectDef proj)
         {
+            if (!EducationSettings.Instance.enableProficiencySystem)
+            {
+                return;
+            }
             var extension = proj.GetModExtension<ResearchGrantsTrait>();
             if (extension != null)
             {
