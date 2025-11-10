@@ -29,6 +29,7 @@
         <li>dame.arcanetechnology</li>
         <li>konstantynopolitaneczka.choosethelesson</li>
         <li>carnysenpai.enableoversizedweapons</li>
+        <li>voult.betterpawncontrol</li>
     </incompatibleWith>
     <loadAfter>
         <!-- CORE STUFF -->
@@ -61,5 +62,10 @@
         <!-- GEAR PATCHES -->
         <li>vanillaexpanded.vwe</li>
         <li>oskarpotocki.vfe.pirates</li>
+
+        <!-- SCENARIO PATCHES -->
+        <li>ferny.progressionscenarios</li>
+
+
     </loadAfter>
 </ModMetaData>

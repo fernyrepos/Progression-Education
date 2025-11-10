@@ -18,6 +18,9 @@
     <li IfModActive="vanillaexpanded.vwe">Mods and Shit/VE Weapons</li>
     <li IfModActive="vanillaexpanded.vcookebakery">Mods and Shit/VCE Bakery</li>
     <li IfModActive="oskarpotocki.vfe.pirates">Mods and Shit/VFE Pirates</li>
+    <li IfModActive="ludeon.rimworld.odyssey">Mods and Shit/Odyssey</li>
+    <li IfModActive="ferny.progressionscenarios">Mods and Shit/Progression Scenarios</li>
+    <li IfModActive="ludeon.rimworld.biotech">Mods and Shit/Biotech</li>
     <li>1.6</li>
   </v1.6>
 </loadFolders>
