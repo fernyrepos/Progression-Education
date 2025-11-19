@@ -60,6 +60,18 @@ namespace ProgressionEducation
             base.PostDeSpawn(map, mode);
             if (this.parent.BeingTransportedOnGravship) return;
 
+            MoveOrRemoveClassroom(map);
+        }
+
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            base.PostDestroy(mode, previousMap);
+            MoveOrRemoveClassroom(previousMap);
+        }
+
+        private void MoveOrRemoveClassroom(Map map)
+        {
+            if (classroom is null) return;
             var room = parent.Position.GetRoom(map);
             var otherBoard = room.ContainedThings(parent.def)
                                  .Select(t => t.TryGetComp<CompLearningBoard>())
@@ -75,6 +87,7 @@ namespace ProgressionEducation
                 EducationLog.Message($"Learning board '{parent.Label}' despawned. Last board in room. Removing classroom '{classroom.name}'.");
                 EducationManager.Instance.RemoveClassroom(classroom);
             }
+            classroom = null;
         }
 
         public void InitializeClassroom()

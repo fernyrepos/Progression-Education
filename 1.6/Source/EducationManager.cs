@@ -127,6 +127,14 @@ namespace ProgressionEducation
                     studyGroup.subjectLogic.HandleStudentLifecycleEvents();
                     TryInitiateClassForStudyGroup(studyGroup);
                 }
+                foreach (var classroom in Classrooms.ToList())
+                {
+                    if (classroom.LearningBoard == null || classroom.LearningBoard.parent.Destroyed)
+                    {
+                        EducationLog.Message($"Classroom '{classroom.name}' has no valid learning board. Removing classroom.");
+                        RemoveClassroom(classroom);
+                    }
+                }
             }
         }
 
