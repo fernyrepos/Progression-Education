@@ -21,6 +21,7 @@
     <li IfModActive="ludeon.rimworld.odyssey">Mods and Shit/Odyssey</li>
     <li IfModActive="ferny.progressionscenarios">Mods and Shit/Progression Scenarios</li>
     <li IfModActive="ludeon.rimworld.biotech">Mods and Shit/Biotech</li>
+    <li IfModActive="tug.minotaur.expanded">Mods and Shit/Roo Minotaur Expanded</li>
     <li>1.6</li>
   </v1.6>
 </loadFolders>

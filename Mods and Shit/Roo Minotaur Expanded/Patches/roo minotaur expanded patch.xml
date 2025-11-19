@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- ROO MINOTAUR EXPANDED PATCHES -->
+
+<!-- SCENARIOS -->
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ScenarioDef[defName="RBME_ThePovertyTourists"]/scenario/parts</xpath>
+    <value>
+			<li Class="ProgressionEducation.ScenPart_ForcedProficiencyTrait">
+				<def>PE_ForcedProficiencyTrait</def>
+				<chance>1</chance>
+				<context>PlayerStarter</context>
+				<trait>PE_HighTechProficiency</trait>
+			</li>
+    </value>
+  </Operation>
+
+
+</Patch>

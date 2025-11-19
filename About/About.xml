@@ -42,6 +42,9 @@
         <li>brrainz.harmony</li>
 		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
 
+        <!-- MULTIPLE PATCHES -->
+        <li>oskarpotocki.vfe.pirates</li>
+
         <!-- WORKBENCH PATCHES -->
         <li>xmb.ancienturbanruins.mo</li>
         <li>van.foodfamine</li>
@@ -61,11 +64,10 @@
 
         <!-- GEAR PATCHES -->
         <li>vanillaexpanded.vwe</li>
-        <li>oskarpotocki.vfe.pirates</li>
 
         <!-- SCENARIO PATCHES -->
         <li>ferny.progressionscenarios</li>
-
+        <li>tug.minotaur.expanded</li>
 
     </loadAfter>
 </ModMetaData>
