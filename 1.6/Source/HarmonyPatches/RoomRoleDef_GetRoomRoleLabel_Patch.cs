@@ -8,12 +8,15 @@ namespace ProgressionEducation
     {
         public static void Postfix(ref string __result, Room room)
         {
-            foreach (var classroom in EducationManager.Instance.Classrooms)
+            if (room != null && EducationManager.Instance?.Classrooms != null)
             {
-                if (classroom.LearningBoard != null && classroom.LearningBoard.parent.GetRoom() == room)
+                foreach (var classroom in EducationManager.Instance.Classrooms)
                 {
-                    __result = classroom.name;
-                    return;
+                    if (classroom?.LearningBoard?.parent?.GetRoom() == room)
+                    {
+                        __result = classroom.name;
+                        return;
+                    }
                 }
             }
         }
