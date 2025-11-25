@@ -47,7 +47,7 @@ namespace ProgressionEducation
             return true;
         }
 
-        public override float LearningSpeedModifier => EducationSettings.Instance.daycareClassesLearningSpeedModifier;
+        public override float LearningSpeedModifier => EducationSettings.Instance.daycareClassesLearningSpeedModifier * 0.4f;
 
         public override void ApplyTeachingTick(Pawn student, JobDriver_Teach jobDriver)
         {
