@@ -17,11 +17,11 @@ namespace ProgressionEducation
             {
                 if (_instance == null)
                 {
-                    _instance = Current.Game.World.GetComponent<EducationManager>();
+                    _instance = Find.World.GetComponent<EducationManager>();
                 }
-                else if (_instance.world != Current.Game.World)
+                else if (_instance.world != Find.World)
                 {
-                    _instance = Current.Game.World.GetComponent<EducationManager>();
+                    _instance = Find.World.GetComponent<EducationManager>();
                 }
                 return _instance;
             }
@@ -120,7 +120,7 @@ namespace ProgressionEducation
         public override void WorldComponentTick()
         {
             base.WorldComponentTick();
-            if (Current.Game.tickManager.TicksGame % 180 == 0)
+            if (Find.TickManager.TicksGame % 180 == 0)
             {
                 foreach (var studyGroup in StudyGroups)
                 {
