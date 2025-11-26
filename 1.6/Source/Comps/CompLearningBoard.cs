@@ -92,12 +92,10 @@ namespace ProgressionEducation
 
         public void InitializeClassroom()
         {
-            if (parent.Faction != Faction.OfPlayer)
-            {
-                return;
-            }
-
+            if (parent.Faction != Faction.OfPlayer) return;
             var room = parent.GetRoom();
+            if (room is null) return;
+            
             var otherBoard = room.ContainedThings(parent.def)
                                  .Select(t => t.TryGetComp<CompLearningBoard>())
                                  .FirstOrDefault(c => c != null && c != this && c.classroom != null);
