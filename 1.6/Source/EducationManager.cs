@@ -52,6 +52,8 @@ namespace ProgressionEducation
 
         public void AddClassroom(Classroom classroom)
         {
+            if (classroom == null) return;
+            classrooms ??= new List<Classroom>();
             if (!classrooms.Contains(classroom))
             {
                 classrooms.Add(classroom);
