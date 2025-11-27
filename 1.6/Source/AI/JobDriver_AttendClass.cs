@@ -19,7 +19,10 @@ namespace ProgressionEducation
         }
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed) && pawn.ReserveSittableOrSpot(DeskSpotStudent(TargetA.Thing), job, errorOnFailed);
+            TimeAssignmentUtility.allowUsing = true;
+            var result = pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed) && pawn.ReserveSittableOrSpot(DeskSpotStudent(TargetA.Thing), job, errorOnFailed);
+            TimeAssignmentUtility.allowUsing = false;
+            return result;
         }
 
         public override IEnumerable<Toil> MakeNewToils()
