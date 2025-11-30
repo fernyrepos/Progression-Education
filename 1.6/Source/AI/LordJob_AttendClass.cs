@@ -68,16 +68,17 @@ namespace ProgressionEducation
             ringToAttendTransition.AddPreAction(new TransitionAction_Custom((Action)delegate
             {
                 var members = studyGroup.students.ToList();
+                members.Add(studyGroup.teacher);
                 foreach (var member in members)
                 {
                     Job curJob = member.CurJob;
-                    if (studyGroup.classroom?.interruptJobs != true)
+                    if (curJob?.def != DefsOf.PE_RingBell)
                     {
-                        member.jobs.StopAll();
-                    }
-                    else
-                    {
-                        if (CanInterruptJob(member))
+                        if (studyGroup.classroom.interruptJobs)
+                        {
+                            member.jobs.StopAll();
+                        }
+                        else if (CanInterruptJob(member))
                         {
                             member.jobs.StopAll();
                         }
