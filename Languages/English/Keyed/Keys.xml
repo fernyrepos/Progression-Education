@@ -39,7 +39,7 @@
   <PE_SubjectSkill>Skill</PE_SubjectSkill>
   <PE_SubjectProficiency>Proficiency</PE_SubjectProficiency>
   <PE_SubjectDaycare>Daycare</PE_SubjectDaycare>
-  <PE_Daycare>Fulfills children's learning need. Scheduled until its deleted.</PE_Daycare>
+  <PE_Daycare>Fulfills children's learning need. Scheduled until it's deleted.</PE_Daycare>
   <PE_RescheduleClass>Reschedule class</PE_RescheduleClass>
   <PE_SkillFocusMissing>Skill focus is missing</PE_SkillFocusMissing>
   <PE_ScheduleTime>Schedule: {0}:00 - {1}:00</PE_ScheduleTime>
