@@ -8,6 +8,7 @@ namespace ProgressionEducation
 {
     [HotSwappable]
     [HarmonyPatch(typeof(ReservationUtility), nameof(ReservationUtility.CanReserveSittableOrSpot), typeof(Pawn), typeof(IntVec3), typeof(Thing), typeof(bool))]
+    [HarmonyAfter("OELS.VehicleMapFramework")]
     public static class ReservationUtility_CanReserveSittableOrSpot_Patch
     {
         public static bool Prefix(Pawn pawn, IntVec3 exactSittingPos, Thing ignoreThing, bool ignoreOtherReservations, ref bool __result)
