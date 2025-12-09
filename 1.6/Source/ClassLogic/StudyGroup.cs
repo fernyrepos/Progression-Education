@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
@@ -288,7 +288,7 @@ namespace ProgressionEducation
             }
             var facingCell = learningBoard.Position + learningBoard.Rotation.FacingCell;
             var blockingBuilding = facingCell.GetFirstBuilding(classroom.LearningBoard.parent.Map);
-            if (blockingBuilding != null && blockingBuilding.def.passability != Traversability.Standable)
+            if (blockingBuilding != null && blockingBuilding.def.passability != Traversability.Standable && blockingBuilding.def != ThingDefOf.HiddenConduit)
             {
                 return new AcceptanceReport("PE_LearningBoardIsBlocked".Translate(classroom.LearningBoard.parent.def.label));
             }

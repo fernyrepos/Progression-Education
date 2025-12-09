@@ -34,8 +34,24 @@ namespace ProgressionEducation
         {
         }
 
-        public List<Classroom> Classrooms => classrooms ??= new List<Classroom>();
-        public List<StudyGroup> StudyGroups => studyGroups ??= new List<StudyGroup>();
+        public List<Classroom> Classrooms
+        {
+            get
+            {
+                classrooms ??= new List<Classroom>();
+                classrooms.RemoveAll(x => x is null);
+                return classrooms;
+            }
+        }
+        public List<StudyGroup> StudyGroups
+        {
+            get
+            {
+                studyGroups ??= new List<StudyGroup>();
+                studyGroups.RemoveAll(x => x is null || x.classroom is null);
+                return studyGroups;
+            }
+        }
 
         public override void ExposeData()
         {
@@ -73,7 +89,7 @@ namespace ProgressionEducation
 
         public void RemoveClassroom(Classroom classroom)
         {
-            var studyGroupsToRemove = studyGroups.Where(sg => sg.classroom == classroom).ToList();
+            var studyGroupsToRemove = StudyGroups.Where(sg => sg.classroom == classroom).ToList();
             foreach (var studyGroup in studyGroupsToRemove)
             {
                 List<Pawn> allParticipants = [studyGroup.teacher, .. studyGroup.students];

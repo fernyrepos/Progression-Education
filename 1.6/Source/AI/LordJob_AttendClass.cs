@@ -72,7 +72,7 @@ namespace ProgressionEducation
                 foreach (var member in members)
                 {
                     Job curJob = member.CurJob;
-                    if (curJob?.def != DefsOf.PE_RingBell)
+                    if (curJob?.def != DefsOf.PE_RingBell && member.Deathresting is false)
                     {
                         if (studyGroup.classroom.interruptJobs)
                         {
@@ -125,10 +125,6 @@ namespace ProgressionEducation
 
         private static bool CanInterruptJob(Pawn member)
         {
-            if (member.Deathresting)
-            {
-                return false;
-            }
             var lordJob = member.GetLord()?.LordJob;
             if (lordJob is LordJob_Joinable_MarriageCeremony or LordJob_Ritual)
             {
