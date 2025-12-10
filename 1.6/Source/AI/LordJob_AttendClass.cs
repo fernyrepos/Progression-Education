@@ -74,13 +74,14 @@ namespace ProgressionEducation
                     Job curJob = member.CurJob;
                     if (curJob?.def != DefsOf.PE_RingBell && member.Deathresting is false)
                     {
-                        if (studyGroup.classroom.interruptJobs)
+                        if (studyGroup.classroom.interruptJobs || CanInterruptJob(member))
                         {
                             member.jobs.StopAll();
-                        }
-                        else if (CanInterruptJob(member))
-                        {
-                            member.jobs.StopAll();
+                            if (member.drafter != null)
+                            {
+                                member.drafter.Drafted = true;
+                                member.drafter.Drafted = false;
+                            }
                         }
                     }
                 }
