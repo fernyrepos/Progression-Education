@@ -8,6 +8,8 @@ namespace ProgressionEducation
     [StaticConstructorOnStartup]
     public static class Startup
     {
+        public static Dictionary<ThingDef, List<ThingDef>> hiddenFacilityPairs = new Dictionary<ThingDef, List<ThingDef>>();
+
         static Startup()
         {
             EducationLog.Message("Progression: Education - Initializing dynamic facility linking.");
@@ -15,7 +17,7 @@ namespace ProgressionEducation
             var learningBoardDefs = DefDatabase<ThingDef>.AllDefsListForReading
                 .Where(d => d.HasComp(typeof(CompLearningBoard)))
                 .ToList();
-                
+
             foreach (var def in learningBoardDefs)
             {
                 var count = def.comps.RemoveAll(x => x is CompProperties_Facility);
@@ -44,13 +46,13 @@ namespace ProgressionEducation
                     }
                 }
             }
-            
+
             var projectorDefs = DefDatabase<ThingDef>.AllDefsListForReading
                 .Where(d => d.HasComp(typeof(CompProjector)))
                 .ToList();
-                
+
             EducationLog.Message($"Found {deskDefs.Count} desk/workbench defs: {deskDefs.ToStringSafeEnumerable()} and projector defs {projectorDefs.ToStringSafeEnumerable()}");
-                
+
             foreach (var deskDef in deskDefs.Concat(projectorDefs))
             {
                 AddAffectedByFacilityComp(deskDef, learningBoardDefs);
@@ -60,7 +62,7 @@ namespace ProgressionEducation
             {
                 AddFacilityComp(boardDef, deskDefs.ToList());
             }
-            
+
             EducationLog.Message("Progression: Education - Dynamic facility linking complete.");
         }
 
@@ -70,20 +72,21 @@ namespace ProgressionEducation
             {
                 def.comps = new List<CompProperties>();
             }
-
             var existingComp = def.GetCompProperties<CompProperties_AffectedByFacilities>();
             if (existingComp != null)
             {
-                existingComp.linkableFacilities.AddRange(facilities);
-                existingComp.linkableFacilities = existingComp.linkableFacilities.Distinct().ToList();
-                EducationLog.Message($"Added {facilities.ToStringSafeEnumerable()} learning boards to existing CompAffectedByFacilities on {def.defName}.");
+                var newFacilities = facilities.Where(x => existingComp.linkableFacilities.Contains(x) is false).ToList();
+                existingComp.linkableFacilities.AddRange(newFacilities);
+                hiddenFacilityPairs[def] = newFacilities;
+                EducationLog.Message($"Added {newFacilities.ToStringSafeEnumerable()} learning boards to existing CompAffectedByFacilities on {def.defName}.");
             }
             else
             {
                 var comp = new CompProperties_AffectedByFacilities
                 {
                     linkableFacilities = facilities
-                };
+                }; 
+                hiddenFacilityPairs[def] = facilities;
                 def.comps.Add(comp);
                 EducationLog.Message($"Added new CompAffectedByFacilities with {facilities.ToStringSafeEnumerable()} learning boards to {def.defName}.");
             }
