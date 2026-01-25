@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- GEAR -->
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ThingDef[defName="VFES_Weapon_GrenadeDynamite"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ItemProficiencyRequirement">
+        <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+      </li>
+    </value>
+  </Operation>
+
+
+</Patch>

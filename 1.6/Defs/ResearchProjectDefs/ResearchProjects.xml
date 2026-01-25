@@ -3,7 +3,7 @@
 
 	<ResearchProjectDef>
 		<defName>Ferny_NeolithicEducation</defName>
-		<label>basic schooltech</label>
+		<label>basic education</label>
 		<description>Educate students with basic school equipment.</description>
 		<baseCost>300</baseCost>
 		<prerequisites>
@@ -20,7 +20,7 @@
 
 	<ResearchProjectDef>
 		<defName>Ferny_IndustrialEducation</defName>
-		<label>modern schooltech</label>
+		<label>modern education</label>
 		<description>Discover more effective ways to educate with modern technology.</description>
 		<baseCost>1000</baseCost>
 		<prerequisites>
@@ -35,7 +35,7 @@
 
 	<ResearchProjectDef>
 		<defName>Ferny_SpacerEducation</defName>
-		<label>holographic schooltech</label>
+		<label>holographic education</label>
 		<description>Fabricate large displays with holograms, and touchscreen desk surfaces to immerse students in fast, captivating lessons.</description>
 		<baseCost>2000</baseCost>
 		<prerequisites>

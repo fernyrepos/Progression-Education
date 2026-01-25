@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- GEAR PATCHES -->
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ThingDef[defName="VPE_Psyring"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ItemProficiencyRequirement">
+        <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>
