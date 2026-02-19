@@ -3,7 +3,7 @@
 
 <!-- VE WEAPONS GEAR PATCHES -->
 
-  <Operation Class="PatchOperationAddModExtension">
+  <!-- <Operation Class="PatchOperationAddModExtension">
     <xpath>Defs/ThingDef[defName="VWE_Gun_Flintlock"]</xpath>
     <value>
       <li Class="ProgressionEducation.ItemProficiencyRequirement">
@@ -18,7 +18,7 @@
         <requiredProficiency>PE_FirearmProficiency</requiredProficiency>
       </li>
     </value>
-  </Operation>
+  </Operation> -->
   <Operation Class="PatchOperationAddModExtension">
     <xpath>Defs/ThingDef[defName="VWE_MeleeWeapon_Shovel"]</xpath>
     <value>
@@ -51,14 +51,14 @@
       </li>
     </value>
   </Operation>
-  <Operation Class="PatchOperationAddModExtension">
+  <!-- <Operation Class="PatchOperationAddModExtension">
     <xpath>Defs/ThingDef[defName="VWE_Gun_FireExtinguisher"]</xpath>
     <value>
       <li Class="ProgressionEducation.ItemProficiencyRequirement">
         <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
       </li>
     </value>
-  </Operation>
+  </Operation> -->
   <Operation Class="PatchOperationAddModExtension">
     <xpath>Defs/ThingDef[defName="VWE_Bow_Compound"]</xpath>
     <value>
