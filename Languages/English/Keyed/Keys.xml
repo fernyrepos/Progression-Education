@@ -123,4 +123,6 @@
   <PE_ScheduleShouldBeAtleastHourLong>Schedule should be at least hour long.</PE_ScheduleShouldBeAtleastHourLong>
   <PE_Learning>Learning need: {0}</PE_Learning>
   <PE_Suspended>(suspended)</PE_Suspended>
+  <PE_TeacherOffMap>Class {0} was cancelled as the teacher is not on the map it takes place in.</PE_TeacherOffMap>
+  <PE_NoStudents>Class {0} was cancelled as there were no students.</PE_NoStudents>
 </LanguageData>
