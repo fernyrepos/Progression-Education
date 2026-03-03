@@ -33,7 +33,7 @@ namespace ProgressionEducation
         public static void RemoveTimeAssignmentDef(StudyGroup studyGroup)
         {
             var defToRemove = DefDatabase<TimeAssignmentDef>.GetNamed(studyGroup.timeAssignmentDefName, errorOnFail: false);
-            DefDatabase<TimeAssignmentDef>.AllDefsListForReading.Remove(defToRemove);
+            DefDatabase<TimeAssignmentDef>.Remove(defToRemove);
             EducationLog.Message($"Dynamic Def '{defToRemove.defName}' removed from database.");
         }
 
@@ -46,7 +46,7 @@ namespace ProgressionEducation
             EducationLog.Message($"All defs present: {DefDatabase<TimeAssignmentDef>.AllDefsListForReading.ToStringSafeEnumerable()}");
             foreach (var def in dynamicDefsToRemove)
             {
-                DefDatabase<TimeAssignmentDef>.AllDefsListForReading.Remove(def);
+                DefDatabase<TimeAssignmentDef>.Remove(def);
                 EducationLog.Message($"Dynamic Def '{def.defName}' removed from database.");
             }
         }
