@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: electric school bell -->
+  <PE_ElectricSchoolBell.label>sonnerie électrique d'école</PE_ElectricSchoolBell.label>
+  <!-- EN: An automatic bell used to signal the start of classes. More reliable than a regular bell, as it doesn't need to be rung manually. -->
+  <PE_ElectricSchoolBell.description>Une sonnerie automatique utilisée pour signaler le début des cours. Plus fiable qu'une sonnerie classique, car elle ne nécessite pas d'être actionnée manuellement.</PE_ElectricSchoolBell.description>
+  
+  <!-- EN: school bell -->
+  <PE_SchoolBell.label>cloche d'école </PE_SchoolBell.label>
+  <!-- EN: A loud bell used to signal the start of classes. A teacher will manually ring this to call students. -->
+  <PE_SchoolBell.description>Une cloche bruyante utilisée pour signaler le début des cours. Un enseignant la sonne manuellement pour appeler les élèves.</PE_SchoolBell.description>
+  
+  <!-- EN: class chimes -->
+  <PE_TribalBell.label>carillons de classe</PE_TribalBell.label>
+  <!-- EN: A quiet, incredibly slow to alert chime used to signal the start of classes. A teacher will manually ring this to call students. -->
+  <PE_TribalBell.description>Une sonnerie discrète, incroyablement lente à retentir, utilisée pour signaler le début des cours. Un enseignant la déclenche manuellement pour appeler les élèves.</PE_TribalBell.description>
+  
+</LanguageData>

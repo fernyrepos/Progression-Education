@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: firearm proficient -->
+  <PE_FirearmProficiency.label>maîtrise en armes à feu</PE_FirearmProficiency.label>
+  <!-- EN: This person is proficient with firearm equipment. -->
+  <PE_FirearmProficiency.description>Cette personne maîtrise parfaitement le maniement des armes à feu.</PE_FirearmProficiency.description>
+  <!-- EN: <color=#FF0000>Firearm proficient</color> -->
+  <PE_FirearmProficiency.degreeDatas.firearm_proficient.label><color=#FF0000>Maîtrise en armes à feu</color></PE_FirearmProficiency.degreeDatas.firearm_proficient.label>
+  <!-- EN: This person is proficient with firearm equipment. -->
+  <PE_FirearmProficiency.degreeDatas.firearm_proficient.description>Cette personne maîtrise parfaitement le maniement des armes à feu.</PE_FirearmProficiency.degreeDatas.firearm_proficient.description>
+  
+  <!-- EN: high-tech proficient -->
+  <PE_HighTechProficiency.label>maîtrise en haute technologie</PE_HighTechProficiency.label>
+  <!-- EN: This person is proficient with high-tech equipment. -->
+  <PE_HighTechProficiency.description>Cette personne maîtrise parfaitement les équipements de haute technologie.</PE_HighTechProficiency.description>
+  <!-- EN: <color=#FF0000>High-tech proficient</color> -->
+  <PE_HighTechProficiency.degreeDatas.hightech_proficient.label><color=#FF0000>Maîtrise en haute technologie</color></PE_HighTechProficiency.degreeDatas.hightech_proficient.label>
+  <!-- EN: This person is proficient with high-tech equipment. -->
+  <PE_HighTechProficiency.degreeDatas.hightech_proficient.description>Cette personne maîtrise parfaitement les équipements de haute technologie.</PE_HighTechProficiency.degreeDatas.hightech_proficient.description>
+  
+  <!-- EN: low-tech proficient -->
+  <PE_LowTechProficiency.label>maîtrise en basse technologie</PE_LowTechProficiency.label>
+  <!-- EN: This person is proficient with low-tech equipment. -->
+  <PE_LowTechProficiency.description>Cette personne maîtrise les équipements de basse technologie.</PE_LowTechProficiency.description>
+  <!-- EN: <color=#FF0000>Low-tech proficient</color> -->
+  <PE_LowTechProficiency.degreeDatas.lowtech_proficient.label><color=#FF0000>Maîtrise en basse technologie</color></PE_LowTechProficiency.degreeDatas.lowtech_proficient.label>
+  <!-- EN: This person is proficient with low-tech equipment. -->
+  <PE_LowTechProficiency.degreeDatas.lowtech_proficient.description>Cette personne maîtrise les équipements de basse technologie.</PE_LowTechProficiency.degreeDatas.lowtech_proficient.description>
+  
+</LanguageData>

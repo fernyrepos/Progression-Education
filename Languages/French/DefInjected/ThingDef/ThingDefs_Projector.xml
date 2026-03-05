@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: projector -->
+  <PE_Projector.label>projecteur</PE_Projector.label>
+  <!-- EN: A classroom projector that can be linked to a learning board to improve learning effectiveness. -->
+  <PE_Projector.description>Un projecteur de classe pouvant être relié à un tableau interactif afin d'améliorer l'efficacité de l'apprentissage.</PE_Projector.description>
+  
+</LanguageData>

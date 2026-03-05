@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: cadaver dummy -->
+  <PE_Cadaver.label>mannequin de cadavre</PE_Cadaver.label>
+  <!-- EN: A medical-grade cloth recreation of a baseliner, down to the individual muscles. Students can train their medical skills by performing practice surgeries on it. -->
+  <PE_Cadaver.description>Une reproduction en tissu de qualité médicale d'un individu standard, jusque dans les moindres détails musculaires. Les élèves peuvent exercer leurs compétences médicales en pratiquant des interventions chirurgicales sur ce mannequin.</PE_Cadaver.description>
+  
+  <!-- EN: firearm station -->
+  <PE_ShootingTarget.label>station pour armes à feu</PE_ShootingTarget.label>
+  <!-- EN: A metallic target equipped with a practice rifle. Students can fire at the target to train their shooting skills. -->
+  <PE_ShootingTarget.description>Une cible métallique équipée d'un fusil d'entraînement. Les élèves peuvent tirer sur la cible pour s'entraîner au tir.</PE_ShootingTarget.description>
+  
+  <!-- EN: striking board -->
+  <PE_StrikingBoard.label>planche de frappe</PE_StrikingBoard.label>
+  <!-- EN: A plank embedded in the ground, with a dampening rope wrapped around its top half capable of taking direct blows. Can be used to train melee skills in classes. -->
+  <PE_StrikingBoard.description>Une planche enfoncée dans le sol, avec une corde amortissante enroulée autour de sa moitié supérieure, capable d'encaisser des coups directs. Peut être utilisée pour entraîner les compétences de combat au corps à corps dans les cours.</PE_StrikingBoard.description>
+  
+</LanguageData>

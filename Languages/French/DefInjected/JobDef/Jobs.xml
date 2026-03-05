@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: attending class. -->
+  <PE_AttendClass.reportString>assiste au cours.</PE_AttendClass.reportString>
+  
+  <!-- EN: practicing melee combat. -->
+  <PE_AttendMeleeClass.reportString>s'entraîne au combat au corps à corps.</PE_AttendMeleeClass.reportString>
+  
+  <!-- EN: practicing shooting. -->
+  <PE_AttendShootingClass.reportString>s'entraîne au tir.</PE_AttendShootingClass.reportString>
+  
+  <!-- EN: ringing bell. -->
+  <PE_RingBell.reportString>sonne la cloche.</PE_RingBell.reportString>
+  
+  <!-- EN: teaching class. -->
+  <PE_Teach.reportString>enseigne.</PE_Teach.reportString>
+  
+</LanguageData>

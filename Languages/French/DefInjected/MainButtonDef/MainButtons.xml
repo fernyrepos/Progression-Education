@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: education -->
+  <PE_Education.label>éducation</PE_Education.label>
+  <!-- EN: Manage classrooms and classes. -->
+  <PE_Education.description>Gérer les salles de classe et les cours.</PE_Education.description>
+  
+</LanguageData>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: royal crib -->
+  <RoyalCrib.label>berceau royal</RoyalCrib.label>
+  <!-- EN: A luxuriously comfortable gold bed with safe latticed sides, perfect for a sleepy baby. A high quality crib will make a baby happy. Multiple cribs can be placed in a bedroom without turning it into a barracks. -->
+  <RoyalCrib.description>Un lit doré luxueusement confortable avec des côtés grillagés sécurisés, parfait pour le sommeil d'un bébé. Un berceau de haute qualité rendra votre bébé heureux. Plusieurs berceaux peuvent être placés dans une chambre sans la transformer en dortoir.</RoyalCrib.description>
+  
+  <!-- EN: rough crib -->
+  <TribalCrib.label>berceau rudimentaire</TribalCrib.label>
+  <!-- EN: An unstable weaved bed perfect for a sleepy baby. A high quality crib will make a baby happy. Multiple cribs can be placed in a bedroom without turning it into a barracks. -->
+  <TribalCrib.description>Un lit tissé instable convenable pour le sommeil d'un bébé. Un berceau de plus haute qualité rendra votre bébé plus heureux. Plusieurs berceaux peuvent être placés dans une chambre sans la transformer en dortoir.</TribalCrib.description>
+  
+</LanguageData>

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: holo-educator screen (1x2) -->
+  <PE_HoloEducatorScreen.label>écran holographique éducatif (1x2)</PE_HoloEducatorScreen.label>
+  <!-- EN: A holographic display capable of teaching students at lighting speed, barely needing a teacher's guidance. Placing a board marks the area as a classroom, which can then be assigned classes. -->
+  <PE_HoloEducatorScreen.description>Un écran holographique capable d'enseigner aux élèves à la vitesse de la lumière, sans presque avoir besoin des conseils d'un enseignant. Placer un tableau permet de désigner la zone comme une salle de classe, à laquelle on peut ensuite attribuer des cours.</PE_HoloEducatorScreen.description>
+  
+  <!-- EN: blackboard (1x3) -->
+  <PE_LargeBlackboard.label>tableau noir (1x3)</PE_LargeBlackboard.label>
+  <!-- EN: A flat surface for writing on with chalk at moderate speed. Placing a board marks the area as a classroom, which can then be assigned classes. -->
+  <PE_LargeBlackboard.description>Une surface plane sur laquelle on peut écrire à la craie à une vitesse modérée. La présence d'un tableau indique qu'il s'agit d'une salle de classe, à laquelle on peut alors attribuer des cours.</PE_LargeBlackboard.description>
+  
+  <!-- EN: holo-educator screen (1x3) -->
+  <PE_LargeHoloEducatorScreen.label>écran holographique éducatif (1x3)</PE_LargeHoloEducatorScreen.label>
+  <!-- EN: A holographic display capable of teaching students at lighting speed, barely needing a teacher's guidance. Placing a board marks the area as a classroom, which can then be assigned classes. -->
+  <PE_LargeHoloEducatorScreen.description>Un écran holographique capable d'enseigner aux élèves à la vitesse de la lumière, sans presque avoir besoin des conseils d'un enseignant. Placer un tableau permet de désigner la zone comme une salle de classe, à laquelle on peut ensuite attribuer des cours.</PE_LargeHoloEducatorScreen.description>
+  
+  <!-- EN: whiteboard (1x3) -->
+  <PE_LargeWhiteboard.label>tableau blanc (1x3)</PE_LargeWhiteboard.label>
+  <!-- EN: A flat surface for writing on with markers. Its sleek surface makes writing and erasing a breeze, leading to very effective classes. Placing a board marks the area as a classroom, which can then be assigned classes. -->
+  <PE_LargeWhiteboard.description>Une surface plane sur laquelle on peut écrire avec des marqueurs. Sa surface lisse facilite l'écriture et l'effacement, ce qui rend les cours très efficaces. La présence d'un tableau marque l'espace comme une salle de classe, qui peut alors être attribuée à des cours.</PE_LargeWhiteboard.description>
+  
+  <!-- EN: lesson stone -->
+  <PE_LessonStone.label>pierre de leçon</PE_LessonStone.label>
+  <!-- EN: A bumpy surface for teaching basic lessons at slow speeds. Placing a board marks the area as a classroom, which can then be assigned classes. -->
+  <PE_LessonStone.description>Une surface bosselée pour enseigner les leçons de base à faible vitesse. En plaçant un tableau, une pièce est marquée comme une salle de classe, à laquelle on peut ensuite attribuer des cours.</PE_LessonStone.description>
+  
+  <!-- EN: whiteboard (1x2) -->
+  <PE_Whiteboard.label>tableau blanc (1x2)</PE_Whiteboard.label>
+  <!-- EN: A flat surface for writing on with markers. Its sleek surface makes writing and erasing a breeze, leading to very effective classes. Placing a board marks the area as a classroom, which can then be assigned classes. -->
+  <PE_Whiteboard.description>Une surface plane sur laquelle on peut écrire avec des marqueurs. Sa surface lisse facilite l'écriture et l'effacement, ce qui rend les cours très efficaces. La présence d'un tableau marque l'espace comme une salle de classe, qui peut alors être attribuée à des cours.</PE_Whiteboard.description>
+  
+</LanguageData>

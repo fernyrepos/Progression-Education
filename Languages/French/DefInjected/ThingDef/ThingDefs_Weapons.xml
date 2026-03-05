@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: training assault rifle bullet -->
+  <PE_Bullet_AssaultRifleTraining.label>balle d'entraînement de fusil d'assaut</PE_Bullet_AssaultRifleTraining.label>
+  
+  <!-- EN: practice bow arrow -->
+  <PE_Bullet_PracticeShortBow.label>flèche d'entraînement</PE_Bullet_PracticeShortBow.label>
+  
+  <!-- EN: training rifle -->
+  <PE_Gun_AssaultRifleTraining.label>fusil d'entraînement</PE_Gun_AssaultRifleTraining.label>
+  <!-- EN: A weapon designed purely for education. Its projectiles deal no damage. -->
+  <PE_Gun_AssaultRifleTraining.description>Une arme conçue uniquement à des fins éducatives. Ses projectiles ne causent aucun dégât.</PE_Gun_AssaultRifleTraining.description>
+  <!-- EN: stock -->
+  <PE_Gun_AssaultRifleTraining.tools.stock.label>crosse</PE_Gun_AssaultRifleTraining.tools.stock.label>
+  <!-- EN: barrel -->
+  <PE_Gun_AssaultRifleTraining.tools.barrel.label>canon</PE_Gun_AssaultRifleTraining.tools.barrel.label>
+  <!-- EN: training rifle -->
+  <PE_Gun_AssaultRifleTraining.verbs.Verb_Shoot.label>fusil d'entraînement</PE_Gun_AssaultRifleTraining.verbs.Verb_Shoot.label>
+  
+  <!-- EN: training charge rifle -->
+  <PE_Gun_SpacerTraining.label>fusil à chargement d'entraînement</PE_Gun_SpacerTraining.label>
+  <!-- EN: A weapon designed purely for education. Its projectiles deal no damage. -->
+  <PE_Gun_SpacerTraining.description>Une arme conçue uniquement à des fins éducatives. Ses projectiles ne causent aucun dégât.</PE_Gun_SpacerTraining.description>
+  <!-- EN: stock -->
+  <PE_Gun_SpacerTraining.tools.stock.label>crosse</PE_Gun_SpacerTraining.tools.stock.label>
+  <!-- EN: barrel -->
+  <PE_Gun_SpacerTraining.tools.barrel.label>canon</PE_Gun_SpacerTraining.tools.barrel.label>
+  <!-- EN: training charge rifle -->
+  <PE_Gun_SpacerTraining.verbs.Verb_Shoot.label>fusil à chargement d'entraînement</PE_Gun_SpacerTraining.verbs.Verb_Shoot.label>
+  
+  <!-- EN: training bow -->
+  <PE_PracticeShortBow.label>arc d'entraînement</PE_PracticeShortBow.label>
+  <!-- EN: A weapon designed purely for education. Its projectiles deal no damage. -->
+  <PE_PracticeShortBow.description>Une arme conçue uniquement à des fins éducatives. Ses projectiles ne causent aucun dégât.</PE_PracticeShortBow.description>
+  <!-- EN: limb -->
+  <PE_PracticeShortBow.tools.limb.label>branche</PE_PracticeShortBow.tools.limb.label>
+  <!-- EN: training bow -->
+  <PE_PracticeShortBow.verbs.Verb_Shoot.label>arc d'entraînement</PE_PracticeShortBow.verbs.Verb_Shoot.label>
+  
+</LanguageData>

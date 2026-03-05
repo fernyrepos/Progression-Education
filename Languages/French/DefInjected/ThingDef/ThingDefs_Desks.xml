@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+  
+  <!-- EN: rough school desk -->
+  <PE_StoneSchoolDesk.label>table d'école rudimentaire</PE_StoneSchoolDesk.label>
+  <!-- EN: An uncomfortable desk where students can learn in general classes. Functions at low speed for most lessons. -->
+  <PE_StoneSchoolDesk.description>Un bureau inconfortable où les élèves peuvent apprendre divers cours. Fonctionne à faible vitesse pour la plupart des cours.</PE_StoneSchoolDesk.description>
+  
+  <!-- EN: touchscreen school desk -->
+  <PE_TouchscreenSchoolDesk.label>table d'école à écran tactile</PE_TouchscreenSchoolDesk.label>
+  <!-- EN: A touchscreen display table where students can sit and learn in general classes. Interactive examples appear on the screen to help students learn at lightning fast speed. -->
+  <PE_TouchscreenSchoolDesk.description>Une table à écran tactile où les élèves peuvent s'asseoir et apprendre divers cours. Des exemples interactifs apparaissent à l'écran pour aider les élèves à apprendre à une vitesse fulgurante.</PE_TouchscreenSchoolDesk.description>
+  
+</LanguageData>
