@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+<!-- GEAR PATCHES -->
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ThingDef[defName="KP_Trench_Spike"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ItemProficiencyRequirement">
+        <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ThingDef[defName="BNF_Blade_Bayonet"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ItemProficiencyRequirement">
+        <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ThingDef[defName="KP_Trench_Sword"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ItemProficiencyRequirement">
+        <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+      </li>
+    </value>
+  </Operation>
+  
+    <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ThingDef[defName="KP_Trench_Mace"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ItemProficiencyRequirement">
+        <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+      </li>
+    </value>
+  </Operation>
+  
+    <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ThingDef[defName="BNF_Weapon_Baton"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ItemProficiencyRequirement">
+        <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>
