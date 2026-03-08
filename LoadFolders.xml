@@ -29,8 +29,8 @@
     <li IfModActive="trickity.samurai.faction">Mods and Shit/T Samurai Faction</li>
     <li IfModActive="oskarpotocki.vanillafactionsexpanded.settlersmodule">Mods and Shit/VFE Settlers</li>
     <li IfModActive="Ludeon.RimWorld.Royalty">Mods and Shit/Royalty</li>
-	<li IfModActive="RF.LUNARTIKAAA">Mods and Shit/Rimfather</li>
-	<li IfModActive="kp.bravenewfrontier">Mods and Shit/Brave New Frontier</li>
+    <li IfModActive="RF.LUNARTIKAAA">Mods and Shit/Rimfather</li>
+    <li IfModActive="kp.bravenewfrontier">Mods and Shit/Brave New Frontier</li>
     <li>1.6</li>
   </v1.6>
 </loadFolders>
