@@ -21,7 +21,10 @@ namespace ProgressionEducation
                 {
                     ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait, true);
                 }
-                Find.LetterStack.ReceiveLetter(extension.title, extension.desc, LetterDefOf.PositiveEvent);
+                if (Find.TickManager.TicksGame >= 5000)
+                {
+                    Find.LetterStack.ReceiveLetter(extension.title, extension.desc, LetterDefOf.PositiveEvent);
+                }
             }
         }
     }
