@@ -153,7 +153,7 @@ namespace ProgressionEducation
                         num2 += item2.MaxCount;
                     }
                     string extraInfo = ExtraPawnAssignmentInfo(localRoleGroup);
-                    IEnumerable<Pawn> enumerable = item.SelectMany((RoleType r) => assignments.AssignedPawns(r));
+                    IEnumerable<Pawn> enumerable = item.SelectMany(assignments.AssignedPawns);
                     TaggedString taggedString = Find.ActiveLanguageWorker.Pluralize(val.CategoryLabelCap, num3);
                     Vector2 mp = Event.current.mousePosition;
                     DrawRoleGroup(viewRect, enumerable, taggedString, num3, maxPawnsPerRow, ref curX, ref curY, ref rowHeight, delegate (Pawn p, Vector2 dropPos)
@@ -205,7 +205,7 @@ namespace ProgressionEducation
                 nonParticipatingPawnCandidatesTmp.AddRange(candidatePool.NonAssignablePawns);
                 nonParticipatingPawnCandidatesTmp.RemoveDuplicates();
                 IEnumerable<Pawn> selectedPawns = nonParticipatingPawnCandidatesTmp.Where((Pawn p) => !assignments.PawnParticipating(p));
-                
+
                 curY += rowHeight;
                 rowHeight = 0f;
                 curX = 0f;

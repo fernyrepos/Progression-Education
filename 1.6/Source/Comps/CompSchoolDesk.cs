@@ -4,8 +4,6 @@ namespace ProgressionEducation
 {
     public class CompProperties_SchoolDesk : CompProperties
     {
-        public float speedModifier = 1.0f;
-
         public CompProperties_SchoolDesk()
         {
             compClass = typeof(CompSchoolDesk);

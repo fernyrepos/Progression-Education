@@ -6,6 +6,7 @@ using System.Linq;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
+using UnityEngine;
 
 namespace ProgressionEducation
 {
@@ -30,7 +31,23 @@ namespace ProgressionEducation
 
         public StudyGroup()
         {
+        }
 
+        public StudyGroup(StudyGroup other)
+        {
+            id = other.id;
+            teacher = other.teacher;
+            students = [.. other.students];
+            className = other.className;
+            semesterGoal = other.semesterGoal;
+            currentProgress = other.currentProgress;
+            classroom = other.classroom;
+            startHour = other.startHour;
+            endHour = other.endHour;
+            timeAssignmentDefName = other.timeAssignmentDefName;
+            suspended = other.suspended;
+            var subjectLogicKind = other.subjectLogic.GetType();
+            subjectLogic = Activator.CreateInstance(subjectLogicKind, args: [other.subjectLogic, this]) as ClassSubjectLogic;
         }
 
         public StudyGroup(Pawn teacher, List<Pawn> students, string className, int semesterGoal, int startHour, int endHour)
@@ -49,17 +66,12 @@ namespace ProgressionEducation
 
         public AcceptanceReport IsValid()
         {
-            if (string.IsNullOrEmpty(className))
-            {
-                return new AcceptanceReport("PE_EnterClassName".Translate());
-            }
-
             if (teacher == null)
             {
                 return new AcceptanceReport("PE_SelectTeacher".Translate());
             }
 
-            if (students.NullOrEmpty())
+            if (students.NullOrEmpty() && !subjectLogic.IsInfinite)
             {
                 return new AcceptanceReport("PE_SelectAtLeastOneStudent".Translate());
             }
@@ -114,7 +126,7 @@ namespace ProgressionEducation
 
         public float CalculateProgressPerTick()
         {
-            return subjectLogic.CalculateProgressPerTick();
+            return subjectLogic.CalculateProgressPerTick(teacher);
         }
         public void RemoveStudent(Pawn student)
         {
@@ -128,6 +140,15 @@ namespace ProgressionEducation
                     lord.RemovePawn(student);
                     student.jobs.StopAll();
                 }
+            }
+        }
+
+        public void AddStudent(Pawn student)
+        {
+            if (!students.Contains(student))
+            {
+                students.Add(student);
+                TimeAssignmentUtility.ApplyScheduleToPawn(this, student);
             }
         }
 
@@ -179,33 +200,40 @@ namespace ProgressionEducation
 
         public void Suspend(bool suspend)
         {
-            if (suspended != suspend)
+            if (suspended == suspend)
             {
-                suspended = suspend;
-                var participants = new List<Pawn> { teacher }.Concat(students).ToList();
-                if (suspend)
-                {
-                    TimeAssignmentUtility.ClearScheduleFromPawns(this, participants);
-                }
-                else
-                {
-                    TimeAssignmentUtility.ApplyScheduleToPawns(this, participants);
-                }
+                return;
+            }
+            if (!suspend 
+                && suspended 
+                && students.NullOrEmpty())
+            {
+                Messages.Message("PE_CannotUnsuspendNoStudents".Translate(), MessageTypeDefOf.RejectInput);
+                return;
+            }
+            suspended = suspend;
+            List<Pawn> participants = [ teacher, .. students];
+            if (suspend)
+            {
+                TimeAssignmentUtility.ClearScheduleFromPawns(this, participants);
+            }
+            else
+            {
+                TimeAssignmentUtility.ApplyScheduleToPawns(this, participants);
+            }
+            if (suspended)
+            {
+                CancelClass();
+            }
+        }
 
-                if (suspended)
-                {
-                    var map = Map;
-                    if (map != null)
-                    {
-                        Lord lordToCancel = map.lordManager.lords.FirstOrDefault(l =>
-                            l.LordJob is LordJob_AttendClass lordJob && lordJob.studyGroup == this);
-
-                        if (lordToCancel != null)
-                        {
-                            lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
-                        }
-                    }
-                }
+        public void CancelClass()
+        {
+            if (Map?.lordManager?.lords?.FirstOrDefault(l =>
+                    l.LordJob is LordJob_AttendClass lordJob
+                    && lordJob.studyGroup == this) is Lord lordToCancel)
+            {
+                lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
             }
         }
 
@@ -364,5 +392,51 @@ namespace ProgressionEducation
                 return map;
             }
         }
+
+        public AcceptanceReport CanAcceptMoreStudents()
+        {
+            var studentRole = GetStudentRole();
+            if (students.Count + 1 > studentRole.MaxCount)
+            {
+                return new AcceptanceReport("PE_StudyGroupFull".Translate(studentRole.MaxCount));
+            }
+            if (students.Count + 1 > subjectLogic.BenchCount)
+            {
+                return new AcceptanceReport("PE_NotEnoughBenches".Translate(subjectLogic.BenchLabel, students.Count + 1, subjectLogic.BenchCount));
+            }
+            return AcceptanceReport.WasAccepted;
+        }
+
+        public List<FloatMenuOption> PotentialStudents
+        {
+            get
+            {
+                var potentialStudents = new List<FloatMenuOption>();
+                foreach (var pawn in Find.CurrentMap.mapPawns.FreeColonists)
+                {
+                    if (!CanAcceptMoreStudents())
+                    {
+                        break;
+                    }
+                    if (!students.Contains(pawn) && GetStudentRole().CanAcceptPawn(pawn))
+                    {
+                        potentialStudents.Add(new FloatMenuOption(pawn.LabelCap, () => AddStudent(pawn), pawn, Color.white));
+                    }
+                }
+
+                if (!potentialStudents.Any())
+                {
+                    potentialStudents.Add(new FloatMenuOption("NoneBrackets".Translate(), null));
+                }
+                return potentialStudents;
+            }
+        }
+
+        public int Duration => 1 + (
+            startHour > endHour
+            ? 24 - startHour + endHour
+            : endHour - startHour
+        );
     }
 }
+

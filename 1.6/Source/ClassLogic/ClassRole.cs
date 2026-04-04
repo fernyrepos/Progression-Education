@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using System.Linq;
+using RimWorld;
 using Verse;
 
 namespace ProgressionEducation
@@ -8,8 +9,8 @@ namespace ProgressionEducation
         private readonly string roleId;
         private readonly int maxCount;
         private readonly int minCount;
-        private readonly TaggedString label;
-        private readonly TaggedString categoryLabel;
+        private TaggedString label;
+        private TaggedString categoryLabel;
         public StudyGroup studyGroup;
 
         public ClassRole(string roleId, int maxCount, int minCount, TaggedString label, TaggedString categoryLabel, StudyGroup studyGroup)
@@ -24,15 +25,21 @@ namespace ProgressionEducation
 
         public virtual AcceptanceReport CanAcceptPawn(Pawn pawn)
         {
-            foreach (var otherGroup in EducationManager.Instance.StudyGroups)
+            if (pawn == null)
             {
-                if (otherGroup != studyGroup && (otherGroup.students.Contains(pawn) || otherGroup.teacher == pawn))
-                {
-                    if (TimeAssignmentUtility.HasConflict(studyGroup.startHour, studyGroup.endHour, otherGroup.startHour, otherGroup.endHour))
-                    {
-                        return new AcceptanceReport("PE_CannotParticipateScheduled".Translate(otherGroup.startHour, otherGroup.endHour, otherGroup.className));
-                    }
-                }
+                return AcceptanceReport.WasRejected;
+            }
+
+            if (EducationManager.Instance.StudyGroups
+                    .Except(studyGroup)
+                    .FirstOrDefault(sg => (sg.students.Contains(pawn) || sg.teacher == pawn) 
+                                          && studyGroup.HasConflict(sg)) is StudyGroup otherGroup)
+            {
+                return new AcceptanceReport("PE_CannotParticipateScheduled".Translate(
+                    otherGroup.startHour,
+                    otherGroup.endHour, 
+                    otherGroup.className)
+                );
             }
             return AcceptanceReport.WasAccepted;
         }

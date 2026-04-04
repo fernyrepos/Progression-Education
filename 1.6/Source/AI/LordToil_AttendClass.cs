@@ -79,6 +79,11 @@ namespace ProgressionEducation
                     {
                         student.jobs.StopAll();
                         EducationLog.Message($"-> Stopped job for student {student.LabelShort} because it was not PE_AttendClass");
+                        if (!lord.ownedPawns.Contains(student) && CanAddPawn(student))
+                        {
+                            EducationLog.Message($"-> Adding student {student.LabelShort} to Lord PE_AttendClass because it was orphaned");
+                            lord.AddPawn(student);
+                        }
                     }
                 }
             }

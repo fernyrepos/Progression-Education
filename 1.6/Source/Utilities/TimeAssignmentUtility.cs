@@ -51,6 +51,16 @@ namespace ProgressionEducation
             }
         }
 
+        public static void ApplyScheduleToPawn(StudyGroup studyGroup, Pawn pawn)
+        {
+            if (pawn == null)
+            {
+                return;
+            }
+            var timeAssignment = DefDatabase<TimeAssignmentDef>.GetNamed(studyGroup.timeAssignmentDefName);
+            SetPawnSchedule(studyGroup, pawn, timeAssignment);
+        }
+
         public static void ApplyScheduleToPawns(StudyGroup studyGroup, List<Pawn> participants)
         {
             var timeAssignment = DefDatabase<TimeAssignmentDef>.GetNamed(studyGroup.timeAssignmentDefName);
@@ -62,37 +72,31 @@ namespace ProgressionEducation
             SetPawnSchedules(studyGroup, participants);
         }
 
+        private static void SetPawnSchedule(StudyGroup studyGroup, Pawn pawn, TimeAssignmentDef timeAssignment = null)
+        {
+            TryRepairTimetable(pawn);
+            for (var hour = studyGroup.startHour; hour != studyGroup.endHour + 1; hour = ++hour % 24)
+            {
+                var assignmentToSet = timeAssignment ?? (hour is > 5 and <= 21 
+                    ? TimeAssignmentDefOf.Anything 
+                    : TimeAssignmentDefOf.Sleep);
+                pawn.timetable.SetAssignment(hour, assignmentToSet);
+                EducationLog.Message($"Set timetable for pawn {pawn.LabelShort} at hour {hour} to {assignmentToSet.defName}");
+            }
+        }
+
         private static void SetPawnSchedules(StudyGroup studyGroup, List<Pawn> participants, TimeAssignmentDef assignment = null)
         {
             foreach (var participant in participants)
             {
-                TryRepairTimetable(participant);
-                for (int hour = 0; hour < 24; hour++)
-                {
-                    bool isScheduled;
-                    if (studyGroup.startHour <= studyGroup.endHour)
-                    {
-                        isScheduled = hour >= studyGroup.startHour && hour <= studyGroup.endHour;
-                    }
-                    else
-                    {
-                        isScheduled = hour >= studyGroup.startHour || hour <= studyGroup.endHour;
-                    }
-
-                    if (isScheduled)
-                    {
-                        TimeAssignmentDef assignmentToSet = assignment ?? ((hour > 5 && hour <= 21) ? TimeAssignmentDefOf.Anything : TimeAssignmentDefOf.Sleep);
-                        participant.timetable.SetAssignment(hour, assignmentToSet);
-                        EducationLog.Message($"Set timetable for pawn {participant.LabelShort} at hour {hour} to {assignmentToSet.defName}");
-                    }
-                }
+                SetPawnSchedule(studyGroup, participant, assignment);
             }
         }
 
         public static void TryRepairTimetable(Pawn pawn)
         {
             if (pawn.timetable?.times is null) return;
-            for (int i = 0; i < 24; i++)
+            for (var i = 0; i < 24; i++)
             {
                 try
                 {
@@ -102,9 +106,11 @@ namespace ProgressionEducation
                 {
                     while (pawn.timetable.times.Count < 24)
                     {
-                        Log.Warning($"Timetable for {pawn.LabelShort} is incomplete. Appending hour {pawn.timetable.times.Count}.");
-                        int hour = pawn.timetable.times.Count;
-                        TimeAssignmentDef defaultAssignment = ((hour > 5 && hour <= 21) ? TimeAssignmentDefOf.Anything : TimeAssignmentDefOf.Sleep);
+                        EducationLog.Warning($"Timetable for {pawn.LabelShort} is incomplete. Appending hour {pawn.timetable.times.Count}.");
+                        var hour = pawn.timetable.times.Count;
+                        var defaultAssignment = hour is > 5 and <= 21 
+                            ? TimeAssignmentDefOf.Anything 
+                            : TimeAssignmentDefOf.Sleep;
                         pawn.timetable.times.Add(defaultAssignment);
                     }
                     break;
@@ -140,31 +146,38 @@ namespace ProgressionEducation
             return false;
         }
 
-        private static bool IsHourInSchedule(int hour, int start, int end)
+        public static bool HasConflict(this StudyGroup lhs, StudyGroup rhs)
         {
-            if (start <= end)
-            {
-                return hour >= start && hour <= end;
-            }
-            else
-            {
-                return hour >= start || hour <= end;
-            }
+            return HasConflict(lhs.startHour, lhs.endHour, rhs.startHour, rhs.endHour);
         }
 
         public static bool HasConflict(int startHour1, int endHour1, int startHour2, int endHour2)
         {
-            for (int hour = 0; hour < 24; hour++)
+            if (startHour1 <= endHour1)
             {
-                bool inSchedule1 = IsHourInSchedule(hour, startHour1, endHour1);
-                bool inSchedule2 = IsHourInSchedule(hour, startHour2, endHour2);
-
-                if (inSchedule1 && inSchedule2)
+                if (startHour2 <= endHour2)
+                {
+                    return (startHour1 <= endHour2)
+                        && (startHour2 <= endHour1);
+                }
+                else
+                {
+                    return (startHour1 < 24 && startHour2 <= endHour1)
+                        || (startHour1 <= endHour2 && startHour2 < 24);
+                }
+            }
+            else
+            {
+                if (startHour2 <= endHour2)
+                {
+                    return (startHour2 < 24 && startHour1 <= endHour2)
+                        || (startHour2 <= endHour1 && startHour1 < 24);
+                }
+                else
                 {
                     return true;
                 }
             }
-            return false;
         }
 
         public static bool allowUsing;

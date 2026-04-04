@@ -33,7 +33,12 @@ namespace ProgressionEducation
             {
                 if (pawn.GetLord()?.LordJob is LordJob_AttendClass lordJob)
                 {
-                    return lordJob.studyGroup is null || !lordJob.studyGroup.students.Contains(pawn);
+                    var notice = lordJob.studyGroup is null || !lordJob.studyGroup.students.Contains(pawn);
+                    if (notice)
+                    {
+                        lordJob.lord.RemovePawn(pawn);
+                    }
+                    return notice;
                 }
                 return true;
             });
@@ -46,21 +51,24 @@ namespace ProgressionEducation
         {
             return new Toil()
             {
-                tickAction = delegate
-                {
-                    pawn.rotationTracker.FaceTarget(job.GetTarget(TargetIndex.A));
-                    PawnUtility.GainComfortFromCellIfPossible(pawn, 1);
-                    var lordJob = (LordJob_AttendClass)pawn.GetLord().LordJob;
-                    var studyGroup = lordJob.studyGroup;
-                    if (studyGroup.ClassIsActive())
-                    {
-                        studyGroup.subjectLogic.ApplyLearningTick(pawn);
-                    }
-                },
+                tickIntervalAction = DoLearningInterval,
                 defaultCompleteMode = ToilCompleteMode.Never,
                 socialMode = RandomSocialMode.Off,
                 handlingFacing = true
             };
+        }
+
+        private void DoLearningInterval(int delta)
+        {
+            PawnUtility.GainComfortFromCellIfPossible(pawn, delta, true);
+            pawn.rotationTracker.FaceTarget(job.GetTarget(TargetIndex.A));
+            var lordJob = (LordJob_AttendClass)pawn.GetLord().LordJob;
+            var studyGroup = lordJob.studyGroup;
+            if (studyGroup.ClassIsActive())
+            {
+                studyGroup.subjectLogic.ApplyLearningTick(pawn, delta);
+            }
+
         }
 
         public static IntVec3 DeskSpotStudent(Thing desk)

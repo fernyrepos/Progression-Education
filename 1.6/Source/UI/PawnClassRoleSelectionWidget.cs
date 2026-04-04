@@ -1,5 +1,6 @@
 using RimWorld;
 using System.Collections.Generic;
+using System.Text;
 using Verse;
 
 namespace ProgressionEducation
@@ -46,12 +47,31 @@ namespace ProgressionEducation
             {
                 return null;
             }
-            var text = studyGroup.subjectLogic.BaseTooltipFor(pawn);
+            var text = new StringBuilder();
+            text.AppendInNewLine(studyGroup.subjectLogic.BaseTooltipFor(pawn));
             if (studyGroup.teacher != pawn)
             {
-                text += "\n" + studyGroup.subjectLogic.StudentTooltipFor(pawn);
+                var studentTooltip = studyGroup.subjectLogic.StudentTooltipFor(pawn);
+                if (!studentTooltip.NullOrEmpty())
+                {
+                    text.AppendLineIfNotEmpty();
+                    text.AppendInNewLine("PE_AsAStudent".Translate(studentTooltip));
+                    text.AppendInNewLine("================");
+                    text.AppendInNewLine(studentTooltip);
+                }
             }
-            return text;
+            if (!studyGroup.students.Contains(pawn))
+            {
+                var teacherTooltip = studyGroup.subjectLogic.TeacherTooltipFor(pawn);
+                if (!teacherTooltip.NullOrEmpty())
+                {
+                    text.AppendLineIfNotEmpty();
+                    text.AppendInNewLine("PE_AsATeacher".Translate(teacherTooltip));
+                    text.AppendInNewLine("================");
+                    text.AppendInNewLine(teacherTooltip);
+                }
+            }
+            return text.ToString();
         }
 
         public override bool ShouldGrayOut(Pawn pawn, out TaggedString reason)

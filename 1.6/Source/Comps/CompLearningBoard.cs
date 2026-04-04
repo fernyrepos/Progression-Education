@@ -1,35 +1,16 @@
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Verse;
 
 namespace ProgressionEducation
 {
-    public class QualityBonusRecord
-    {
-        public QualityCategory quality;
-        public float bonus;
-
-        public void LoadDataFromXmlCustom(System.Xml.XmlNode xmlRoot)
-        {
-            quality = ParseHelper.FromString<QualityCategory>(xmlRoot.Name);
-            bonus = ParseHelper.FromString<float>(xmlRoot.InnerText);
-        }
-    }
-
-
     public class CompProperties_LearningBoard : CompProperties
     {
-        public List<QualityBonusRecord> qualityBonuses = [];
         public CompProperties_LearningBoard()
         {
             compClass = typeof(CompLearningBoard);
-        }
-
-        public float GetQualityBonus(QualityCategory quality)
-        {
-            var bonus = qualityBonuses.FirstOrDefault(qb => qb.quality == quality);
-            return bonus?.bonus ?? 1f;
         }
     }
     public class CompLearningBoard : ThingComp
@@ -46,8 +27,8 @@ namespace ProgressionEducation
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            if (this.parent.BeingTransportedOnGravship) return;
-            
+            if (parent.BeingTransportedOnGravship) return;
+
             if (!respawningAfterLoad || classroom == null)
             {
                 InitializeClassroom();
@@ -95,12 +76,12 @@ namespace ProgressionEducation
             if (parent.Faction != Faction.OfPlayer) return;
             var room = parent.GetRoom();
             if (room is null) return;
-            
+
             var otherBoard = room.ContainedThings(parent.def)
                                  .Select(t => t.TryGetComp<CompLearningBoard>())
                                  .FirstOrDefault(c => c != null && c != this && c.classroom != null);
- 
-             if (otherBoard != null)
+
+            if (otherBoard != null)
             {
                 classroom = otherBoard.classroom;
                 EducationLog.Message($"Learning board '{parent.Label}' spawned in room with existing classroom. Linking to '{classroom.name}'.");
@@ -115,11 +96,18 @@ namespace ProgressionEducation
 
         public override string CompInspectStringExtra()
         {
+            var text = new StringBuilder();
             if (classroom != null)
             {
-                return $"{"PE_Classroom".Translate()} {classroom.name}";
+                text.AppendInNewLine("PE_Classroom".Translate());
+                text.Append(" ");
+                text.Append(classroom.name);
+                text.AppendInNewLine("PE_ClassSpeed".Translate());
+                text.Append(": ");
+                text.Append(classroom.CalculateLearningModifier().ToStringPercent());
             }
-            return base.CompInspectStringExtra();
+            text.AppendInNewLine(base.CompInspectStringExtra());
+            return text.ToString();
         }
     }
 }

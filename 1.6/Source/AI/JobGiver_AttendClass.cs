@@ -21,10 +21,18 @@ namespace ProgressionEducation
             }
 
             var studyGroup = lordJob.studyGroup;
-            if (studyGroup?.suspended == true)
+            if (studyGroup != null)
             {
-                EducationLog.Message($"-> Study group {studyGroup?.className} is suspended. Returning null.");
-                return null;
+                if (studyGroup?.suspended == true)
+                {
+                    EducationLog.Message($"-> Study group {studyGroup?.className} is suspended. Returning null.");
+                    return null;
+                }
+                if (!studyGroup.students.NotNullAndContains(pawn) && studyGroup.teacher != pawn)
+                {
+                    EducationLog.Message($"-> {pawn.LabelShort} is neither a student nor teacher. Returning null.");
+                    return null;
+                }
             }
 
             EducationLog.Message($"-> Got study group: {studyGroup?.className}");

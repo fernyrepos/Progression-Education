@@ -9,13 +9,13 @@
   <PE_ProgressFormat>{0} / {1}</PE_ProgressFormat>
   <PE_Reschedule>Reschedule</PE_Reschedule>
   <PE_ClassScheduling>View schedule</PE_ClassScheduling>
-  <PE_EstimatedHourlyProgress>Est. hourly progress</PE_EstimatedHourlyProgress>
+  <PE_EstimatedHourlyProgress>Estimated hourly progress</PE_EstimatedHourlyProgress>
   <PE_XpPerHour>xp/hour</PE_XpPerHour>
   <PE_Xp>{0} xp</PE_Xp>
   <PE_PerHour>/hour</PE_PerHour>
   <PE_ClassroomsDescription>Classrooms will appear here as you build them in your colony.</PE_ClassroomsDescription>
   <PE_CreateClass>Create a class</PE_CreateClass>
-  <PE_CreateClassDesc>Create a new class semester. Teachers with higher social skills teach faster, and the longer a class stays together the more effective it becomes. Daycares are for children only, and teach random skills.</PE_CreateClassDesc>
+  <PE_CreateClassDesc>Create a new class semester. Classes train students in various skills. Daycares are for children only and teach one random skill each session based on the teacher's proficiency and what students can learn. All classes satisfy children's learning need.</PE_CreateClassDesc>
   <PE_ClassName>Class name</PE_ClassName>
   <PE_Subject>Subject</PE_Subject>
   <PE_SkillFocus>Skill focus</PE_SkillFocus>
@@ -42,11 +42,12 @@
   <PE_Daycare>Fulfills children's learning need. Scheduled until it's deleted.</PE_Daycare>
   <PE_RescheduleClass>Reschedule class</PE_RescheduleClass>
   <PE_SkillFocusMissing>Skill focus is missing</PE_SkillFocusMissing>
-  <PE_ScheduleTime>Schedule: {0}:00 - {1}:00</PE_ScheduleTime>
+  <PE_ScheduleTime>{0}h - {1}h</PE_ScheduleTime>
   <PE_ManageStudents>Manage students</PE_ManageStudents>
   <PE_RemoveStudents>Remove students</PE_RemoveStudents>
   <PE_RemoveFromClass>Remove from class</PE_RemoveFromClass>
-  <PE_ConfirmRemoveStudent>Are you sure you want to remove {0} from this class? They cannot be added back.</PE_ConfirmRemoveStudent>
+  <PE_ConfirmRemoveStudent>Are you sure you want to remove {0} from this class?</PE_ConfirmRemoveStudent>
+  <PE_ConfirmRemoveStudentSkill>They cannot be added back.</PE_ConfirmRemoveStudentSkill>
   <PE_ConfirmRemoveLastStudent>Removing this student will delete the class, as there will be no students left. Are you sure you want to proceed?</PE_ConfirmRemoveLastStudent>
   <PE_EditClassroom>Edit classroom</PE_EditClassroom>
   <PE_ChangeColor>Change color</PE_ChangeColor>
@@ -71,8 +72,8 @@
   <PE_ProficiencyHighTech>High-tech</PE_ProficiencyHighTech>
   <PE_StudentNotQualifiedProficiency>{0} does not have the required {1} proficiency.</PE_StudentNotQualifiedProficiency>
   <PE_StudentAlreadyHasProficiency>{0} already has the required or higher {1} proficiency.</PE_StudentAlreadyHasProficiency>
-  <PE_CannotParticipateScheduled>Cannot participate: Scheduled at {0}:00-{1}:00 for the "{2}" class.</PE_CannotParticipateScheduled>
-  <PE_CannotRescheduleScheduled>Cannot reschedule: {0} is already scheduled at {1}:00-{2}:00 for the "{3}" class.</PE_CannotRescheduleScheduled>
+  <PE_CannotParticipateScheduled>Cannot participate: Scheduled at {0}h - {1}h for the "{2}" class.</PE_CannotParticipateScheduled>
+  <PE_CannotRescheduleScheduled>Cannot reschedule: {0} is already scheduled at {1}h - {2}h for the "{3}" class.</PE_CannotRescheduleScheduled>
   <PE_TrainingProficiency>Teaching {0} proficiency</PE_TrainingProficiency>
   <PE_TeacherNotQualifiedProficiency>{0} does not have the required {1} proficiency to teach.</PE_TeacherNotQualifiedProficiency>
   <PE_TrainingSkill>Training {0} skill</PE_TrainingSkill>
@@ -120,9 +121,29 @@
   <PE_TeacherBellFailure>Class never started as teacher couldn't alert enough students within the scheduled time. Consider upgrading your school bell or lengthening the class session.</PE_TeacherBellFailure>
   <PE_NoBellToCreateClass>You must build a class bell or chime before you can create a class.</PE_NoBellToCreateClass>
   <PE_LearningBoardIsBlocked>{0} is blocked.</PE_LearningBoardIsBlocked>
-  <PE_ScheduleShouldBeAtleastHourLong>Schedule should be at least hour long.</PE_ScheduleShouldBeAtleastHourLong>
-  <PE_Learning>Learning need: {0}</PE_Learning>
+  <PE_Learning>Estimated learning</PE_Learning>
   <PE_Suspended>(suspended)</PE_Suspended>
   <PE_TeacherOffMap>Class {0} was cancelled as the teacher is not on the map it takes place in.</PE_TeacherOffMap>
   <PE_NoStudents>Class {0} was cancelled as there were no students.</PE_NoStudents>
+  <PE_AddStudents>Add students</PE_AddStudents>
+  <PE_ToggleStudentList>Toggle student list</PE_ToggleStudentList>
+  <PE_AddedToDaycareOnAgeUp>{0} has aged up and has been automatically added to the "{1}" daycare.</PE_AddedToDaycareOnAgeUp>
+  <PE_StudyGroupFull>Study group already has {0} students and cannot accept more.</PE_StudyGroupFull>
+  <PE_CannotUnsuspendNoStudents>Cannot unsuspend class: No students</PE_CannotUnsuspendNoStudents>
+  <PE_StudentsOffMap>Students off map</PE_StudentsOffMap>
+  <PE_DeleteClass>Delete class</PE_DeleteClass>
+  <PE_TeacherSkillDisabled>{0}'s {1} skill is disabled and thus cannot teach.</PE_TeacherSkillDisabled>
+  <PE_TeachingHourlyBase>Base hourly teaching</PE_TeachingHourlyBase>
+  <PE_PerSession>/session</PE_PerSession>
+  <PE_ClassSpeed>Class speed</PE_ClassSpeed>
+  <PE_StudySessionsNeeded>Estimated study sessions needed: {0}</PE_StudySessionsNeeded>
+  <PE_CannotSchedule>Cannot schedule: The {0} class is already scheduled at {1}h - {2}h in the {3} classroom.</PE_CannotSchedule>
+  <PE_TooYoung>{0} is too young.</PE_TooYoung>
+  <PE_EditClass>Edit class</PE_EditClass>
+  <PE_EditClassDesc>Update the roster of an ongoing class, rename it, or change the hours. Students can be freely removed, but if the class has made any progress, they cannot be added to it.</PE_EditClassDesc>
+  <PE_SemesterProgress>Semester progress</PE_SemesterProgress>
+  <PE_CannotAddOngoing>Cannot add to an ongoing class they are not part of.</PE_CannotAddOngoing>
+  <PE_AsATeacher>As a teacher</PE_AsATeacher>
+  <PE_AsAStudent>As a student</PE_AsAStudent>
+  <PE_SkillPassionBonus>Passion</PE_SkillPassionBonus>
 </LanguageData>

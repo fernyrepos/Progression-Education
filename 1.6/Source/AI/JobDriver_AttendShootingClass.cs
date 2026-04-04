@@ -22,44 +22,17 @@ namespace ProgressionEducation
 
         protected override Toil MakeLearningToil()
         {
-            Toil learningToil = new Toil();
-
-            learningToil.initAction = delegate
+            return new Toil
             {
-                ticksUntilNextAction = Rand.Range(60, 120);
-                InitializeWeapon();
-            };
-
-            learningToil.tickAction = delegate
-            {
-                LordJob_AttendClass lordJob = pawn.GetLord()?.LordJob as LordJob_AttendClass;
-                if (lordJob == null || !lordJob.studyGroup.ClassIsActive())
+                initAction = delegate
                 {
-                    return;
-                }
-
-                lordJob.studyGroup.subjectLogic.ApplyLearningTick(pawn);
-
-                if (pawn.pather.Moving)
-                {
-                    return;
-                }
-
-                pawn.rotationTracker.FaceCell(TargetA.Cell);
-
-                ticksUntilNextAction--;
-
-                if (ticksUntilNextAction <= 0)
-                {
-                    var cell = TargetA.Thing.DrawPos.ToIntVec3();
-                    FireProjectile(pawn, weapon, cell);
                     ticksUntilNextAction = Rand.Range(60, 120);
-                }
+                    InitializeWeapon();
+                },
+                tickIntervalAction = DoLearningInterval,
+                defaultCompleteMode = ToilCompleteMode.Never,
+                socialMode = RandomSocialMode.Off,
             };
-
-            learningToil.defaultCompleteMode = ToilCompleteMode.Never;
-            learningToil.socialMode = RandomSocialMode.Off;
-            return learningToil;
         }
 
         public override void InitializeWeapon()
@@ -69,13 +42,45 @@ namespace ProgressionEducation
             weapon = ThingMaker.MakeThing(weaponToUse, GenStuff.DefaultStuffFor(weaponToUse));
         }
 
+        private void DoLearningInterval(int delta)
+        {
+            if (pawn.GetLord()?.LordJob is not LordJob_AttendClass lordJob
+                || !lordJob.studyGroup.ClassIsActive())
+            {
+                return;
+            }
+            if (pawn.pather.Moving)
+            {
+                return;
+            }
+
+            lordJob.studyGroup.subjectLogic.ApplyLearningTick(pawn, delta);
+
+            pawn.rotationTracker.FaceCell(TargetA.Cell);
+
+            ticksUntilNextAction -= delta;
+
+            if (ticksUntilNextAction <= 0)
+            {
+                var thingCell = TargetA.Thing.DrawPos.ToIntVec3();
+                var interactionCell = TargetA.Thing.InteractionCell;
+                var direction = (interactionCell - thingCell).ToVector3();
+                var targetCell = thingCell - direction.ToIntVec3();
+                FireProjectile(pawn, weapon, targetCell);
+                ticksUntilNextAction = Rand.Range(60, 120);
+            }
+        }
+
         private static void FireProjectile(Pawn caster, Thing eq, IntVec3 targetCell)
         {
             var verbProps = eq.TryGetComp<CompEquippable>()?.PrimaryVerb?.verbProps;
             var targetPos = targetCell.ToVector3Shifted();
-            Vector3 vector = targetPos +
-                RandomHorizontalOffset(caster, targetCell,
-                (1f - (float)caster.skills.GetSkill(SkillDefOf.Shooting).Level / 20f));
+            Vector3 vector = targetPos
+                + RandomHorizontalOffset(
+                    caster,
+                    targetCell,
+                    1f - caster.skills.GetSkill(SkillDefOf.Shooting).Level / 20f
+            );
             vector.y = caster.DrawPos.y;
 
             ThingDef projectileDef = verbProps.defaultProjectile;
@@ -86,14 +91,8 @@ namespace ProgressionEducation
             {
                 FleckMaker.Static(caster.Position, caster.Map, FleckDefOf.ShotFlash, verbProps.muzzleFlashScale);
             }
-            if (verbProps.soundCast != null)
-            {
-                verbProps.soundCast.PlayOneShot(new TargetInfo(caster.Position, caster.MapHeld));
-            }
-            if (verbProps.soundCastTail != null)
-            {
-                verbProps.soundCastTail.PlayOneShotOnCamera(caster.Map);
-            }
+            verbProps.soundCast?.PlayOneShot(new TargetInfo(caster.Position, caster.MapHeld));
+            verbProps.soundCastTail?.PlayOneShotOnCamera(caster.Map);
 
             var cell = vector.ToIntVec3();
             Projectile proj = (Projectile)projectile;

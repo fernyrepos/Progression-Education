@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-
     <ThingDef ParentName="BuildingBase">
         <defName>PE_LessonStone</defName>
         <label>lesson stone</label>
-        <description>A bumpy surface for teaching basic lessons at slow speeds. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
+        <description>An ascetic surface for teaching lessons. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/Lessonstone</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -58,16 +57,11 @@
             <paintable>false</paintable>
         </building>
         <comps>
-            <li Class="ProgressionEducation.CompProperties_LearningBoard">
-                <qualityBonuses>
-                    <Awful>0.8</Awful>
-                    <Poor>0.9</Poor>
-                    <Normal>1</Normal>
-                    <Good>1.1</Good>
-                    <Excellent>1.2</Excellent>
-                    <Masterwork>1.3</Masterwork>
-                    <Legendary>1.5</Legendary>
-                </qualityBonuses>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard" />
+            <li Class="CompProperties_AffectedByFacilities">
+                <linkableFacilities>
+                    <li>PE_Projector</li>
+                </linkableFacilities>
             </li>
         </comps>
     </ThingDef>
@@ -75,7 +69,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_LargeBlackboard</defName>
         <label>blackboard (1x3)</label>
-        <description>A flat surface for writing on with chalk at moderate speed. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
+        <description>A flat stone-like surface for writing on with chalk. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/LargeBlackboard</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -114,7 +108,7 @@
         </statBases>
         <size>(3,1)</size>
         <researchPrerequisites>
-        <li>Ferny_NeolithicEducation</li>
+            <li>Ferny_NeolithicEducation</li>
         </researchPrerequisites>
         <costStuffCount>30</costStuffCount>
         <uiOrder>3</uiOrder>
@@ -130,16 +124,11 @@
             <paintable>true</paintable>
         </building>
         <comps>
-            <li Class="ProgressionEducation.CompProperties_LearningBoard">
-                <qualityBonuses>
-                    <Awful>0.8</Awful>
-                    <Poor>0.9</Poor>
-                    <Normal>1</Normal>
-                    <Good>1.1</Good>
-                    <Excellent>1.2</Excellent>
-                    <Masterwork>1.3</Masterwork>
-                    <Legendary>1.5</Legendary>
-                </qualityBonuses>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard" />
+            <li Class="CompProperties_AffectedByFacilities">
+                <linkableFacilities>
+                    <li>PE_Projector</li>
+                </linkableFacilities>
             </li>
         </comps>
     </ThingDef>
@@ -147,7 +136,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_Whiteboard</defName>
         <label>whiteboard (1x2)</label>
-        <description>A flat surface for writing on with markers. Its sleek surface makes writing and erasing a breeze, leading to very effective classes. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
+        <description>A sleek surface for writing on with markers. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/Whiteboard</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -202,16 +191,11 @@
             <paintable>true</paintable>
         </building>
         <comps>
-            <li Class="ProgressionEducation.CompProperties_LearningBoard">
-                <qualityBonuses>
-                    <Awful>0.8</Awful>
-                    <Poor>0.9</Poor>
-                    <Normal>1</Normal>
-                    <Good>1.1</Good>
-                    <Excellent>1.2</Excellent>
-                    <Masterwork>1.3</Masterwork>
-                    <Legendary>1.5</Legendary>
-                </qualityBonuses>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard" />
+            <li Class="CompProperties_AffectedByFacilities">
+                <linkableFacilities>
+                    <li>PE_Projector</li>
+                </linkableFacilities>
             </li>
         </comps>
     </ThingDef>
@@ -220,7 +204,7 @@
         <defName>PE_LargeWhiteboard</defName>
         <label>whiteboard (1x3)</label>
         <uiOrder>5</uiOrder>
-        <description>A flat surface for writing on with markers. Its sleek surface makes writing and erasing a breeze, leading to very effective classes. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
+        <description>A sleek surface for writing on with markers. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/LargeWhiteboard</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -274,16 +258,11 @@
             <paintable>true</paintable>
         </building>
         <comps>
-            <li Class="ProgressionEducation.CompProperties_LearningBoard">
-                <qualityBonuses>
-                    <Awful>0.8</Awful>
-                    <Poor>0.9</Poor>
-                    <Normal>1</Normal>
-                    <Good>1.1</Good>
-                    <Excellent>1.2</Excellent>
-                    <Masterwork>1.3</Masterwork>
-                    <Legendary>1.5</Legendary>
-                </qualityBonuses>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard" />
+            <li Class="CompProperties_AffectedByFacilities">
+                <linkableFacilities>
+                    <li>PE_Projector</li>
+                </linkableFacilities>
             </li>
         </comps>
     </ThingDef>
@@ -291,7 +270,7 @@
     <ThingDef ParentName="BuildingBase">
         <defName>PE_HoloEducatorScreen</defName>
         <label>holo-educator screen (1x2)</label>
-        <description>A holographic display capable of teaching students at lighting speed, barely needing a teacher's guidance. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
+        <description>An interactive holographic display. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/HoloeducatorScreen</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -345,16 +324,11 @@
             <paintable>true</paintable>
         </building>
         <comps>
-            <li Class="ProgressionEducation.CompProperties_LearningBoard">
-                <qualityBonuses>
-                    <Awful>0.8</Awful>
-                    <Poor>0.9</Poor>
-                    <Normal>1</Normal>
-                    <Good>1.1</Good>
-                    <Excellent>1.2</Excellent>
-                    <Masterwork>1.3</Masterwork>
-                    <Legendary>1.5</Legendary>
-                </qualityBonuses>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard" />
+            <li Class="CompProperties_AffectedByFacilities">
+                <linkableFacilities>
+                    <li>PE_Projector</li>
+                </linkableFacilities>
             </li>
         </comps>
     </ThingDef>
@@ -363,7 +337,7 @@
         <defName>PE_LargeHoloEducatorScreen</defName>
         <label>holo-educator screen (1x3)</label>
         <uiOrder>7</uiOrder>
-        <description>A holographic display capable of teaching students at lighting speed, barely needing a teacher's guidance. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
+        <description>An interactive holographic display. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
         <graphicData>
             <texPath>Buildings/LessonBoards/LargeHoloeducatorScreen</texPath>
             <graphicClass>Graphic_Multi</graphicClass>
@@ -416,16 +390,11 @@
             <paintable>true</paintable>
         </building>
         <comps>
-            <li Class="ProgressionEducation.CompProperties_LearningBoard">
-                <qualityBonuses>
-                    <Awful>0.8</Awful>
-                    <Poor>0.9</Poor>
-                    <Normal>1</Normal>
-                    <Good>1.1</Good>
-                    <Excellent>1.2</Excellent>
-                    <Masterwork>1.3</Masterwork>
-                    <Legendary>1.5</Legendary>
-                </qualityBonuses>
+            <li Class="ProgressionEducation.CompProperties_LearningBoard" />
+            <li Class="CompProperties_AffectedByFacilities">
+                <linkableFacilities>
+                    <li>PE_Projector</li>
+                </linkableFacilities>
             </li>
         </comps>
     </ThingDef>

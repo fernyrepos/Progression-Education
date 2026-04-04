@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+using Verse.AI.Group;
 
 namespace ProgressionEducation
 {
     [HotSwappable]
-    public class Dialog_CreateClass : Window, IClassDialog
+    public class Dialog_EditClass : Window, IClassDialog
     {
+        private readonly StudyGroup referenceStudyGroup;
         private readonly StudyGroup studyGroup;
         private readonly Map map;
         private readonly TeacherRole teacherRole;
@@ -16,61 +18,55 @@ namespace ProgressionEducation
         private readonly ClassAssignmentsManager assignmentsManager;
         private readonly ClassCandidatePool candidatePool;
         private readonly PawnClassRoleSelectionWidget participantsDrawer;
-        private readonly SkillClassLogic skillClassLogic;
-        private readonly ProficiencyClassLogic proficiencyClassLogic;
-        private readonly DaycareClassLogic daycareClassLogic;
         public ClassAssignmentsManager AssignmentsManager => assignmentsManager;
         public TeacherRole TeacherRole => teacherRole;
         public StudentRole StudentRole => studentRole;
         public ClassCandidatePool CandidatePool => candidatePool;
 
-        public Dialog_CreateClass(Map map)
+        public Dialog_EditClass(StudyGroup studyGroup)
         {
-            this.map = map;
-            studyGroup = new StudyGroup(
-                teacher: null,
-                students: [],
-                className: "",
-                semesterGoal: 1000,
-                startHour: 8,
-                endHour: 15
-            );
+            referenceStudyGroup = studyGroup;
+            this.studyGroup = new StudyGroup(studyGroup);
+            map = studyGroup.Map;
             teacherRole = studyGroup.GetTeacherRole();
             studentRole = studyGroup.GetStudentRole();
-            assignmentsManager = new ClassAssignmentsManager(teacherRole, studentRole, map);
+            var forcedRoles = studyGroup.subjectLogic switch
+            {
+                SkillClassLogic
+                or ProficiencyClassLogic => new Dictionary<string, Pawn>
+                {
+                    [teacherRole.RoleId] = studyGroup.teacher
+                },
+                _ => null,
+            };
+            assignmentsManager = new ClassAssignmentsManager(teacherRole, studentRole, map, forcedRoles);
             candidatePool = new ClassCandidatePool(map);
             participantsDrawer = new PawnClassRoleSelectionWidget(candidatePool, assignmentsManager)
             {
                 studyGroup = studyGroup
             };
-            skillClassLogic = new SkillClassLogic(studyGroup);
-            proficiencyClassLogic = new ProficiencyClassLogic(studyGroup);
-            daycareClassLogic = new DaycareClassLogic(studyGroup);
-            studyGroup.subjectLogic = skillClassLogic;
 
-            var educationManager = EducationManager.Instance;
-            if (educationManager.Classrooms.Count > 0)
-            {
-                studyGroup.classroom = educationManager.Classrooms[0];
-            }
             closeOnAccept = false;
             closeOnClickedOutside = false;
             absorbInputAroundWindow = true;
             forcePause = true;
-            assignmentsManager.FillPawns();
-            studyGroup.subjectLogic.AssignBestTeacher(this);
+
+            assignmentsManager.FillRole(studentRole, studyGroup.students, out _);
+            assignmentsManager.FillRole(teacherRole, [studyGroup.teacher], out _);
         }
 
         public override Vector2 InitialSize => new(845f, 740f);
 
         public override void DoWindowContents(Rect inRect)
         {
-            var enter = Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter);
+            var enter = Event.current.type == EventType.KeyDown 
+                        && (Event.current.keyCode == KeyCode.Return 
+                            || Event.current.keyCode == KeyCode.KeypadEnter);
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 35f), "PE_CreateClass".Translate());
+            Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 35f), "PE_EditClass".Translate());
             Text.Font = GameFont.Small;
             var descriptionRect = new Rect(inRect.x, inRect.y + 35f, inRect.width, 40f);
-            Widgets.Label(descriptionRect, "PE_CreateClassDesc".Translate());
+            Widgets.Label(descriptionRect, "PE_EditClassDesc".Translate());
             var contentRect = new Rect(inRect.x, inRect.y + 80f, inRect.width, inRect.height - 125f);
             var leftRect = new Rect(contentRect.x, contentRect.y, (contentRect.width * 0.5f) - 5f, contentRect.height);
             var rightRect = new Rect(contentRect.x + (contentRect.width * 0.5f) + 5f, contentRect.y, (contentRect.width * 0.5f) - 5f, contentRect.height);
@@ -81,13 +77,13 @@ namespace ProgressionEducation
             {
                 Close();
             }
-            if (Widgets.ButtonText(new Rect(inRect.width - 150f, buttonY, 150f, 35f), "PE_Create".Translate()) || enter)
+            if (Widgets.ButtonText(new Rect(inRect.width - 150f, buttonY, 150f, 35f), "Save".Translate()) || enter)
             {
-                StartClassCreation();
+                StartClassEditing();
             }
         }
 
-        private void StartClassCreation()
+        private void StartClassEditing()
         {
             var teacher = assignmentsManager.FirstAssignedPawn(teacherRole);
             var students = assignmentsManager.AssignedPawns(studentRole).ToList();
@@ -108,10 +104,16 @@ namespace ProgressionEducation
                 Messages.Message("PE_SkillFocusMissing".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
-            foreach (var otherGroup in EducationManager.Instance.StudyGroups
-                         .Where(otherGroup => otherGroup.classroom == studyGroup.classroom
-                            && studyGroup.HasConflict(otherGroup)))
+            var educationManager = EducationManager.Instance;
+            var studyGroups = educationManager.StudyGroups;
+            foreach (var otherGroup in studyGroups.Except(referenceStudyGroup))
             {
+                if (otherGroup.classroom != studyGroup.classroom
+                    || !studyGroup.HasConflict(otherGroup))
+                {
+                    continue;
+                }
+
                 Messages.Message("PE_CannotSchedule".Translate(otherGroup.className, otherGroup.startHour, otherGroup.endHour, otherGroup.classroom.name), MessageTypeDefOf.RejectInput);
                 return;
             }
@@ -121,16 +123,28 @@ namespace ProgressionEducation
                 Messages.Message(prerequisitesMet.Reason, MessageTypeDefOf.RejectInput);
                 return;
             }
-            var educationManager = EducationManager.Instance;
             if (educationManager.Classrooms.Count == 0)
             {
                 Messages.Message("PE_NoClassroomsAvailable".Translate(), MessageTypeDefOf.RejectInput);
                 return;
             }
-            educationManager.AddStudyGroup(studyGroup);
-
-            TimeAssignmentUtility.GenerateTimeAssignmentDef(studyGroup);
-            EducationManager.ApplyScheduleToPawns(studyGroup);
+            var removedStudents = referenceStudyGroup.students.Except(studyGroup.students).ToList();
+            foreach (var student in removedStudents)
+            {
+                referenceStudyGroup.RemoveStudent(student);
+            }
+            referenceStudyGroup.CancelClass();
+            List<Pawn> allPriorParticipants = [referenceStudyGroup.teacher, .. referenceStudyGroup.students];
+            TimeAssignmentUtility.ClearScheduleFromPawns(referenceStudyGroup, allPriorParticipants);
+            referenceStudyGroup.teacher = studyGroup.teacher;
+            referenceStudyGroup.students = [.. studyGroup.students];
+            referenceStudyGroup.className = studyGroup.className;
+            referenceStudyGroup.startHour = studyGroup.startHour;
+            referenceStudyGroup.endHour = studyGroup.endHour;
+            referenceStudyGroup.classroom = studyGroup.classroom;
+            referenceStudyGroup.semesterGoal = studyGroup.semesterGoal;
+            referenceStudyGroup.Suspend(referenceStudyGroup.suspended || referenceStudyGroup.students.Count == 0);
+            EducationManager.ApplyScheduleToPawns(referenceStudyGroup);
             Close();
         }
 
@@ -148,34 +162,7 @@ namespace ProgressionEducation
                 SkillClassLogic => "PE_SubjectSkill".Translate(),
                 _ => "NoneBrackets".Translate(),
             };
-            if (Widgets.ButtonText(new Rect(viewRect.x + 160f, curY, 200f, 25f), subjectLabel))
-            {
-                List<FloatMenuOption> options = [];
-                options.Add(new FloatMenuOption("PE_SubjectSkill".Translate(), () =>
-                {
-                    studyGroup.subjectLogic = skillClassLogic;
-                    studyGroup.subjectLogic.AutoAssignStudents(this);
-                }));
-                if (EducationSettings.Instance.enableProficiencySystem)
-                {
-                    options.Add(new FloatMenuOption("PE_SubjectProficiency".Translate(), () =>
-                    {
-                        studyGroup.subjectLogic = proficiencyClassLogic;
-                        studyGroup.semesterGoal = proficiencyClassLogic.ProficiencyFocus switch
-                        {
-                            ProficiencyLevel.Firearm => ProficiencyClassLogic.FirearmTeachingDuration,
-                            _ => ProficiencyClassLogic.HighTechTeachingDuration
-                        };
-                        studyGroup.subjectLogic.AutoAssignStudents(this);
-                    }));
-                }
-                options.Add(new FloatMenuOption("PE_SubjectDaycare".Translate(), () =>
-                {
-                    studyGroup.subjectLogic = daycareClassLogic;
-                    studyGroup.subjectLogic.AutoAssignStudents(this);
-                }));
-                Find.WindowStack.Add(new FloatMenu(options));
-            }
+            Widgets.Label(new Rect(viewRect.x + 160f, curY, 200f, 25f), subjectLabel);
             curY += 30f;
             studyGroup.subjectLogic.DrawConfigurationUI(viewRect, ref curY, this);
             DrawRequirements(viewRect, ref curY);
@@ -277,7 +264,7 @@ namespace ProgressionEducation
 
             var fullRequirementsText = string.Join("\n", requirements);
             Widgets.Label(new Rect(viewRect.x, curY, viewRect.width, 25f), "PE_Requirements".Translate());
-            var requirementHeight = Mathf.Min(400f, Text.CalcHeight(fullRequirementsText, viewRect.width - 160f - 16f));
+            var requirementHeight = Mathf.Min(400, Text.CalcHeight(fullRequirementsText, viewRect.width - 160f));
             var requirementsTextRect = new Rect(viewRect.x + 160f, curY, viewRect.width - 160f, requirementHeight);
             Widgets.LabelScrollable(requirementsTextRect, fullRequirementsText, ref scrollPosition);
             curY += requirementHeight;
@@ -299,11 +286,13 @@ namespace ProgressionEducation
             foreach (var student in studyGroup.students)
             {
                 var report = studentRole.CanAcceptPawn(student);
-                if (!report.Accepted)
+                if (report.Accepted)
                 {
-                    studentsToRemove.Add(student);
-                    Messages.Message(report.Reason, MessageTypeDefOf.RejectInput);
+                    continue;
                 }
+
+                studentsToRemove.Add(student);
+                Messages.Message(report.Reason, MessageTypeDefOf.RejectInput);
             }
 
             foreach (var student in studentsToRemove)

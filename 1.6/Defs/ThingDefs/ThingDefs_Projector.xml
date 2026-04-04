@@ -34,8 +34,11 @@
     </thingCategories>
     <tickerType>Normal</tickerType>
     <researchPrerequisites>
-        <li>Ferny_IndustrialEducation</li>
+      <li>Ferny_IndustrialEducation</li>
     </researchPrerequisites>
+    <placeWorkers>
+      <li>PlaceWorker_ShowFacilitiesConnections</li>
+    </placeWorkers>
     <soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <comps>
@@ -46,9 +49,10 @@
       <li Class="CompProperties_Facility">
         <compClass>CompFacility</compClass>
         <maxSimultaneous>1</maxSimultaneous>
+        <maxDistance>24.9</maxDistance>
       </li>
       <li Class="ProgressionEducation.CompProperties_Projector">
-        <learningBonus>0.1</learningBonus>
+        <learningBonus>0.2</learningBonus>
       </li>
     </comps>
   </ThingDef>

@@ -53,7 +53,7 @@ namespace ProgressionEducation
 
             EducationLog.Message($"Found {deskDefs.Count} desk/workbench defs: {deskDefs.ToStringSafeEnumerable()} and projector defs {projectorDefs.ToStringSafeEnumerable()}");
 
-            foreach (var deskDef in deskDefs.Concat(projectorDefs))
+            foreach (var deskDef in deskDefs)
             {
                 AddAffectedByFacilityComp(deskDef, learningBoardDefs);
             }
@@ -61,6 +61,7 @@ namespace ProgressionEducation
             foreach (var boardDef in learningBoardDefs)
             {
                 AddFacilityComp(boardDef, deskDefs.ToList());
+                AddAffectedByFacilityComp(boardDef, projectorDefs);
             }
 
             EducationLog.Message("Progression: Education - Dynamic facility linking complete.");

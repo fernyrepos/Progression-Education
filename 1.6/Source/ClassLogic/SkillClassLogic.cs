@@ -1,6 +1,7 @@
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -10,22 +11,27 @@ namespace ProgressionEducation
     public class SkillClassLogic : ClassSubjectLogic
     {
         public override float LearningSpeedModifier => EducationSettings.Instance.skillClassesLearningSpeedModifier;
-        private SkillDef _skillFocus;
+        private SkillDef skillFocus;
         public SkillDef SkillFocus
         {
-            get => _skillFocus;
+            get => skillFocus;
             set
             {
-                if (_skillFocus != value)
+                if (skillFocus != value)
                 {
-                    _skillFocus = value;
-                    _validLearningBenches = null;
+                    skillFocus = value;
+                    validLearningBenches = null;
                 }
             }
         }
 
         public SkillClassLogic() : base() { }
         public SkillClassLogic(StudyGroup studyGroup) : base(studyGroup) { }
+
+        public SkillClassLogic(SkillClassLogic other, StudyGroup studyGroup) : base(other, studyGroup)
+        {
+            skillFocus = other.skillFocus;
+        }
 
         public override string Description => "PE_TrainingSkill".Translate(SkillFocus.label);
 
@@ -42,32 +48,43 @@ namespace ProgressionEducation
             }
         }
 
-        public override void GrantCompletionRewards()
-        {
-        }
-
         public override float CalculateTeacherScore(Pawn teacher)
         {
-            if (SkillFocus == null)
+            if (teacher == null
+                || skillFocus == null
+                || !studyGroup.GetTeacherRole().CanAcceptPawn(teacher))
             {
                 return 0f;
             }
-            float teacherSocial = teacher.skills.GetSkill(SkillDefOf.Social).Level;
-            float relevantSkill = teacher.skills.GetSkill(SkillFocus).Level;
-            float teacherIntelligence = teacher.skills.GetSkill(SkillDefOf.Intellectual).Level;
-            var score = (teacherSocial * 0.4f) + (relevantSkill * 0.3f) + (teacherIntelligence * 0.3f);
-            return score * 0.05f;
+            var social = teacher.skills.GetSkill(SkillDefOf.Social).Level;
+            var intelligence = teacher.skills.GetSkill(SkillDefOf.Intellectual).Level;
+            var socialImpact = teacher.GetStatValue(StatDefOf.SocialImpact);
+            var relevantSkill = teacher.skills.GetSkill(skillFocus).Level;
+            var passionBonus = CalculatePassionBonus(teacher);
+            var score = ((social * 0.25f) + (intelligence * 0.25f) + (relevantSkill * 0.5f)) * socialImpact;
+            return score * 0.02f + passionBonus * 0.03f;
         }
 
-        public override float CalculateProgressPerTick()
+        private float CalculatePassionBonus(Pawn pawn)
         {
-            if (SkillFocus == null || studyGroup.teacher == null)
+            if (pawn == null)
             {
                 return 0f;
             }
-            var classroom = studyGroup.classroom;
-            float classRoomModifier = classroom.CalculateLearningModifier();
-            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * LearningSpeedModifier * 0.7f;
+            var learnRateFactor = pawn.skills.GetSkill(skillFocus).LearnRateFactor(direct: true);
+            return Mathf.Min(2f, learnRateFactor);
+        }
+
+        public override float CalculateProgressPerTick(Pawn teacher)
+        {
+            if (SkillFocus == null || teacher == null || studyGroup.classroom == null)
+            {
+                return 0f;
+            }
+            var progress = CalculateTeacherScore(teacher);
+            var classroomModifier = studyGroup.classroom.CalculateLearningModifier();
+            progress *= classroomModifier;
+            progress *= LearningSpeedModifier;
             return progress;
         }
 
@@ -80,103 +97,217 @@ namespace ProgressionEducation
 
         public override AcceptanceReport IsStudentQualified(Pawn student)
         {
-            return SkillFocus != null && student.skills.GetSkill(SkillFocus).TotallyDisabled
-                ? new AcceptanceReport("PE_StudentSkillDisabled".Translate(student.LabelShort, SkillFocus.LabelCap))
-                : AcceptanceReport.WasAccepted;
+            if (student.DevelopmentalStage < DevelopmentalStage.Child)
+            {
+                return new AcceptanceReport("PE_TooYoung".Translate(student.LabelShortCap));
+            }
+            if (SkillFocus != null && student.skills.GetSkill(SkillFocus).TotallyDisabled)
+            {
+                return new AcceptanceReport("PE_StudentSkillDisabled".Translate(student.LabelShort, SkillFocus.LabelCap));
+            }
+            if (studyGroup.currentProgress > 0f && !studyGroup.students.NotNullAndContains(student))
+            {
+                return new AcceptanceReport("PE_CannotAddOngoing".Translate());
+            }
+            return AcceptanceReport.WasAccepted;
         }
 
         public override bool CanAutoAssign => base.CanAutoAssign && SkillFocus != null;
 
-        public override void ApplyLearningTick(Pawn student)
+        public override void ApplyLearningTick(Pawn student, int delta)
         {
-            base.ApplyLearningTick(student);
-            float xpGain = CalculateProgressPerTick();
-            student.skills.Learn(SkillFocus, xpGain, false);
+            base.ApplyLearningTick(student, delta);
+            var xpGain = CalculateProgressPerTick(studyGroup.teacher);
+            student.skills.Learn(SkillFocus, xpGain * delta);
         }
 
-        public override void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog)
+        public override void ApplyTeachingTick(Pawn student, JobDriver_Teach jobDriver, int delta)
         {
-            Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_SkillFocus".Translate());
-            if (Widgets.ButtonText(new Rect(rect.x + 160f, curY, 200f, 25f), SkillFocus?.LabelCap ?? "PE_Select".Translate()))
+            jobDriver.taughtSkill ??= SkillFocus;
+            base.ApplyTeachingTick(student, jobDriver, delta);
+        }
+
+
+        public override void DrawConfigurationUI(Rect rect, ref float curY, IClassDialog classDialog)
+        {
+            DrawSkillUI(rect, ref curY, classDialog);
+            DrawSemesterGoalUI(rect, ref curY, classDialog);
+            var progressPerTick = CalculateProgressPerTick(studyGroup.teacher);
+            if (progressPerTick > 0)
             {
-                List<FloatMenuOption> options = [];
-                foreach (var skillDef in DefDatabase<SkillDef>.AllDefs)
-                {
-                    options.Add(new FloatMenuOption(skillDef.LabelCap, () =>
+                var progress = studyGroup.semesterGoal - studyGroup.currentProgress;
+                var estimatedTicks = (int)(progress / progressPerTick);
+                Widgets.Label(new Rect(rect.x, curY, 360f, 25f), "PE_StudyTimeNeeded".Translate(estimatedTicks.ToStringTicksToPeriod()));
+                curY += 30f;
+                var sessionNeeded = Mathf.CeilToInt((float)estimatedTicks / (GenDate.TicksPerHour * studyGroup.Duration));
+                Widgets.Label(new Rect(rect.x, curY, 360f, 25f), "PE_StudySessionsNeeded".Translate(sessionNeeded));
+                curY += 30f;
+            }
+        }
+
+        private void DrawSkillUI(Rect rect, ref float curY, IClassDialog classDialog)
+        {
+            switch (classDialog)
+            {
+                case Dialog_CreateClass:
+                    Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_SkillFocus".Translate());
+                    if (Widgets.ButtonText(new Rect(rect.x + 160f, curY, 200f, 25f), SkillFocus?.LabelCap ?? "PE_Select".Translate()))
                     {
-                        SkillFocus = skillDef;
-                        studyGroup.subjectLogic.AutoAssignStudents(createClassDialog);
-                    }));
-                }
-                Find.WindowStack.Add(new FloatMenu(options));
+                        List<FloatMenuOption> options = [];
+                        foreach (var skillDef in DefDatabase<SkillDef>.AllDefs)
+                        {
+                            options.Add(new FloatMenuOption(skillDef.LabelCap, () =>
+                            {
+                                SkillFocus = skillDef;
+                                studyGroup.subjectLogic.AutoAssignStudents(classDialog);
+                            }));
+                        }
+                        Find.WindowStack.Add(new FloatMenu(options));
+                    }
+                    curY += 30f;
+                    break;
+                case Dialog_EditClass:
+                    Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_SkillFocus".Translate());
+                    Widgets.Label(new Rect(rect.x + 160f, curY, 200f, 25f), SkillFocus?.LabelCap ?? "NoneBrackets".Translate());
+                    curY += 30f;
+                    break;
             }
-            curY += 30f;
+        }
 
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(rect.x, curY, 360f, 25f), "PE_SemesterGoal".Translate());
-            Text.Anchor = TextAnchor.UpperLeft;
-            curY += 30f;
-
-            var sliderRect = new Rect(rect.x, curY, 360f, 25f);
-            int newSemesterGoal = (int)Widgets.HorizontalSlider(sliderRect, studyGroup.semesterGoal, 1000, 100000, false, null, "PE_Xp".Translate(1000.ToString("N0")), "PE_Xp".Translate(100000.ToString("N0")), 100);
-            if (newSemesterGoal != studyGroup.semesterGoal)
+        private void DrawSemesterGoalUI(Rect rect, ref float curY, IClassDialog classDialog)
+        {
+            switch (classDialog)
             {
-                studyGroup.semesterGoal = newSemesterGoal;
-            }
-            curY += 30f;
-
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(rect.x, curY - 15f, 360f, 25f), "PE_Xp".Translate(studyGroup.semesterGoal.ToString("N0")));
-            Text.Anchor = TextAnchor.UpperLeft;
-            curY += 20f;
-
-            if (studyGroup.classroom != null)
-            {
-                float progressPerTick = studyGroup.CalculateProgressPerTick();
-                if (progressPerTick > 0)
-                {
-                    int estimatedTicks = (int)(studyGroup.semesterGoal / progressPerTick);
+                case Dialog_CreateClass:
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(new Rect(rect.x, curY, 360f, 25f), "PE_StudyTimeNeeded".Translate(estimatedTicks.ToStringTicksToPeriod()));
+                    Widgets.Label(new Rect(rect.x, curY, 360f, 25f), 
+                        "PE_SemesterGoal".Translate());
                     Text.Anchor = TextAnchor.UpperLeft;
                     curY += 30f;
-                }
+                    var sliderRectCreate = new Rect(rect.x, curY, 360f, 25f);
+                    studyGroup.semesterGoal = (int)Widgets.HorizontalSlider(sliderRectCreate, 
+                        studyGroup.semesterGoal, 
+                        min: 1000, 
+                        max: 100000,
+                        leftAlignedLabel: "PE_Xp".Translate(1000.ToString("N0")),
+                        rightAlignedLabel: "PE_Xp".Translate(100000.ToString("N0")), 
+                        roundTo: 1000);
+                    curY += 30f;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(new Rect(rect.x, curY - 15f, 360f, 25f), 
+                        "PE_Xp".Translate(studyGroup.semesterGoal.ToString("N0")));
+                    Text.Anchor = TextAnchor.UpperLeft;
+                    curY += 20f;
+                    break;
+                case Dialog_EditClass:
+                    if (studyGroup.currentProgress > 0)
+                    {
+                        Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_SemesterProgress".Translate());
+                        Widgets.Label(new Rect(rect.x + 160f, curY, 200f, 25f), 
+                            "PE_Xp".Translate(studyGroup.currentProgress.ToString("N0")));
+                        curY += 30f;
+                        Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_SemesterGoal".Translate());
+                    }
+                    else
+                    {
+                        Text.Anchor = TextAnchor.MiddleCenter;
+                        Widgets.Label(new Rect(rect.x, curY, 360f, 25f), 
+                            "PE_SemesterGoal".Translate());
+                        Text.Anchor = TextAnchor.UpperLeft;
+                        curY += 30f;
+                        var sliderRectEdit = new Rect(rect.x, curY, 360f, 25f);
+                        studyGroup.semesterGoal = (int)Widgets.HorizontalSlider(sliderRectEdit, 
+                            studyGroup.semesterGoal, 
+                            min: 1000, 
+                            max: 100000,
+                            leftAlignedLabel: "PE_Xp".Translate(1000.ToString("N0")),
+                            rightAlignedLabel: "PE_Xp".Translate(100000.ToString("N0")), 
+                            roundTo: 1000);
+                    }
+                    curY += 30f;
+                    Widgets.Label(new Rect(rect.x + 160f, curY, 200f, 25f), "PE_Xp".Translate(studyGroup.semesterGoal.ToString("N0")));
+                    curY += 30f;
+                    break;
             }
         }
 
-        public override string BaseTooltipFor(Pawn pawn)
+        public override string TeacherTooltipFor(Pawn pawn)
         {
-            var social = pawn.skills.GetSkill(SkillDefOf.Social);
-            var intellectual = pawn.skills.GetSkill(SkillDefOf.Intellectual);
-            var relevantSkill = SkillFocus != null ? pawn.skills.GetSkill(SkillFocus) : null;
-            string text = $"{social.def.LabelCap}: {social.Level} ({social.passion.GetLabel()})\n{intellectual.def.LabelCap}: {intellectual.Level} ({intellectual.passion.GetLabel()})";
-            if (relevantSkill != null && relevantSkill != social && relevantSkill != intellectual)
+            if (pawn == null)
             {
-                text += $"\n{relevantSkill.def.LabelCap}: {relevantSkill.Level}";
+                return "";
             }
-            text = GetProgress(text);
-            return text;
-        }
-
-        private string GetProgress(string text)
-        {
-            var map = studyGroup.Map;
-            if (studyGroup.classroom != null && map != null)
+            var text = new StringBuilder(base.TeacherTooltipFor(pawn));
+            text.AppendLineIfNotEmpty();
+            if (studyGroup != null && skillFocus != null)
             {
-                float progressPerTick = CalculateProgressPerTick();
-                if (progressPerTick > 0f)
+                if (pawn.skills.GetSkill(skillFocus) is SkillRecord relevantSkill)
                 {
-                    float num = progressPerTick * 2500f;
-                    text += "\n\n" + "PE_EstimatedHourlyProgress".Translate() + ": " + num.ToString("F0") + " " + "PE_XpPerHour".Translate();
+                    text.AppendInNewLine(relevantSkill.def.LabelCap);
+                    text.Append(": ");
+                    text.Append(relevantSkill.Level);
+                }
+                if (skillFocus != SkillDefOf.Social 
+                    && pawn.skills.GetSkill(SkillDefOf.Social) is SkillRecord social)
+                {
+                    text.AppendInNewLine(SkillDefOf.Social.LabelCap);
+                    text.Append(": ");
+                    text.Append(social.Level);
+                }
+                if (skillFocus != SkillDefOf.Intellectual 
+                    && pawn.skills.GetSkill(SkillDefOf.Intellectual) is SkillRecord intellectual)
+                {
+                    text.AppendInNewLine(SkillDefOf.Intellectual.LabelCap);
+                    text.Append(": ");
+                    text.Append(intellectual.Level);
+                }
+                if (pawn.GetStatValue(StatDefOf.SocialImpact) is var socialImpact)
+                {
+                    text.AppendInNewLine(StatDefOf.SocialImpact.LabelCap);
+                    text.Append(": ");
+                    text.Append(socialImpact.ToStringPercent());
+                }
+                if (CalculatePassionBonus(pawn) is var passionBonus and > 0)
+                {
+                    text.AppendInNewLine("PE_SkillPassionBonus".Translate());
+                    text.Append(": ");
+                    text.Append(passionBonus.ToString("F1"));
+                }
+                text.AppendLineIfNotEmpty();
+                var baseXpPerTick = CalculateTeacherScore(pawn);
+                if (baseXpPerTick > 0f)
+                {
+                    var xpPerHour = baseXpPerTick * GenDate.TicksPerHour;
+                    text.AppendInNewLine("PE_TeachingHourlyBase".Translate());
+                    text.Append(": ");
+                    text.Append(xpPerHour.ToString("F0"));
+                    text.Append("PE_XpPerHour".Translate());
                 }
             }
-
-            return text;
+            return text.ToString();
         }
 
         public override string StudentTooltipFor(Pawn pawn)
         {
-            return "";
+            var text = new StringBuilder();
+            if (studyGroup is { classroom: not null, Map: not null }
+                && SkillFocus != null
+                && pawn?.skills?.GetSkill(SkillFocus) is SkillRecord relevantSkill)
+            {
+                text.AppendInNewLine($"{relevantSkill.def.LabelCap}: {relevantSkill.Level} ({relevantSkill.passion.GetLabel()})");
+                text.AppendLineIfNotEmpty();
+                var baseXpPerTick = CalculateProgressPerTick(studyGroup.teacher);
+                var learningFactor = pawn.GetStatValue(StatDefOf.GlobalLearningFactor);
+                var skillLearnFactor = relevantSkill.LearnRateFactor(direct: true);
+                var learningXpPerTick = baseXpPerTick * learningFactor * skillLearnFactor;
+                if (learningXpPerTick > 0f)
+                {
+                    var learningXpPerHour = learningXpPerTick * GenDate.TicksPerHour;
+                    text.AppendInNewLine($"{"PE_EstimatedHourlyProgress".Translate()}: {learningXpPerHour:F0} {"PE_XpPerHour".Translate()}");
+                }
+            }
+            text.AppendInNewLine(base.StudentTooltipFor(pawn));
+            return text.ToString();
         }
 
         public override JobDef LearningJob
@@ -198,10 +329,10 @@ namespace ProgressionEducation
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Defs.Look(ref _skillFocus, "skillFocus");
+            Scribe_Defs.Look(ref skillFocus, "skillFocus");
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                if (_skillFocus is null)
+                if (skillFocus is null)
                 {
                     EducationManager.Instance.RemoveStudyGroup(studyGroup);
                     Log.Error(studyGroup?.className + " had no skill focus, removing it...");
@@ -211,16 +342,17 @@ namespace ProgressionEducation
 
         public override HashSet<ThingDef> GetValidLearningBenches()
         {
-            if (_validLearningBenches == null)
+            if (validLearningBenches == null)
             {
-                _validLearningBenches = [];
+                validLearningBenches = [];
                 var requirement = SkillFocus?.GetModExtension<SkillBuildingRequirement>();
                 if (requirement != null && !requirement.requiredBuildings.NullOrEmpty())
                 {
-                    _validLearningBenches.UnionWith(requirement.requiredBuildings);
+                    validLearningBenches.UnionWith(requirement.requiredBuildings);
                 }
             }
-            return _validLearningBenches;
+            return validLearningBenches;
         }
+
     }
 }

@@ -1,6 +1,7 @@
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -9,19 +10,20 @@ namespace ProgressionEducation
     [HotSwappable]
     public class ProficiencyClassLogic : ClassSubjectLogic
     {
-        public override float LearningSpeedModifier => EducationSettings.Instance.proficiencyClassesLearningSpeedModifier;
-        public const int FirearmTeachingDuration = 60000;
-        public const int HighTechTeachingDuration = 120000;
-        private ProficiencyLevel _proficiencyFocus = ProficiencyLevel.Firearm;
-        public ProficiencyLevel proficiencyFocus
+        public override float LearningSpeedModifier => 
+            EducationSettings.Instance.proficiencyClassesLearningSpeedModifier;
+        public const int FirearmTeachingDuration = 30000;
+        public const int HighTechTeachingDuration = 60000;
+        private ProficiencyLevel proficiencyFocus = ProficiencyLevel.Firearm;
+        public ProficiencyLevel ProficiencyFocus
         {
-            get => _proficiencyFocus;
+            get => proficiencyFocus;
             set
             {
-                if (_proficiencyFocus != value)
+                if (proficiencyFocus != value)
                 {
-                    _proficiencyFocus = value;
-                    _validLearningBenches = null;
+                    proficiencyFocus = value;
+                    validLearningBenches = null;
                 }
             }
         }
@@ -29,13 +31,50 @@ namespace ProgressionEducation
         public ProficiencyClassLogic() : base() { }
         public ProficiencyClassLogic(StudyGroup parent) : base(parent) { }
 
-        public override string Description => "PE_TrainingProficiency".Translate(proficiencyFocus.ToStringHuman());
+        public ProficiencyClassLogic(ProficiencyClassLogic other, StudyGroup parent) : base(other, parent)
+        {
+            proficiencyFocus = other.proficiencyFocus;
+        }
 
+        public override string Description =>
+            "PE_TrainingProficiency".Translate(ProficiencyFocus.ToStringHuman());
+
+        public float CalculateTechTraitModifier(Pawn pawn)
+        {
+            if (pawn == null)
+            {
+                return 1f;
+            }
+            var techTraitModifier = 1f;
+            if (pawn.story.traits.HasTrait(DefsOf.PE_FirearmProficiency))
+            {
+                if (proficiencyFocus == ProficiencyLevel.Firearm)
+                {
+                    techTraitModifier += 0.2f;
+                }
+                else
+                {
+                    techTraitModifier -= 0.1f;
+                }
+            }
+            if (pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency))
+            {
+                if (ProficiencyFocus == ProficiencyLevel.HighTech)
+                {
+                    techTraitModifier += 0.2f;
+                }
+                else
+                {
+                    techTraitModifier -= 0.1f;
+                }
+            }
+            return techTraitModifier;
+        }
 
         public override void GrantCompletionRewards()
         {
             TraitDef traitDef = null;
-            switch (proficiencyFocus)
+            switch (ProficiencyFocus)
             {
                 case ProficiencyLevel.Firearm:
                     traitDef = DefsOf.PE_FirearmProficiency;
@@ -52,57 +91,42 @@ namespace ProgressionEducation
 
         public override float CalculateTeacherScore(Pawn teacher)
         {
-            float teacherSocial = teacher.skills.GetSkill(SkillDefOf.Social).Level;
-            float teacherIntelligence = teacher.skills.GetSkill(SkillDefOf.Intellectual).Level;
-            float progress = teacherSocial * 0.6f + teacherIntelligence * 0.4f;
-            float techTraitModifier = 1f;
-
-            if (teacher.story.traits.HasTrait(DefsOf.PE_FirearmProficiency))
+            if (!studyGroup.GetTeacherRole().CanAcceptPawn(teacher))
             {
-                if (proficiencyFocus == ProficiencyLevel.Firearm)
-                {
-                    techTraitModifier += 0.2f;
-                }
-                else
-                {
-                    techTraitModifier -= 0.1f;
-                }
+                return 0f;
             }
-
-            if (teacher.story.traits.HasTrait(DefsOf.PE_HighTechProficiency))
-            {
-                if (proficiencyFocus == ProficiencyLevel.HighTech)
-                {
-                    techTraitModifier += 0.2f;
-                }
-                else
-                {
-                    techTraitModifier -= 0.1f;
-                }
-            }
-            techTraitModifier = Mathf.Max(0.1f, techTraitModifier);
-            return progress * techTraitModifier * 0.05f;
+            var social = teacher.skills.GetSkill(SkillDefOf.Social).Level;
+            var intelligence = teacher.skills.GetSkill(SkillDefOf.Intellectual).Level;
+            var socialImpact = teacher.GetStatValue(StatDefOf.SocialImpact);
+            var techTraitModifier = CalculateTechTraitModifier(teacher);
+            var progress = (social * 0.6f + intelligence * 0.4f) * socialImpact;
+            return progress * techTraitModifier * 0.02f;
         }
 
-        public override float CalculateProgressPerTick()
+        public override float CalculateProgressPerTick(Pawn teacher)
         {
-            if (studyGroup.teacher is null) return 0f;
-            var classroom = studyGroup.classroom;
-            float classRoomModifier = classroom.CalculateLearningModifier();
-            float progress = CalculateTeacherScore(studyGroup.teacher) * classRoomModifier * LearningSpeedModifier;
+            if (teacher == null || studyGroup.classroom == null)
+            {
+                return 0f;
+            }
+            var progress = CalculateTeacherScore(teacher);
+            var classroomModifier = studyGroup.classroom.CalculateLearningModifier();
+            progress *= classroomModifier;
+            progress *= LearningSpeedModifier;
             return progress;
         }
 
         public override AcceptanceReport IsTeacherQualified(Pawn teacher)
         {
-            bool isQualified = false;
-            string requiredProficiencyLabel = "";
+            var isQualified = false;
+            var requiredProficiencyLabel = "";
 
-            switch (proficiencyFocus)
+            switch (ProficiencyFocus)
             {
                 case ProficiencyLevel.Firearm:
                     requiredProficiencyLabel = ProficiencyLevel.Firearm.ToStringHuman();
-                    isQualified = teacher.story.traits.HasTrait(DefsOf.PE_FirearmProficiency) || teacher.story.traits.HasTrait(DefsOf.PE_HighTechProficiency);
+                    isQualified = teacher.story.traits.HasTrait(DefsOf.PE_FirearmProficiency) 
+                                  || teacher.story.traits.HasTrait(DefsOf.PE_HighTechProficiency);
                     break;
                 case ProficiencyLevel.HighTech:
                     requiredProficiencyLabel = ProficiencyLevel.HighTech.ToStringHuman();
@@ -117,90 +141,141 @@ namespace ProgressionEducation
 
         public override AcceptanceReport IsStudentQualified(Pawn student)
         {
-            bool isQualified = false;
-            string requiredProficiencyLabel = "";
-
-            switch (proficiencyFocus)
+            if (student.DevelopmentalStage < DevelopmentalStage.Child)
+            {
+                return new AcceptanceReport("PE_TooYoung".Translate(student.LabelShortCap));
+            }
+            if (studyGroup.currentProgress > 0f && !studyGroup.students.NotNullAndContains(student))
+            {
+                return new AcceptanceReport("PE_CannotAddOngoing".Translate());
+            }
+            var hasProficiency = false;
+            var requiredProficiencyLabel = "";
+            switch (ProficiencyFocus)
             {
                 case ProficiencyLevel.Firearm:
                     requiredProficiencyLabel = ProficiencyLevel.Firearm.ToStringHuman();
-                    isQualified = student.story.traits.HasTrait(DefsOf.PE_FirearmProficiency)
+                    hasProficiency = student.story.traits.HasTrait(DefsOf.PE_FirearmProficiency)
                         || student.story.traits.HasTrait(DefsOf.PE_HighTechProficiency);
                     break;
                 case ProficiencyLevel.HighTech:
                     requiredProficiencyLabel = ProficiencyLevel.HighTech.ToStringHuman();
-                    isQualified = student.story.traits.HasTrait(DefsOf.PE_HighTechProficiency);
+                    hasProficiency = student.story.traits.HasTrait(DefsOf.PE_HighTechProficiency);
                     break;
             }
 
-            return isQualified
+            return hasProficiency
                 ? new AcceptanceReport("PE_StudentAlreadyHasProficiency".Translate(student.LabelShort, requiredProficiencyLabel))
                 : AcceptanceReport.WasAccepted;
         }
 
-        public override void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog)
+        public override void DrawConfigurationUI(Rect rect, ref float curY, IClassDialog classDialog)
         {
-            Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_ProficiencyFocus".Translate());
-            if (Widgets.ButtonText(new Rect(rect.x + 160f, curY, 200f, 25f), proficiencyFocus.ToStringHuman()))
+            DrawProficiencyUI(rect, ref curY, classDialog);
+            var progressPerTick = CalculateProgressPerTick(studyGroup.teacher);
+            if (progressPerTick > 0)
             {
-                List<FloatMenuOption> options =
-                [
-                    new FloatMenuOption(ProficiencyLevel.Firearm.ToStringHuman().CapitalizeFirst(), () => {
-                        proficiencyFocus = ProficiencyLevel.Firearm;
-                        studyGroup.semesterGoal = FirearmTeachingDuration;
-                        studyGroup.subjectLogic.AutoAssignStudents(createClassDialog);
-                    }),
-                    new FloatMenuOption(ProficiencyLevel.HighTech.ToStringHuman().CapitalizeFirst(), () => {
-                        proficiencyFocus = ProficiencyLevel.HighTech;
-                        studyGroup.semesterGoal = HighTechTeachingDuration;
-                        studyGroup.subjectLogic.AutoAssignStudents(createClassDialog);
-                    }),
-                ];
-                Find.WindowStack.Add(new FloatMenu(options));
+                var estimatedTicks = Mathf.CeilToInt(studyGroup.semesterGoal / progressPerTick);
+                Widgets.Label(new Rect(rect.x, curY, 360f, 25f), "PE_StudyTimeNeeded".Translate(estimatedTicks.ToStringTicksToPeriod()));
+                curY += 30f;
+                var sessionsNeeded = Mathf.CeilToInt((float)estimatedTicks / (GenDate.TicksPerHour * studyGroup.Duration));
+                Widgets.Label(new Rect(rect.x, curY, 360f, 25f), "PE_StudySessionsNeeded".Translate(sessionsNeeded));
+                curY += 30f;
             }
-            curY += 30f;
         }
 
-        public override string BaseTooltipFor(Pawn pawn)
+        private void DrawProficiencyUI(Rect rect, ref float curY, IClassDialog classDialog)
         {
-            var social = pawn.skills.GetSkill(SkillDefOf.Social);
-            var intellectual = pawn.skills.GetSkill(SkillDefOf.Intellectual);
-            string text = $"{social.def.LabelCap}: {social.Level}\n{intellectual.def.LabelCap}: {intellectual.Level}";
-            var map = studyGroup.Map;
-            if (studyGroup.classroom != null && map != null && studyGroup.semesterGoal > 0)
+            var proficiencyLabel = ProficiencyFocus.ToStringHuman();
+            switch (classDialog)
             {
-                float progressPerTick = CalculateProgressPerTick();
-                if (progressPerTick > 0f)
+                case Dialog_CreateClass:
+                    Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_ProficiencyFocus".Translate());
+                    if (Widgets.ButtonText(new Rect(rect.x + 160f, curY, 200f, 25f), proficiencyLabel))
+                    {
+                        List<FloatMenuOption> options =
+                        [
+                            new FloatMenuOption(ProficiencyLevel.Firearm.ToStringHuman().CapitalizeFirst(), () => {
+                                ProficiencyFocus = ProficiencyLevel.Firearm;
+                                studyGroup.semesterGoal = FirearmTeachingDuration;
+                                studyGroup.subjectLogic.AutoAssignStudents(classDialog);
+                            }),
+                            new FloatMenuOption(ProficiencyLevel.HighTech.ToStringHuman().CapitalizeFirst(), () => {
+                                ProficiencyFocus = ProficiencyLevel.HighTech;
+                                studyGroup.semesterGoal = HighTechTeachingDuration;
+                                studyGroup.subjectLogic.AutoAssignStudents(classDialog);
+                            }),
+                        ];
+                        Find.WindowStack.Add(new FloatMenu(options));
+                    }
+                    curY += 30;
+                    break;
+                case Dialog_EditClass:
+                    Widgets.Label(new Rect(rect.x, curY, 150f, 25f), "PE_ProficiencyFocus".Translate());
+                    Widgets.Label(new Rect(rect.x + 160f, curY, 200f, 25f), proficiencyLabel);
+                    curY += 30;
+                    break;
+            }
+        }
+
+        public override string TeacherTooltipFor(Pawn pawn)
+        {
+            if (pawn == null)
+            {
+                return "";
+            }
+            var text = new StringBuilder(base.TeacherTooltipFor(pawn));
+            text.AppendLineIfNotEmpty();
+            if (studyGroup is { classroom: not null, Map: not null, semesterGoal: > 0 })
+            {
+                if (pawn.skills.GetSkill(SkillDefOf.Social) is SkillRecord social)
                 {
-                    float num = progressPerTick * 2500f / studyGroup.semesterGoal;
-                    text += "\n\n" + "PE_EstimatedHourlyProgress".Translate() + ": +" + num.ToStringPercent() + "PE_PerHour".Translate();
+                    text.AppendInNewLine(SkillDefOf.Social.LabelCap);
+                    text.Append(": ");
+                    text.Append(social.Level);
+                }
+                if (pawn.skills.GetSkill(SkillDefOf.Intellectual) is SkillRecord intellectual)
+                {
+                    text.AppendInNewLine(SkillDefOf.Intellectual.LabelCap);
+                    text.Append(": ");
+                    text.Append(intellectual.Level);
+                }
+                if (pawn.GetStatValue(StatDefOf.SocialImpact) is var socialImpact)
+                {
+                    text.AppendInNewLine(StatDefOf.SocialImpact.LabelCap);
+                    text.Append(": ");
+                    text.Append(socialImpact.ToStringPercent());
+                }
+                if (CalculateTechTraitModifier(pawn) is var techTraitModifier)
+                {
+                    text.AppendInNewLine("PE_ProficiencyFocus".Translate());
+                    text.Append(": ");
+                    text.Append(techTraitModifier.ToString("F1"));
+                }
+                text.AppendLineIfNotEmpty();
+
+                if (CalculateTeacherScore(pawn) is var progressPerTick and > 0f)
+                {
+                    var progressPerHour = progressPerTick * GenDate.TicksPerHour;
+                    var progressPercentagePerHour = progressPerHour / studyGroup.semesterGoal;
+                    text.AppendInNewLine("PE_TeachingHourlyBase".Translate());
+                    text.Append(": ");
+                    text.Append(progressPercentagePerHour.ToStringPercent());
+                    text.Append("PE_PerHour".Translate());
                 }
             }
-            return text;
+            return text.ToString();
         }
 
         public override string StudentTooltipFor(Pawn pawn)
         {
-            switch (proficiencyFocus)
-            {
-                case ProficiencyLevel.Firearm:
-                    if (pawn.story.traits.HasTrait(DefsOf.PE_FirearmProficiency))
-                        return "PE_AlreadyHasFirearmProficiency".Translate();
-                    else if (pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency))
-                        return "PE_AlreadyHasHighTechProficiency".Translate();
-                    break;
-                case ProficiencyLevel.HighTech:
-                    if (pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency))
-                        return "PE_AlreadyHasHighTechProficiency".Translate();
-                    break;
-            }
-            return null;
+            return "";
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref _proficiencyFocus, "proficiencyFocus");
+            Scribe_Values.Look(ref proficiencyFocus, "proficiencyFocus");
         }
 
     }

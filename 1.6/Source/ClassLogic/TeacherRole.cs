@@ -3,12 +3,14 @@ using Verse;
 
 namespace ProgressionEducation
 {
-    public class TeacherRole : ClassRole
+    public class TeacherRole(StudyGroup studyGroup) : 
+        ClassRole(roleId: "teacher",
+           maxCount: 1,
+           minCount: 1,
+           label: "PE_TeacherRole".Translate(),
+           categoryLabel: "PE_TeacherRole".Translate(),
+           studyGroup: studyGroup)
     {
-        public TeacherRole(StudyGroup studyGroup) : base("teacher", 1, 1, "PE_TeacherRole".Translate(), "PE_TeacherRole".Translate(), studyGroup)
-        {
-        }
-
         public override AcceptanceReport CanAcceptPawn(Pawn pawn)
         {
             var baseReport = base.CanAcceptPawn(pawn);
@@ -20,12 +22,12 @@ namespace ProgressionEducation
             {
                 return new AcceptanceReport("PE_TeacherRoleOnlyForAdults".Translate());
             }
-
             if (pawn.skills.GetSkill(SkillDefOf.Social).TotallyDisabled)
             {
                 return new AcceptanceReport("PE_TeacherRoleRequiresSocialSkill".Translate());
             }
-            return studyGroup.subjectLogic != null ? studyGroup.subjectLogic.IsTeacherQualified(pawn) : (AcceptanceReport)false;
+            return studyGroup?.subjectLogic?.IsTeacherQualified(pawn) 
+                   ?? AcceptanceReport.WasAccepted;
         }
     }
 }

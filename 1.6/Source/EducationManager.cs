@@ -15,14 +15,11 @@ namespace ProgressionEducation
         {
             get
             {
-                if (_instance == null)
+                if (_instance == null || _instance.world != Find.World)
                 {
                     _instance = Find.World.GetComponent<EducationManager>();
                 }
-                else if (_instance.world != Find.World)
-                {
-                    _instance = Find.World.GetComponent<EducationManager>();
-                }
+
                 return _instance;
             }
         }
@@ -38,7 +35,7 @@ namespace ProgressionEducation
         {
             get
             {
-                classrooms ??= new List<Classroom>();
+                classrooms ??= [];
                 classrooms.RemoveAll(x => x is null);
                 return classrooms;
             }
@@ -69,7 +66,7 @@ namespace ProgressionEducation
         public void AddClassroom(Classroom classroom)
         {
             if (classroom == null) return;
-            classrooms ??= new List<Classroom>();
+            classrooms ??= [];
             if (!classrooms.Contains(classroom))
             {
                 classrooms.Add(classroom);
@@ -156,32 +153,35 @@ namespace ProgressionEducation
             }
         }
 
-        public void ApplyScheduleToPawns(StudyGroup studyGroup)
+        public static void ApplyScheduleToPawns(StudyGroup studyGroup)
         {
             List<Pawn> allParticipants = [studyGroup.teacher, .. studyGroup.students];
             TimeAssignmentUtility.ApplyScheduleToPawns(studyGroup, allParticipants);
         }
 
-        private HashSet<StudyGroup> checkedStudyGroups = new();
+        private HashSet<StudyGroup> checkedStudyGroups = [];
         public void TryInitiateClassForStudyGroup(StudyGroup studyGroup)
         {
-            checkedStudyGroups ??= new HashSet<StudyGroup>();
+            checkedStudyGroups ??= [];
             var currentAssignment = studyGroup.teacher.timetable.CurrentAssignment;
             if (!currentAssignment.IsStudyGroupAssignment() || currentAssignment.defName != studyGroup.timeAssignmentDefName)
             {
                 checkedStudyGroups.Remove(studyGroup);
                 return;
             }
-            bool alreadyGivenMessage = checkedStudyGroups.Contains(studyGroup) is false;
             var validationReport = studyGroup.ValidateClassStatus();
             if (!validationReport.Accepted)
             {
                 EducationLog.Message($"Class '{studyGroup.className}' cancelled due to validation failure: {validationReport.Reason}");
-                if (alreadyGivenMessage)
+                if (!checkedStudyGroups.Contains(studyGroup))
                 {
                     Messages.Message($"{"PE_ClassCancelledToday".Translate(studyGroup.className)} {validationReport.Reason}", MessageTypeDefOf.NegativeEvent);
                     checkedStudyGroups.Add(studyGroup);
                 }
+                return;
+            }
+            if (checkedStudyGroups.Contains(studyGroup))
+            {
                 return;
             }
 
@@ -194,24 +194,15 @@ namespace ProgressionEducation
             }
 
             var lord = studyGroup.teacher.GetLord();
-            if (lord != null && lord.LordJob is LordJob_AttendClass)
+            if (lord is { LordJob: LordJob_AttendClass })
             {
                 EducationLog.Message($"Teacher {studyGroup.teacher.LabelShort} is already in a LordJob_AttendClass. Not initiating another class.");
                 return;
             }
-            
-            bool existingLordFound = false;
-            foreach (var existingLord in classroomMap.lordManager.lords)
-            {
-                if (existingLord.LordJob is LordJob_AttendClass attendClassLordJob &&
-                    attendClassLordJob.studyGroup == studyGroup)
-                {
-                    existingLordFound = true;
-                    break;
-                }
-            }
 
-            if (existingLordFound)
+            if (classroomMap.lordManager.lords
+                .Any(l => l.LordJob is LordJob_AttendClass attendClassLordJob 
+                          && attendClassLordJob.studyGroup == studyGroup))
             {
                 EducationLog.Message($"An existing LordJob_AttendClass was found for class '{studyGroup.className}'. Not initiating another class.");
                 return;
@@ -230,13 +221,13 @@ namespace ProgressionEducation
 
             if (studyGroup.classroom.restrictReservationsDuringClass)
             {
-                InterruptPawnsUsingLearningBenches(studyGroup, classroomMap);
+                InterruptPawnsUsingLearningBenches(studyGroup);
             }
 
             LordMaker.MakeNewLord(Faction.OfPlayer, lordJob, classroomMap, initialPawns);
         }
 
-        private void InterruptPawnsUsingLearningBenches(StudyGroup studyGroup, Map map)
+        private void InterruptPawnsUsingLearningBenches(StudyGroup studyGroup)
         {
             var validBenches = studyGroup.subjectLogic.GetValidLearningBenches();
             if (validBenches == null || !validBenches.Any())
@@ -254,26 +245,20 @@ namespace ProgressionEducation
             foreach (var pawn in pawnsInRoom)
             {
                 var curJob = pawn.CurJob;
-                if (curJob != null)
+                if (curJob == null)
                 {
-                    bool shouldInterrupt = false;
-                    var targets = new[] { curJob.targetA, curJob.targetB };
-                    foreach (var target in targets)
-                    {
-                        if (!target.HasThing) continue;
+                    continue;
+                }
 
-                        if (validBenches.Contains(target.Thing.def))
-                        {
-                            shouldInterrupt = true;
-                            break;
-                        }
-                    }
+                var targets = new[] { curJob.targetA, curJob.targetB };
+                var shouldInterrupt = targets
+                    .Where(target => target.HasThing)
+                    .Any(target => validBenches.Contains(target.Thing.def));
 
-                    if (shouldInterrupt)
-                    {
-                        pawn.jobs?.EndCurrentJob(Verse.AI.JobCondition.InterruptForced);
-                        EducationLog.Message($"Interrupted pawn {pawn.LabelShort} who was using a learning bench during class initiation.");
-                    }
+                if (shouldInterrupt)
+                {
+                    pawn.jobs?.EndCurrentJob(Verse.AI.JobCondition.InterruptForced);
+                    EducationLog.Message($"Interrupted pawn {pawn.LabelShort} who was using a learning bench during class initiation.");
                 }
             }
         }

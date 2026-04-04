@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -14,6 +15,12 @@ namespace ProgressionEducation
         public ClassSubjectLogic() { }
         public ClassSubjectLogic(StudyGroup parent) { studyGroup = parent; }
 
+        public ClassSubjectLogic(ClassSubjectLogic other, StudyGroup parent)
+        {
+            studyGroup = parent;
+        }
+
+        private const int InteractionInterval = 900;
         public abstract string Description { get; }
         public virtual bool IsInfinite => false;
         public virtual void AddRequirements(List<string> requirements)
@@ -40,45 +47,67 @@ namespace ProgressionEducation
             get
             {
                 var facility = studyGroup.classroom?.LearningBoard?.parent?.GetComp<CompFacility>();
-                if (facility is null) return 0;
+                if (facility is null)
+                {
+                    return 0;
+                }
                 var validBenches = GetValidLearningBenches();
                 var count = facility.LinkedBuildings.Count(t => validBenches.Contains(t.def));
                 return count;
             }
         }
         public virtual string BenchLabel => "PE_SchoolDesks".Translate();
-        public abstract void DrawConfigurationUI(Rect rect, ref float curY, Map map, Dialog_CreateClass createClassDialog);
-        public abstract float CalculateProgressPerTick();
-        public abstract void GrantCompletionRewards();
+        public abstract void DrawConfigurationUI(Rect rect, ref float curY, IClassDialog classDialog);
+
+        public virtual float CalculateProgressPerTick(Pawn teacher)
+        {
+            return 0f;
+        }
+        public virtual void GrantCompletionRewards()
+        {
+        }
+
         public abstract AcceptanceReport IsTeacherQualified(Pawn teacher);
         public abstract AcceptanceReport IsStudentQualified(Pawn student);
         public abstract float LearningSpeedModifier { get; }
+        public virtual float CalculateLearningPerTick(Pawn student)
+        {
+            return LearningUtility.NeedSatisfiedPerTick 
+                   * LearningUtility.LearningRateFactor(student) 
+                   * studyGroup.classroom.CalculateLearningModifier() 
+                   * LearningSpeedModifier;
+        }
 
-        public virtual void ApplyLearningTick(Pawn student)
+        public virtual void ApplyLearningTick(Pawn student, int delta)
         {
             if (student.DevelopmentalStage == DevelopmentalStage.Child)
             {
-                float growthPointsPerTick = student.ageTracker.GrowthPointsPerDay / 60000f;
-                student.ageTracker.growthPoints += growthPointsPerTick;
+                var growthPointsPerTick = student.ageTracker.GrowthPointsPerDay / GenDate.TicksPerDay;
+                student.ageTracker.growthPoints += growthPointsPerTick * delta;
             }
-            if (student.needs?.learning != null)
+
+            student.needs?.learning?.Learn(CalculateLearningPerTick(student) * delta);
+        }
+
+        public virtual void ApplyTeachingTick(Pawn student, JobDriver_Teach jobDriver, int delta)
+        {
+            var teacher = jobDriver.pawn;
+            if (jobDriver.taughtSkill is SkillDef taughtSkill 
+                && teacher.IsHashIntervalTick(InteractionInterval, delta))
             {
-                float learningRateFactor = LearningUtility.LearningRateFactor(student) * this.studyGroup.classroom.CalculateLearningModifier() * LearningSpeedModifier;
-                student.needs.learning.Learn(1.2E-05f * learningRateFactor * 3f);
+                teacher.interactions.TryInteractWith(student, taughtSkill.lessonInteraction);
+                teacher.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDefOf.GaveLesson, student);
+                student.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDefOf.WasTaught, teacher);
             }
         }
-
-        public virtual void ApplyTeachingTick(Pawn student, JobDriver_Teach jobDriver)
+        public void AssignBestTeacher(IClassDialog classDialog)
         {
-        }
-        public void AssignBestTeacher(Dialog_CreateClass createClassDialog)
-        {
-            var teacherRole = createClassDialog.TeacherRole;
-            var assignmentsManager = createClassDialog.AssignmentsManager;
+            var teacherRole = classDialog.TeacherRole;
+            var assignmentsManager = classDialog.AssignmentsManager;
 
-            var bestTeacher = createClassDialog.CandidatePool.AllCandidatePawns
+            var bestTeacher = classDialog.CandidatePool.AllCandidatePawns
                 .Where(p => teacherRole.CanAcceptPawn(p).Accepted)
-                .OrderByDescending(p => CalculateTeacherScore(p))
+                .OrderByDescending(CalculateTeacherScore)
                 .FirstOrDefault();
 
             if (bestTeacher != null)
@@ -87,16 +116,16 @@ namespace ProgressionEducation
                 if (existingTeacher != null)
                 {
                     assignmentsManager.Unassign(existingTeacher, teacherRole);
-                    if (createClassDialog.StudentRole.CanAcceptPawn(existingTeacher).Accepted)
+                    if (classDialog.StudentRole.CanAcceptPawn(existingTeacher).Accepted)
                     {
-                        bool assigned = assignmentsManager.TryAssign(existingTeacher, createClassDialog.StudentRole, out _);
+                        bool assigned = assignmentsManager.TryAssign(existingTeacher, classDialog.StudentRole, out _);
                         if (assigned)
                         {
                             EducationLog.Message($"Reassigned previous teacher {existingTeacher} to student role in class '{studyGroup.className}'");
                         }
                         else
                         {
-                            Log.Warning($"Failed to reassign previous teacher {existingTeacher} to student role in class '{studyGroup.className}'");
+                            EducationLog.Warning($"Failed to reassign previous teacher {existingTeacher} to student role in class '{studyGroup.className}'");
                         }
                     }
                     else
@@ -112,96 +141,65 @@ namespace ProgressionEducation
             }
             else
             {
-                Log.Warning($"No qualified teacher found for class '{studyGroup.className}'");
+                EducationLog.Warning($"No qualified teacher found for class '{studyGroup.className}'");
             }
         }
         public abstract float CalculateTeacherScore(Pawn p);
 
         public virtual bool CanAutoAssign => studyGroup.classroom?.LearningBoard != null;
 
-        public virtual void AutoAssignStudents(Dialog_CreateClass createClassDialog)
+        public virtual void AutoAssignStudents(IClassDialog classDialog)
         {
             if (!CanAutoAssign)
             {
-                Log.Warning($"Cannot auto-assign students for class '{studyGroup.className}' because it lacks a learning board.");
+                EducationLog.Warning($"Cannot auto-assign students for class '{studyGroup.className}' because it lacks a learning board.");
                 return;
             }
             EducationLog.Message($"Auto-assigning students and teacher for class '{studyGroup.className}'");
 
-            UnassignUnqualifiedPawns(createClassDialog);
-            AssignBestTeacher(createClassDialog);
-            HandleRoleAutoAssignment(createClassDialog, createClassDialog.StudentRole, BenchCount);
+            classDialog.AssignmentsManager.UnassignUnqualifiedPawns();
+            AssignBestTeacher(classDialog);
+            classDialog.AssignmentsManager.HandleRoleAutoAssignment(classDialog.CandidatePool, classDialog.StudentRole, BenchCount);
             EducationLog.Message($"Auto-assigned students and teacher for class '{studyGroup.className}'");
         }
-        public abstract string BaseTooltipFor(Pawn pawn);
-        public abstract string StudentTooltipFor(Pawn pawn);
-
-        protected void UnassignUnqualifiedPawns(Dialog_CreateClass createClassDialog)
+        public virtual string BaseTooltipFor(Pawn pawn)
         {
-            foreach (var role in createClassDialog.AssignmentsManager.Roles)
+            var text = new StringBuilder();
+            foreach (var sg in EducationManager.Instance.StudyGroups
+                         .Where(s => s.teacher == pawn || s.students.Contains(pawn))
+                         .OrderBy(g => g.startHour))
             {
-                var assignedPawns = createClassDialog.AssignmentsManager.AssignedPawns(role).ToList();
-                for (int i = assignedPawns.Count - 1; i >= 0; i--)
-                {
-                    var pawn = assignedPawns[i];
-                    var canAccept = role.CanAcceptPawn(pawn);
-                    if (!canAccept.Accepted)
-                    {
-                        createClassDialog.AssignmentsManager.TryUnassignAnyRole(pawn);
-                        EducationLog.Message($"Unassigning {pawn} from {role} because they are no longer qualified: {canAccept.Reason}");
-                    }
-                }
+                text.AppendInNewLine(sg.className);
+                text.Append(": ");
+                text.Append("PE_ScheduleTime".Translate(sg.startHour, sg.endHour));
             }
+            return text.ToString();
         }
-
-        protected void DrawBenchRequirementUI(Rect rect, ref float curY)
+        public virtual string TeacherTooltipFor(Pawn pawn)
         {
-            string label = BenchLabel;
-            if (string.IsNullOrEmpty(label))
-            {
-                return;
-            }
-            Widgets.Label(new Rect(rect.x, curY, 200f, 25f), "PE_Requirements".Translate());
-            curY += 25f;
-            int count = studyGroup.students.Count;
-            int benchCount = BenchCount;
-            string presentText = "";
-            if (benchCount < count || benchCount < 1)
-            {
-                GUI.color = Color.red;
-                presentText = " " + "PE_Present".Translate(benchCount);
-            }
-            Widgets.Label(new Rect(rect.x + 10f, curY, 300f, 25f), $"{benchCount}x {label}{presentText}");
-            GUI.color = Color.white;
-            curY += 25f;
+            return "";
         }
-
-        protected void HandleRoleAutoAssignment(Dialog_CreateClass createClassDialog, ClassRole role, int maxCount)
+        public virtual string StudentTooltipFor(Pawn pawn)
         {
-            var assignedPawns = createClassDialog.AssignmentsManager.AssignedPawns(role).ToList();
-            EducationLog.Message($"Handling role auto-assignment for {role} with {assignedPawns.Count} assigned pawns and a max count of {maxCount}");
-            if (assignedPawns.Count > maxCount)
+            var text = new StringBuilder();
+            text.AppendInNewLine(StatDefOf.GlobalLearningFactor.LabelCap);
+            text.Append(": ");
+            text.Append(pawn.GetStatValue(StatDefOf.GlobalLearningFactor).ToStringPercent());
+            if (pawn.needs?.learning != null)
             {
-                int pawnsToUnassign = assignedPawns.Count - maxCount;
-                for (int i = 0; i < pawnsToUnassign; i++)
-                {
-                    createClassDialog.AssignmentsManager.TryUnassignAnyRole(assignedPawns[i]);
-                }
+                var learningPerHour = CalculateLearningPerTick(pawn) * GenDate.TicksPerHour;
+                var learningPerSession = learningPerHour * studyGroup.Duration;
+                text.AppendInNewLine("PE_Learning".Translate());
+                text.Append(": ");
+                text.Append(learningPerSession.ToStringPercent());
+                text.Append("PE_PerSession".Translate());
             }
-            else if (assignedPawns.Count < maxCount)
-            {
-                int pawnsToAdd = maxCount - assignedPawns.Count;
-                var availablePawns = createClassDialog.CandidatePool.AllCandidatePawns.Where(p => !createClassDialog.AssignmentsManager.PawnParticipating(p) && role.CanAcceptPawn(p).Accepted).ToList();
-                for (int i = 0; i < pawnsToAdd && i < availablePawns.Count; i++)
-                {
-                    createClassDialog.AssignmentsManager.TryAssign(availablePawns[i], role, out _);
-                }
-            }
+            return text.ToString();
         }
 
         public virtual AcceptanceReport ArePrerequisitesMet()
         {
-            string benchLabel = BenchLabel;
+            var benchLabel = BenchLabel;
             if (!string.IsNullOrEmpty(benchLabel) && BenchCount < studyGroup.students.Count)
             {
                 return new AcceptanceReport("PE_NotEnoughBenches".Translate(benchLabel, studyGroup.students.Count, BenchCount));
@@ -213,24 +211,15 @@ namespace ProgressionEducation
         {
             Scribe_References.Look(ref studyGroup, "studyGroup");
         }
-        protected HashSet<ThingDef> _validLearningBenches;
+        protected HashSet<ThingDef> validLearningBenches;
         public virtual JobDef LearningJob => DefsOf.PE_AttendClass;
         public virtual void HandleStudentLifecycleEvents() { }
         public virtual HashSet<ThingDef> GetValidLearningBenches()
         {
-            if (_validLearningBenches == null)
-            {
-                _validLearningBenches = [];
-                var allDefs = DefDatabase<ThingDef>.AllDefsListForReading;
-                foreach (var def in allDefs)
-                {
-                    if (def.IsSchoolDesk())
-                    {
-                        _validLearningBenches.Add(def);
-                    }
-                }
-            }
-            return _validLearningBenches;
+            validLearningBenches ??= [ .. DefDatabase<ThingDef>.AllDefsListForReading
+                .Where(def => def.IsSchoolDesk())
+            ];
+            return validLearningBenches;
         }
     }
 }

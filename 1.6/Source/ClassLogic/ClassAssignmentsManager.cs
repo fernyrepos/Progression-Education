@@ -12,14 +12,15 @@ namespace ProgressionEducation
         private readonly List<Pawn> spectators = [];
         private readonly List<ClassRole> roles = [];
         private readonly List<Pawn> allPawns = [];
-
+        private readonly Dictionary<string, Pawn> forcedRoles;
+        private readonly List<Pawn> requiredPawns;
         public List<ClassRole> Roles => roles;
 
         public ClassAssignmentsManager()
         {
         }
 
-        public ClassAssignmentsManager(TeacherRole teacherRole, StudentRole studentRole, Map map)
+        public ClassAssignmentsManager(TeacherRole teacherRole, StudentRole studentRole, Map map, Dictionary<string, Pawn> forcedRoles = null)
         {
             EducationLog.Message($"ClassAssignmentsManager constructor called");
             EducationLog.Message($"teacherRole: {teacherRole?.Label ?? "null"}, category: {teacherRole?.CategoryLabel ?? "null"}");
@@ -30,13 +31,20 @@ namespace ProgressionEducation
             assignedPawns[teacherRole] = [];
             assignedPawns[studentRole] = [];
             allPawns.AddRange(map.mapPawns.FreeColonistsAndPrisonersSpawned);
+            this.forcedRoles = forcedRoles;
+            requiredPawns = [];
+            if (forcedRoles != null)
+            {
+                requiredPawns.AddRange(forcedRoles.Values);
+            }
 
             EducationLog.Message($"roles count after adding: {roles.Count}");
         }
+        public List<Pawn> AllPawns => [.. allPawns];
 
         public bool SpectatorsAllowed => false;
 
-        public List<Pawn> SpectatorsForReading => spectators;
+        public List<Pawn> SpectatorsForReading => [.. spectators];
 
         public IEnumerable<IGrouping<string, ClassRole>> RoleGroups()
         {
@@ -49,13 +57,44 @@ namespace ProgressionEducation
             return assignedPawns[role];
         }
 
+        public ClassRole GetRole(string roleId)
+        {
+            if (roleId == null)
+            {
+                return null;
+            }
+            if (!Roles.NullOrEmpty())
+            {
+                foreach (var role in Roles)
+                {
+                    if (role.RoleId == roleId)
+                    {
+                        return role;
+                    }
+                }
+            }
+            return null;
+        }
+
         public ClassRole ForcedRole(Pawn pawn)
         {
-            return null;
+            if (forcedRoles == null)
+            {
+                return null;
+            }
+            return GetRole(forcedRoles.FirstOrDefault(kvp => kvp.Value == pawn).Key);
         }
 
         public ClassRole RoleForPawn(Pawn pawn, bool includeForced = true)
         {
+            if (spectators.Contains(pawn))
+            {
+                return null;
+            }
+            if (includeForced && forcedRoles != null)
+            {
+                return GetRole(forcedRoles.FirstOrDefault(kvp => kvp.Value == pawn).Key);
+            }
             foreach (var kvp in assignedPawns)
             {
                 if (kvp.Value.Contains(pawn))
@@ -78,7 +117,7 @@ namespace ProgressionEducation
 
         public bool Required(Pawn pawn)
         {
-            return false;
+            return requiredPawns.NotNullAndContains(pawn);
         }
 
         public bool PawnParticipating(Pawn pawn)
@@ -211,21 +250,24 @@ namespace ProgressionEducation
         public bool TryUnassignAnyRole(Pawn pawn)
         {
             EducationLog.Message($"TryUnassignAnyRole called for pawn: {pawn?.LabelShort ?? "null"}");
-            var pawnRole = RoleForPawn(pawn);
-            if (pawnRole == null)
-            {
-                EducationLog.Message($"TryUnassignAnyRole - pawn has no role assigned");
-                return false;
-            }
             var forcedRole = ForcedRole(pawn);
-            if (pawnRole == forcedRole)
+            foreach (var kvp in assignedPawns)
             {
-                EducationLog.Message($"TryUnassignAnyRole - pawn has forced role, cannot unassign");
-                return false;
+                if (kvp.Key == forcedRole)
+                {
+                    EducationLog.Message($"TryUnassignAnyRole - pawn has forced role, cannot unassign");
+                    continue;
+                }
+                if (kvp.Value.Remove(pawn))
+                {
+                    if (SpectatorsAllowed)
+                    {
+                        spectators.Add(pawn);
+                    }
+                    return true;
+                }
             }
-            EducationLog.Message($"TryUnassignAnyRole - removing pawn from role: {pawnRole?.Label ?? "null"}");
-            assignedPawns[pawnRole].Remove(pawn);
-            return true;
+            return false;
         }
 
         public void Unassign(Pawn pawn, ClassRole role)
@@ -240,6 +282,8 @@ namespace ProgressionEducation
             EducationLog.Message($"RemoveParticipant - removing pawn from spectators");
             spectators.Remove(pawn);
             EducationLog.Message($"RemoveParticipant completed for pawn: {pawn?.LabelShort ?? "null"}");
+            allPawns.Remove(pawn);
+            allPawns.Add(pawn);
         }
 
         public string PawnNotAssignableReason(Pawn p, ClassRole role)
@@ -303,38 +347,14 @@ namespace ProgressionEducation
             }
             EducationLog.Message($"FillPawns - clearing spectators, current count: {spectators.Count}");
             spectators.Clear();
-            foreach (var pawn in allPawns)
+            var remainingPawns = new List<Pawn>(allPawns);
+            foreach (var role in roles)
             {
-                EducationLog.Message($"FillPawns - processing pawn: {pawn?.LabelShort ?? "null"}, stage: {pawn?.DevelopmentalStage.ToString() ?? "null"}");
-                if (pawn.Dead || pawn.Downed)
-                {
-                    EducationLog.Message($"FillPawns - skipping dead/downed pawn: {pawn?.LabelShort ?? "null"}");
-                    continue;
-                }
-                bool assigned = false;
-                foreach (var role in roles)
-                {
-                    if (role != null && role.CanAcceptPawn(pawn).Accepted && assignedPawns[role].Count < role.MaxCount)
-                    {
-                        EducationLog.Message($"FillPawns - assigning pawn to role: {role.Label}");
-                        assignedPawns[role].Add(pawn);
-                        assigned = true;
-                        break;
-                    }
-                    else if (role != null && !role.CanAcceptPawn(pawn).Accepted)
-                    {
-                        EducationLog.Message($"FillPawns - pawn cannot be assigned to role {role.Label}: {role.CanAcceptPawn(pawn).Reason}");
-                    }
-                    else if (role != null && assignedPawns[role].Count >= role.MaxCount)
-                    {
-                        EducationLog.Message($"FillPawns - role {role.Label} is full");
-                    }
-                }
-
-                if (assigned)
-                {
-                    continue;
-                }
+                FillRole(role, remainingPawns, out var unassignedPawns);
+                remainingPawns = unassignedPawns;
+            }
+            foreach (var pawn in remainingPawns)
+            {
                 if (SpectatorsAllowed)
                 {
                     EducationLog.Message($"FillPawns - adding pawn to spectators");
@@ -346,6 +366,83 @@ namespace ProgressionEducation
                 }
             }
             EducationLog.Message($"FillPawns completed");
+        }
+
+        public void FillRole(ClassRole role, IEnumerable<Pawn> pawns, out List<Pawn> unassignedPawns)
+        {
+            EducationLog.Message($"FillRole called for role {role?.LabelCap ?? "null"} with {string.Join("\n", pawns?.Select(p => p.LabelShort) ?? ["null"])}");
+            unassignedPawns = [];
+            if (role == null)
+            {
+                unassignedPawns = [.. pawns];
+                return;
+            }
+            foreach (var pawn in pawns)
+            {
+                EducationLog.Message($"FillPawns - processing pawn: {pawn?.LabelShort ?? "null"}, stage: {pawn?.DevelopmentalStage.ToString() ?? "null"}");
+                if (pawn.Dead)
+                {
+                    EducationLog.Message($"FillPawns - skipping dead pawn: {pawn?.LabelShort ?? "null"}");
+                    continue;
+                }
+                if (role.CanAcceptPawn(pawn).Accepted && assignedPawns[role].Count < role.MaxCount)
+                {
+                    EducationLog.Message($"FillPawns - assigning pawn to role: {role.Label}");
+                    assignedPawns[role].Add(pawn);
+                    continue;
+                }
+                else if (!role.CanAcceptPawn(pawn).Accepted)
+                {
+                    EducationLog.Message($"FillPawns - pawn cannot be assigned to role {role.Label}: {role.CanAcceptPawn(pawn).Reason}");
+                }
+                else if (assignedPawns[role].Count >= role.MaxCount)
+                {
+                    EducationLog.Message($"FillPawns - role {role.Label} is full");
+                }
+                unassignedPawns.Add(pawn);
+            }
+        }
+        
+        public void HandleRoleAutoAssignment(ClassCandidatePool candidatePool, ClassRole role, int maxCount)
+        {
+            var pawnsInRole = AssignedPawns(role).ToList();
+            EducationLog.Message($"Handling role auto-assignment for {role} with {pawnsInRole.Count} assigned pawns and a max count of {maxCount}");
+            if (pawnsInRole.Count > maxCount)
+            {
+                var pawnsToUnassign = pawnsInRole.Count - maxCount;
+                foreach(var pawn in pawnsInRole.Take(pawnsToUnassign))
+                {
+                    TryUnassignAnyRole(pawn);
+                }
+            }
+            else if (pawnsInRole.Count < maxCount)
+            {
+                var pawnsToAdd = maxCount - pawnsInRole.Count;
+                foreach(var pawn in candidatePool.AllCandidatePawns
+                    .Where(p => PawnParticipating(p) || !role.CanAcceptPawn(p).Accepted)
+                    .Take(pawnsToAdd))
+                {
+                    TryAssign(pawn, role, out _);
+                }
+            }
+        }
+
+        
+        public void UnassignUnqualifiedPawns()
+        {
+            foreach (var role in Roles)
+            {
+                var pawnsInRole = AssignedPawns(role).ToList();
+                for (var i = pawnsInRole.Count - 1; i >= 0; i--)
+                {
+                    var pawn = pawnsInRole[i];
+                    var canAccept = role.CanAcceptPawn(pawn);
+                    if (!canAccept.Accepted && TryUnassignAnyRole(pawn)) 
+                    {
+                        EducationLog.Message($"Unassigning {pawn} from {role} because they are no longer qualified: {canAccept.Reason}");
+                    }
+                }
+            }
         }
     }
 }

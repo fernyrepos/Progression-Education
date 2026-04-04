@@ -32,7 +32,7 @@ namespace ProgressionEducation
             this.FailOn(() => StudyGroup == null || StudyGroup.teacher != pawn);
             var learningBoard = job.GetTarget(TargetIndex.A).Thing;
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            Toil wanderToil = new Toil
+            var wanderToil = new Toil
             {
                 initAction = () =>
                 {
@@ -43,23 +43,20 @@ namespace ProgressionEducation
                         pawn.pather.StartPath(job.GetTarget(TargetIndex.B), PathEndMode.OnCell);
                     }
                 },
-                defaultCompleteMode = ToilCompleteMode.PatherArrival
-            };
-            wanderToil.tickAction = delegate
-            {
-                waitingTicks++;
+                defaultCompleteMode = ToilCompleteMode.PatherArrival,
+                tickIntervalAction = (delta) => waitingTicks += delta,
             };
             wanderToil.FailOn(() => StudyGroup == null);
             yield return wanderToil;
 
-            Toil waitToil = Toils_General.Wait(250);
+            var waitToil = Toils_General.Wait(250);
             waitToil.handlingFacing = true;
-            waitToil.socialMode = RandomSocialMode.Normal;
-            waitToil.tickAction = delegate
+            waitToil.socialMode = RandomSocialMode.Off;
+            waitToil.tickIntervalAction = (delta) =>
             {
-                PawnUtility.GainComfortFromCellIfPossible(pawn, 1, true);
+                PawnUtility.GainComfortFromCellIfPossible(pawn, delta, true);
                 pawn.rotationTracker.FaceCell(pawn.Position + learningBoard.Rotation.FacingCell);
-                waitingTicks++;
+                waitingTicks += delta;
             };
             waitToil.FailOn(() => StudyGroup == null);
             yield return waitToil;
@@ -84,7 +81,7 @@ namespace ProgressionEducation
                         pawn.rotationTracker.FaceCell(learningBoard.Position);
                     }
                 },
-                tickAction = DoTeachingTick
+                tickIntervalAction = DoTeachingInterval
             };
             teachAtWaypoint.AddPreInitAction(InitializeWeapon);
             yield return teachAtWaypoint;
@@ -97,25 +94,25 @@ namespace ProgressionEducation
                 return true;
             });
         }
-        private void DoTeachingTick()
+        private void DoTeachingInterval(int delta)
         {
             var studyGroup = StudyGroup;
-            PawnUtility.GainComfortFromCellIfPossible(pawn, 1, true);
+            pawn.GainComfortFromCellIfPossible(delta, true);
             if (studyGroup.ClassIsActive())
             {
-                pawn.skills.Learn(SkillDefOf.Social, 0.1f);
+                pawn.skills.Learn(SkillDefOf.Social, 0.1f * delta);
 
                 if (studyGroup.subjectLogic.IsInfinite is false)
                 {
-                    float semesterProgress = studyGroup.CalculateProgressPerTick();
+                    var semesterProgress = studyGroup.CalculateProgressPerTick() * delta;
                     studyGroup.AddProgress(semesterProgress);
                 }
 
-                foreach (var student in studyGroup.students)
+                foreach (var student in studyGroup.students.InRandomOrder())
                 {
                     if (IsStudentPresentAndAttending(student, studyGroup))
                     {
-                        studyGroup.subjectLogic.ApplyTeachingTick(student, this);
+                        studyGroup.subjectLogic.ApplyTeachingTick(student, this, delta);
                     }
                 }
             }
@@ -195,7 +192,7 @@ namespace ProgressionEducation
             if (studyGroup?.subjectLogic is ProficiencyClassLogic proficiencyLogic)
             {
                 ThingDef weaponDef = null;
-                switch (proficiencyLogic.proficiencyFocus)
+                switch (proficiencyLogic.ProficiencyFocus)
                 {
                     case ProficiencyLevel.Firearm:
                         weaponDef = DefsOf.PE_Gun_AssaultRifleTraining;
