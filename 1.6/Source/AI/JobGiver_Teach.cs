@@ -8,6 +8,11 @@ namespace ProgressionEducation
     {
         public override Job TryGiveJob(Pawn pawn)
         {
+            if (pawn.Downed)
+            {
+                return null;
+            }
+
             EducationLog.Message($"JobGiver_Teach.TryGiveJob called for pawn: {pawn.LabelShort}");
 
             var lord = pawn.GetLord();

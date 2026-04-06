@@ -71,6 +71,10 @@ namespace ProgressionEducation
                 members.Add(studyGroup.teacher);
                 foreach (var member in members)
                 {
+                    if (member.Downed)
+                    {
+                        continue;
+                    }
                     Job curJob = member.CurJob;
                     if (curJob?.def != DefsOf.PE_RingBell && member.Deathresting is false)
                     {
@@ -204,7 +208,7 @@ namespace ProgressionEducation
                         var studentQualification = studentRole.CanAcceptPawn(student);
                         if (studentQualification.Accepted)
                         {
-                            if (student.GetLord() == null)
+                            if (!student.Downed && student.GetLord() == null)
                             {
                                 lord.AddPawn(student);
                                 EducationLog.Message($"Added student {student.LabelShort} to lord for class '{studyGroup.className}'");

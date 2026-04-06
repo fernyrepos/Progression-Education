@@ -18,13 +18,28 @@ namespace ProgressionEducation
         public override void UpdateAllDuties()
         {
             EducationLog.Message($"LordToil_AttendClass.UpdateAllDuties called for class '{studyGroup.className}'");
-            studyGroup.teacher.mindState.duty = new PawnDuty(DefsOf.PE_TeachDuty, studyGroup.teacher.Position);
-            EducationLog.Message($"-> Set teacher {studyGroup.teacher.LabelShort} duty to PE_TeachDuty at position {studyGroup.teacher.Position}");
+            if (studyGroup.teacher.Downed)
+            {
+                lord.ReceiveMemo(LordJob_AttendClass.MemoClassCancelledTeacherIncapacitated);
+                return;
+            }
+            else
+            {
+                studyGroup.teacher.mindState.duty = new PawnDuty(DefsOf.PE_TeachDuty, studyGroup.teacher.Position);
+                EducationLog.Message($"-> Set teacher {studyGroup.teacher.LabelShort} duty to PE_TeachDuty at position {studyGroup.teacher.Position}");
+            }
 
             foreach (var student in studyGroup.students)
             {
-                student.mindState.duty = new PawnDuty(DefsOf.PE_AttendClassDuty, student.Position);
-                EducationLog.Message($"-> Set student {student.LabelShort} duty to PE_AttendClassDuty at position {student.Position}");
+                if (student.Downed)
+                {
+                    lord.RemovePawn(student);
+                }
+                else
+                {
+                    student.mindState.duty = new PawnDuty(DefsOf.PE_AttendClassDuty, student.Position);
+                    EducationLog.Message($"-> Set student {student.LabelShort} duty to PE_AttendClassDuty at position {student.Position}");
+                }
             }
             EducationLog.Message($"-> Finished setting duties for {studyGroup.students.Count} students");
         }
@@ -75,7 +90,7 @@ namespace ProgressionEducation
 
                 foreach (var student in studyGroup.students)
                 {
-                    if (student.CurJob is Job job && job.def != DefsOf.PE_AttendClass && student.mindState.IsIdle)
+                    if (!student.Downed && student.CurJob is Job job && job.def != DefsOf.PE_AttendClass && student.mindState.IsIdle)
                     {
                         student.jobs.StopAll();
                         EducationLog.Message($"-> Stopped job for student {student.LabelShort} because it was not PE_AttendClass");

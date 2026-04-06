@@ -11,6 +11,11 @@ namespace ProgressionEducation
     {
         public override Job TryGiveJob(Pawn pawn)
         {
+            if (pawn.Downed)
+            {
+                return null;
+            }
+
             var lord = pawn.GetLord();
             if (lord?.LordJob is LordJob_AttendClass attendClass)
             {
