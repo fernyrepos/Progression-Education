@@ -1,25 +1,31 @@
-using RimWorld;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class StudentRole(StudyGroup studyGroup)
+    : ClassRole(
+        "Student",
+        99,
+        1,
+        "PE_StudentRole".Translate(),
+        "PE_StudentRole".Translate(),
+        studyGroup
+    )
 {
-    public class StudentRole(StudyGroup studyGroup)
-        : ClassRole(roleId: "Student", 
-            maxCount:99, 
-            minCount: 1,
-            label: "PE_StudentRole".Translate(),
-            categoryLabel: "PE_StudentRole".Translate(),
-            studyGroup: studyGroup)
+    public override AcceptanceReport CanAcceptPawn(Pawn pawn)
     {
-        public override AcceptanceReport CanAcceptPawn(Pawn pawn)
+        var baseReport = base.CanAcceptPawn(pawn);
+        if (!baseReport.Accepted)
         {
-            var baseReport = base.CanAcceptPawn(pawn);
-            if (!baseReport.Accepted)
-            {
-                return baseReport;
-            }
-            return studyGroup.subjectLogic?.IsStudentQualified(pawn) 
-                   ?? AcceptanceReport.WasRejected;
+            return baseReport;
         }
+
+        return studyGroup?.subjectLogic?.IsStudentQualified(pawn) ?? AcceptanceReport.WasRejected;
+    }
+
+    public override float ScoreFor(Pawn pawn)
+    {
+        return studyGroup?.subjectLogic?.CalculateStudentScore(pawn)
+               ?? base.ScoreFor(pawn);
     }
 }

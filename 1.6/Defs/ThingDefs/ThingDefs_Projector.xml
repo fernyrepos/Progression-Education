@@ -44,15 +44,21 @@
     <comps>
       <li Class="CompProperties_Power">
         <compClass>CompPowerTrader</compClass>
-        <basePowerConsumption>75</basePowerConsumption>
+        <basePowerConsumption>40</basePowerConsumption>
       </li>
+      <li Class="CompProperties_Flickable" />
       <li Class="CompProperties_Facility">
         <compClass>CompFacility</compClass>
         <maxSimultaneous>1</maxSimultaneous>
-        <maxDistance>24.9</maxDistance>
+        <statOffsets>
+          <PE_ClassSpeed>0.2</PE_ClassSpeed>
+        </statOffsets>
       </li>
-      <li Class="ProgressionEducation.CompProperties_Projector">
-        <learningBonus>0.2</learningBonus>
+      <li Class="CompProperties_Glower">
+        <glowRadius>8</glowRadius>
+        <glowColor>(214,148,94,0)</glowColor>
+        <colorPickerEnabled>true</colorPickerEnabled>
+        <darklightToggle>true</darklightToggle>
       </li>
     </comps>
   </ThingDef>

@@ -1,12 +1,11 @@
 using RimWorld;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class ResearchGrantsTrait : DefModExtension
 {
-    public class ResearchGrantsTrait : DefModExtension
-    {
-        public TraitDef trait;
-        public string title;
-        public string desc;
-    }
+    public string desc;
+    public string title;
+    public TraitDef trait;
 }

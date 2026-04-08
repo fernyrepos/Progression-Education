@@ -40,12 +40,13 @@
             <Mass>10</Mass>
             <Flammability>0</Flammability>
             <Beauty>-3</Beauty>
+            <PE_ClassSpeed>0.8</PE_ClassSpeed>
         </statBases>
         <researchPrerequisites>
             <li>Stonecutting</li>
         </researchPrerequisites>
         <size>(2,1)</size>
-        <costStuffCount>20</costStuffCount>
+        <costStuffCount>15</costStuffCount>
         <stuffCategories>
             <li>Stony</li>
         </stuffCategories>
@@ -105,12 +106,13 @@
             <Mass>14</Mass>
             <Flammability>1.0</Flammability>
             <Beauty>4</Beauty>
+            <PE_ClassSpeed>1.0</PE_ClassSpeed>
         </statBases>
         <size>(3,1)</size>
         <researchPrerequisites>
             <li>Ferny_NeolithicEducation</li>
         </researchPrerequisites>
-        <costStuffCount>30</costStuffCount>
+        <costStuffCount>20</costStuffCount>
         <uiOrder>3</uiOrder>
         <stuffCategories>
             <li>Woody</li>
@@ -173,12 +175,17 @@
             <Mass>8</Mass>
             <Flammability>1.0</Flammability>
             <Beauty>3</Beauty>
+            <PE_ClassSpeed>1.1</PE_ClassSpeed>
         </statBases>
         <size>(2,1)</size>
         <researchPrerequisites>
             <li>Ferny_IndustrialEducation</li>
         </researchPrerequisites>
-        <costStuffCount>20</costStuffCount>
+        <costStuffCount>15</costStuffCount>
+        <costList>
+            <Steel>5</Steel>
+            <ComponentIndustrial>1</ComponentIndustrial>
+        </costList>
         <stuffCategories>
             <li>Woody</li>
             <li>Metallic</li>
@@ -240,12 +247,17 @@
             <Mass>16</Mass>
             <Flammability>1.0</Flammability>
             <Beauty>6</Beauty>
+            <PE_ClassSpeed>1.1</PE_ClassSpeed>
         </statBases>
         <size>(3,1)</size>
         <researchPrerequisites>
             <li>Ferny_IndustrialEducation</li>
         </researchPrerequisites>
-        <costStuffCount>40</costStuffCount>
+        <costStuffCount>20</costStuffCount>
+        <costList>
+            <Steel>5</Steel>
+            <ComponentIndustrial>1</ComponentIndustrial>
+        </costList>
         <stuffCategories>
             <li>Woody</li>
             <li>Metallic</li>
@@ -307,15 +319,21 @@
             <Mass>10</Mass>
             <Flammability>0.5</Flammability>
             <Beauty>10</Beauty>
+            <PE_ClassSpeed>1.3</PE_ClassSpeed>
         </statBases>
         <size>(2,1)</size>
         <researchPrerequisites>
             <li>Ferny_SpacerEducation</li>
         </researchPrerequisites>
-        <costStuffCount>30</costStuffCount>
+        <costStuffCount>15</costStuffCount>
         <stuffCategories>
             <li>Metallic</li>
         </stuffCategories>
+        <costList>
+            <Plasteel>5</Plasteel>
+            <Gold>5</Gold>
+            <ComponentSpacer>1</ComponentSpacer>
+        </costList>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
             <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
@@ -373,15 +391,21 @@
             <Mass>15</Mass>
             <Flammability>0.5</Flammability>
             <Beauty>15</Beauty>
+            <PE_ClassSpeed>1.3</PE_ClassSpeed>
         </statBases>
         <size>(3,1)</size>
         <researchPrerequisites>
             <li>Ferny_SpacerEducation</li>
         </researchPrerequisites>
-        <costStuffCount>45</costStuffCount>
+        <costStuffCount>20</costStuffCount>
         <stuffCategories>
             <li>Metallic</li>
         </stuffCategories>
+        <costList>
+            <Plasteel>5</Plasteel>
+            <Gold>5</Gold>
+            <ComponentSpacer>1</ComponentSpacer>
+        </costList>
         <placeWorkers>
             <li>PlaceWorker_ShowFacilitiesConnections</li>
             <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>

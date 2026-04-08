@@ -1,17 +1,17 @@
 using Verse;
 
-namespace ProgressionEducation
-{
-    public class CompProperties_SchoolDesk : CompProperties
-    {
-        public CompProperties_SchoolDesk()
-        {
-            compClass = typeof(CompSchoolDesk);
-        }
-    }
+namespace ProgressionEducation;
 
-    public class CompSchoolDesk : ThingComp
+public class CompProperties_SchoolDesk
+    : CompProperties
+{
+    public CompProperties_SchoolDesk()
     {
-        public CompProperties_SchoolDesk Props => (CompProperties_SchoolDesk)props;
+        compClass = typeof(CompSchoolDesk);
     }
+}
+
+public class CompSchoolDesk : ThingComp
+{
+    public CompProperties_SchoolDesk Props => (CompProperties_SchoolDesk)props;
 }

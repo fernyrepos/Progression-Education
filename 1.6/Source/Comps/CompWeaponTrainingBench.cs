@@ -1,21 +1,20 @@
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class CompProperties_WeaponTrainingBench : CompProperties
 {
-    public class CompProperties_WeaponTrainingBench : CompProperties
+    public ThingDef weaponDef;
+
+    public CompProperties_WeaponTrainingBench()
     {
-        public ThingDef weaponDef;
-
-        public CompProperties_WeaponTrainingBench()
-        {
-            compClass = typeof(CompWeaponTrainingBench);
-        }
+        compClass = typeof(CompWeaponTrainingBench);
     }
+}
 
-    public class CompWeaponTrainingBench : ThingComp
-    {
-        public CompProperties_WeaponTrainingBench Props => (CompProperties_WeaponTrainingBench)props;
+public class CompWeaponTrainingBench : ThingComp
+{
+    public CompProperties_WeaponTrainingBench Props => (CompProperties_WeaponTrainingBench)props;
 
-        public ThingDef WeaponDef => Props.weaponDef;
-    }
+    public ThingDef WeaponDef => Props.weaponDef;
 }

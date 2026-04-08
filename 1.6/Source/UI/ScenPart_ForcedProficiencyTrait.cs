@@ -1,72 +1,77 @@
-using RimWorld;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+using RimWorld;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class ScenPart_ForcedProficiencyTrait : ScenPart_PawnModifier
 {
-    public class ScenPart_ForcedProficiencyTrait : ScenPart_PawnModifier
+    private TraitDef trait;
+
+    public override void DoEditInterface(Listing_ScenEdit listing)
     {
-        private TraitDef trait;
-
-        public override void ExposeData()
+        var scenPartRect = listing.GetScenPartRect(this, RowHeight);
+        if (Widgets.ButtonText(scenPartRect,
+                trait?.LabelCap ?? "PE_SelectTrait".Translate()))
         {
-            base.ExposeData();
-            Scribe_Defs.Look(ref trait, "trait");
+            var list = new List<FloatMenuOption>();
+            var proficiencyTraits = new List<TraitDef>
+            {
+                DefsOf.PE_LowTechProficiency,
+                DefsOf.PE_FirearmProficiency,
+                DefsOf.PE_HighTechProficiency,
+            };
+
+            foreach (var proficiencyTrait in proficiencyTraits)
+            {
+                var localTrait = proficiencyTrait;
+                list.Add(new FloatMenuOption(localTrait.LabelCap,
+                    () => trait = localTrait));
+            }
+
+            Find.WindowStack.Add(new FloatMenu(list));
+        }
+    }
+
+    public override void ExposeData()
+    {
+        base.ExposeData();
+        Scribe_Defs.Look(ref trait, "trait");
+    }
+
+    public override void Notify_PawnGenerated(Pawn pawn, PawnGenerationContext context,
+        bool redressed)
+    {
+        if (context != PawnGenerationContext.PlayerStarter)
+        {
+            return;
         }
 
-        public override void Randomize()
+        if (!EducationSettings.Instance.enableProficiencySystem)
         {
-            chance = 1;
-            context = PawnGenerationContext.PlayerStarter;
-            hideOffMap = false;
+            return;
         }
 
-        public override void DoEditInterface(Listing_ScenEdit listing)
+        if (trait != null)
         {
-            Rect scenPartRect = listing.GetScenPartRect(this, RowHeight);
-            if (Widgets.ButtonText(scenPartRect, trait?.LabelCap ?? "PE_SelectTrait".Translate()))
-            {
-                List<FloatMenuOption> list = new List<FloatMenuOption>();
-                var proficiencyTraits = new List<TraitDef>
-                {
-                    DefsOf.PE_LowTechProficiency,
-                    DefsOf.PE_FirearmProficiency,
-                    DefsOf.PE_HighTechProficiency
-                };
+            ProficiencyUtility.GrantProficiencyTrait(pawn, trait);
+        }
+    }
 
-                foreach (TraitDef proficiencyTrait in proficiencyTraits)
-                {
-                    TraitDef localTrait = proficiencyTrait;
-                    list.Add(new FloatMenuOption(localTrait.LabelCap, () => trait = localTrait));
-                }
-                Find.WindowStack.Add(new FloatMenu(list));
-            }
+    public override void Randomize()
+    {
+        chance = 1;
+        context = PawnGenerationContext.PlayerStarter;
+        hideOffMap = false;
+    }
+
+    public override string Summary(Scenario scen)
+    {
+        if (trait == null)
+        {
+            return "PE_ScenPart_ForcedProficiencyTrait_NoTrait".Translate();
         }
 
-        public override string Summary(Scenario scen)
-        {
-            if (trait == null)
-            {
-                return "PE_ScenPart_ForcedProficiencyTrait_NoTrait".Translate();
-            }
-            return "PE_ScenPart_ForcedProficiencyTrait".Translate(trait.LabelCap).CapitalizeFirst();
-        }
-        public override void Notify_PawnGenerated(Pawn pawn, PawnGenerationContext context, bool redressed)
-        {
-            if (context != PawnGenerationContext.PlayerStarter)
-            {
-                return;
-            }
-            if (!EducationSettings.Instance.enableProficiencySystem)
-            {
-                return;
-            }
-            if (trait != null)
-            {
-                ProficiencyUtility.GrantProficiencyTrait(pawn, trait);
-            }
-        }
+        return "PE_ScenPart_ForcedProficiencyTrait".Translate(trait.LabelCap).CapitalizeFirst();
     }
 }

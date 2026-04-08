@@ -2,27 +2,28 @@ using HarmonyLib;
 using UnityEngine;
 using Verse;
 
-namespace ProgressionEducation
-{
-    public class EducationMod : Mod
-    {
-        public static EducationSettings settings;
-        public EducationMod(ModContentPack content) : base(content)
-        {
-            settings = GetSettings<EducationSettings>();
-            LongEventHandler.ExecuteWhenFinished(delegate
-            {
-                new Harmony("ProgressionEducationMod").PatchAll();
-            });
-        }
+namespace ProgressionEducation;
 
-        public override string SettingsCategory()
+public class EducationMod : Mod
+{
+    public static EducationSettings settings;
+
+    public EducationMod(ModContentPack content) : base(content)
+    {
+        settings = GetSettings<EducationSettings>();
+        LongEventHandler.ExecuteWhenFinished(delegate
         {
-            return Content.Name;
-        }
-        public override void DoSettingsWindowContents(Rect inRect)
-        {
-            settings.DoSettingsWindowContents(inRect);
-        }
+            new Harmony("ProgressionEducationMod").PatchAll();
+        });
+    }
+
+    public override void DoSettingsWindowContents(Rect inRect)
+    {
+        settings.DoSettingsWindowContents(inRect);
+    }
+
+    public override string SettingsCategory()
+    {
+        return Content.Name;
     }
 }

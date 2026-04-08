@@ -2,60 +2,60 @@
 using RimWorld;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class ClassRole(
+    string roleId,
+    int maxCount,
+    int minCount,
+    TaggedString label,
+    TaggedString categoryLabel,
+    StudyGroup studyGroup)
+    : ILordJobRole
 {
-    public class ClassRole : ILordJobRole
+    public readonly StudyGroup studyGroup = studyGroup;
+    private TaggedString categoryLabel = categoryLabel;
+    private TaggedString label = label;
+
+    public string RoleId { get; } = roleId;
+
+    public int MaxCount { get; } = maxCount;
+
+    public int MinCount { get; } = minCount;
+
+    public TaggedString Label => label;
+
+    public TaggedString LabelCap => label.CapitalizeFirst();
+
+    public TaggedString CategoryLabel => categoryLabel;
+
+    public TaggedString CategoryLabelCap => categoryLabel.CapitalizeFirst();
+
+    public virtual AcceptanceReport CanAcceptPawn(Pawn pawn)
     {
-        private readonly string roleId;
-        private readonly int maxCount;
-        private readonly int minCount;
-        private TaggedString label;
-        private TaggedString categoryLabel;
-        public StudyGroup studyGroup;
-
-        public ClassRole(string roleId, int maxCount, int minCount, TaggedString label, TaggedString categoryLabel, StudyGroup studyGroup)
+        if (pawn == null
+            || studyGroup == null)
         {
-            this.roleId = roleId;
-            this.maxCount = maxCount;
-            this.minCount = minCount;
-            this.label = label;
-            this.categoryLabel = categoryLabel;
-            this.studyGroup = studyGroup;
+            return AcceptanceReport.WasRejected;
         }
 
-        public virtual AcceptanceReport CanAcceptPawn(Pawn pawn)
+        if (EducationManager.Instance.StudyGroups
+                .Except(studyGroup)
+                .FirstOrDefault(sg => (sg.students.Contains(pawn) || sg.teacher == pawn)
+                                      && studyGroup.HasConflict(sg)) is StudyGroup otherGroup)
         {
-            if (pawn == null)
-            {
-                return AcceptanceReport.WasRejected;
-            }
-
-            if (EducationManager.Instance.StudyGroups
-                    .Except(studyGroup)
-                    .FirstOrDefault(sg => (sg.students.Contains(pawn) || sg.teacher == pawn) 
-                                          && studyGroup.HasConflict(sg)) is StudyGroup otherGroup)
-            {
-                return new AcceptanceReport("PE_CannotParticipateScheduled".Translate(
-                    otherGroup.startHour,
-                    otherGroup.endHour, 
-                    otherGroup.className)
-                );
-            }
-            return AcceptanceReport.WasAccepted;
+            return new AcceptanceReport("PE_CannotParticipateScheduled".Translate(
+                otherGroup.startHour,
+                otherGroup.endHour,
+                otherGroup.className)
+            );
         }
 
-        public int MaxCount => maxCount;
+        return AcceptanceReport.WasAccepted;
+    }
 
-        public int MinCount => minCount;
-
-        public TaggedString Label => label;
-
-        public TaggedString LabelCap => label.CapitalizeFirst();
-
-        public TaggedString CategoryLabel => categoryLabel;
-
-        public TaggedString CategoryLabelCap => categoryLabel.CapitalizeFirst();
-
-        public string RoleId => roleId;
+    public virtual float ScoreFor(Pawn pawn)
+    {
+        return 0f;
     }
 }

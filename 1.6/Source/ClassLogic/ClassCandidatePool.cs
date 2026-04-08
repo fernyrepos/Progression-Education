@@ -1,35 +1,31 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class ClassCandidatePool : ILordJobCandidatePool
 {
-    public class ClassCandidatePool : ILordJobCandidatePool
+    public ClassCandidatePool(Map map)
     {
-        private readonly List<Pawn> allPawns = [];
-        private readonly List<Pawn> nonAssignablePawns = [];
+        AllCandidatePawns.AddRange(map.mapPawns.FreeColonistsAndPrisonersSpawned);
+    }
 
-        public ClassCandidatePool(Map map)
+    public List<Pawn> AllCandidatePawns { get; } = [];
+
+    public List<Pawn> NonAssignablePawns { get; } = [];
+
+    public void AddPawn(Pawn pawn)
+    {
+        if (!AllCandidatePawns.Contains(pawn))
         {
-            allPawns.AddRange(map.mapPawns.FreeColonistsAndPrisonersSpawned);
+            AllCandidatePawns.Add(pawn);
         }
+    }
 
-        public List<Pawn> AllCandidatePawns => allPawns;
-
-        public List<Pawn> NonAssignablePawns => nonAssignablePawns;
-
-        public void AddPawn(Pawn pawn)
-        {
-            if (!allPawns.Contains(pawn))
-            {
-                allPawns.Add(pawn);
-            }
-        }
-
-        public void RemovePawn(Pawn pawn)
-        {
-            allPawns.Remove(pawn);
-            nonAssignablePawns.Remove(pawn);
-        }
+    public void RemovePawn(Pawn pawn)
+    {
+        AllCandidatePawns.Remove(pawn);
+        NonAssignablePawns.Remove(pawn);
     }
 }

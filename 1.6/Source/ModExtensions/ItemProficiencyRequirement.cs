@@ -1,10 +1,9 @@
 using RimWorld;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class ItemProficiencyRequirement : DefModExtension
 {
-    public class ItemProficiencyRequirement : DefModExtension
-    {
-        public TraitDef requiredProficiency;
-    }
+    public TraitDef requiredProficiency;
 }

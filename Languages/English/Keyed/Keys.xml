@@ -5,14 +5,10 @@
   <PE_PasteHex>Paste hex</PE_PasteHex>
   <PE_Classes>Active classes</PE_Classes>
   <PE_Classrooms>Classrooms</PE_Classrooms>
-  <PE_Participants>Participants</PE_Participants>
   <PE_ProgressFormat>{0} / {1}</PE_ProgressFormat>
-  <PE_Reschedule>Reschedule</PE_Reschedule>
   <PE_ClassScheduling>View schedule</PE_ClassScheduling>
-  <PE_EstimatedHourlyProgress>Estimated hourly progress</PE_EstimatedHourlyProgress>
-  <PE_XpPerHour>xp/hour</PE_XpPerHour>
+  <PE_HourlyProgress>Hourly progress</PE_HourlyProgress>
   <PE_Xp>{0} xp</PE_Xp>
-  <PE_PerHour>/hour</PE_PerHour>
   <PE_ClassroomsDescription>Classrooms will appear here as you build them in your colony.</PE_ClassroomsDescription>
   <PE_CreateClass>Create a class</PE_CreateClass>
   <PE_CreateClassDesc>Create a new class semester. Classes train students in various skills. Daycares are for children only and teach one random skill each session based on the teacher's proficiency and what students can learn. All classes satisfy children's learning need.</PE_CreateClassDesc>
@@ -21,7 +17,7 @@
   <PE_SkillFocus>Skill focus</PE_SkillFocus>
   <PE_ProficiencyFocus>Proficiency focus</PE_ProficiencyFocus>
   <PE_SemesterGoal>Semester goal</PE_SemesterGoal>
-  <PE_ConfirmDeleteClass>Are you sure you would like to delete this class? This will reset all learning progress.</PE_ConfirmDeleteClass>
+  <PE_ConfirmDeleteClass>Are you sure you would like to delete this class?</PE_ConfirmDeleteClass>
   <PE_StudyTimeNeeded>Continuous study time needed: {0}</PE_StudyTimeNeeded>
   <PE_Requirements>Requirements</PE_Requirements>
   <PE_LearningBoard>learning board</PE_LearningBoard>
@@ -30,25 +26,16 @@
   <PE_ClassHours>Class hours</PE_ClassHours>
   <PE_Present>({0} present)</PE_Present>
   <PE_NotPresent>not present on map</PE_NotPresent>
-  <PE_StartHour>Start hour</PE_StartHour>
-  <PE_EndHour>End hour</PE_EndHour>
   <PE_Classroom>Classroom</PE_Classroom>
   <PE_SelectClassroom>Select classroom</PE_SelectClassroom>
   <PE_NoClassroomsAvailable>No classrooms available.</PE_NoClassroomsAvailable>
   <PE_NotEnoughBenches>Not enough {0} available. Required: {1}, Have: {2}.</PE_NotEnoughBenches>
-  <PE_SubjectSkill>Skill</PE_SubjectSkill>
-  <PE_SubjectProficiency>Proficiency</PE_SubjectProficiency>
-  <PE_SubjectDaycare>Daycare</PE_SubjectDaycare>
+  <PE_SubjectSkill>skill</PE_SubjectSkill>
+  <PE_SubjectProficiency>proficiency</PE_SubjectProficiency>
+  <PE_SubjectDaycare>daycare</PE_SubjectDaycare>
   <PE_Daycare>Fulfills children's learning need. Scheduled until it's deleted.</PE_Daycare>
-  <PE_RescheduleClass>Reschedule class</PE_RescheduleClass>
   <PE_SkillFocusMissing>Skill focus is missing</PE_SkillFocusMissing>
   <PE_ScheduleTime>{0}h - {1}h</PE_ScheduleTime>
-  <PE_ManageStudents>Manage students</PE_ManageStudents>
-  <PE_RemoveStudents>Remove students</PE_RemoveStudents>
-  <PE_RemoveFromClass>Remove from class</PE_RemoveFromClass>
-  <PE_ConfirmRemoveStudent>Are you sure you want to remove {0} from this class?</PE_ConfirmRemoveStudent>
-  <PE_ConfirmRemoveStudentSkill>They cannot be added back.</PE_ConfirmRemoveStudentSkill>
-  <PE_ConfirmRemoveLastStudent>Removing this student will delete the class, as there will be no students left. Are you sure you want to proceed?</PE_ConfirmRemoveLastStudent>
   <PE_EditClassroom>Edit classroom</PE_EditClassroom>
   <PE_ChangeColor>Change color</PE_ChangeColor>
   <PE_NameClassroom>Name classroom</PE_NameClassroom>
@@ -121,7 +108,6 @@
   <PE_TeacherBellFailure>Class never started as teacher couldn't alert enough students within the scheduled time. Consider upgrading your school bell or lengthening the class session.</PE_TeacherBellFailure>
   <PE_NoBellToCreateClass>You must build a class bell or chime before you can create a class.</PE_NoBellToCreateClass>
   <PE_LearningBoardIsBlocked>{0} is blocked.</PE_LearningBoardIsBlocked>
-  <PE_Learning>Estimated learning</PE_Learning>
   <PE_Suspended>(suspended)</PE_Suspended>
   <PE_TeacherOffMap>Class {0} was cancelled as the teacher is not on the map it takes place in.</PE_TeacherOffMap>
   <PE_NoStudents>Class {0} was cancelled as there were no students.</PE_NoStudents>
@@ -133,11 +119,11 @@
   <PE_StudentsOffMap>Students off map</PE_StudentsOffMap>
   <PE_DeleteClass>Delete class</PE_DeleteClass>
   <PE_TeacherSkillDisabled>{0}'s {1} skill is disabled and thus cannot teach.</PE_TeacherSkillDisabled>
-  <PE_TeachingHourlyBase>Base hourly teaching</PE_TeachingHourlyBase>
-  <PE_PerSession>/session</PE_PerSession>
+  <PE_HourlyTeaching>Hourly teaching</PE_HourlyTeaching>
+  <PE_PerSession>per session</PE_PerSession>
   <PE_ClassSpeed>Class speed</PE_ClassSpeed>
   <PE_StudySessionsNeeded>Estimated study sessions needed: {0}</PE_StudySessionsNeeded>
-  <PE_CannotSchedule>Cannot schedule: The {0} class is already scheduled at {1}h - {2}h in the {3} classroom.</PE_CannotSchedule>
+  <PE_CannotSchedule>Cannot schedule: {0} is already scheduled at {1}h - {2}h in the {3} classroom.</PE_CannotSchedule>
   <PE_TooYoung>{0} is too young.</PE_TooYoung>
   <PE_EditClass>Edit class</PE_EditClass>
   <PE_EditClassDesc>Update the roster of an ongoing class, rename it, or change the hours. Students can be freely removed, but if the class has made any progress, they cannot be added to it.</PE_EditClassDesc>
@@ -146,4 +132,8 @@
   <PE_AsATeacher>As a teacher</PE_AsATeacher>
   <PE_AsAStudent>As a student</PE_AsAStudent>
   <PE_SkillPassionBonus>Passion</PE_SkillPassionBonus>
+  <PE_LearningFactor>Learning factor</PE_LearningFactor>
+  <PE_TeachingFactor>Teaching factor</PE_TeachingFactor>
+  <PE_LessonOptions>Lesson options</PE_LessonOptions>
+  <PE_CantChangeTeacher>Class is ongoing so the teacher role is locked</PE_CantChangeTeacher>
 </LanguageData>

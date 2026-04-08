@@ -8,6 +8,13 @@
   </Operation>
 
   <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/statBases</xpath>
+    <value>
+      <PE_ClassSpeed>1.0</PE_ClassSpeed>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
     <xpath>/Defs/ThingDef[defName="Blackboard"]/comps</xpath>
     <value>
       <li Class="ProgressionEducation.CompProperties_LearningBoard" />

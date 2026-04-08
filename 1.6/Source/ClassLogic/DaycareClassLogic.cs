@@ -1,190 +1,293 @@
-using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HotSwappable]
+public class DaycareClassLogic : ClassSubjectLogic
 {
-    [HotSwappable]
-    public class DaycareClassLogic : ClassSubjectLogic
+    private List<SkillDef> cachedSkillOptionsForDisplay;
+    private int cachedSkillOptionsForDisplayStudentCount;
+    private Pawn cachedSkillOptionsForDisplayTeacher;
+
+    private int cachedSkillOptionsForDisplayTick;
+
+    public DaycareClassLogic()
     {
-        public DaycareClassLogic() { }
-        public DaycareClassLogic(StudyGroup parent) : base(parent) { }
+    }
 
-        public DaycareClassLogic(DaycareClassLogic other, StudyGroup parent) : base(other, parent) { }
+    public DaycareClassLogic(StudyGroup parent)
+        : base(parent)
+    {
+    }
 
-        public override string Description => "PE_Daycare".Translate();
 
-        public override bool IsInfinite => true;
+    public override string Description => "PE_Daycare".Translate();
 
-        public override void DrawConfigurationUI(Rect rect, ref float curY, IClassDialog classDialog)
+    public override bool IsInfinite => true;
+
+    public override string Label => "PE_SubjectDaycare".Translate();
+
+    public override float LearningSpeedModifier =>
+        EducationSettings.Instance.daycareClassesLearningSpeedModifier;
+
+    public override float ProgressPerTick
+    {
+        get
         {
-        }
-
-        public override float CalculateProgressPerTick(Pawn teacher)
-        {
-            if (teacher == null || studyGroup.classroom == null)
+            if (studyGroup.teacher == null
+                || studyGroup.classroom == null)
             {
                 return 0f;
             }
-            var progress = CalculateTeacherScore(teacher);
-            var classroomModifier = studyGroup.classroom.CalculateLearningModifier();
-            progress *= classroomModifier;
-            progress *= LearningSpeedModifier;
-            return progress;
-        }
 
-        public override AcceptanceReport IsTeacherQualified(Pawn teacher)
+            return Mathf.Max(0,
+                CalculateTeacherScore(studyGroup.teacher)
+                * studyGroup.classroom.ClassSpeed
+                * LearningSpeedModifier);
+        }
+    }
+
+    public override void ApplyTeachingTick(Pawn student, JobDriver_Teach jobDriver, int delta)
+    {
+        base.ApplyTeachingTick(student, jobDriver, delta);
+        jobDriver.taughtSkill ??= ChooseSkillDef();
+        if (jobDriver.taughtSkill is not SkillDef taughtSkill
+            || student?.skills?.GetSkill(taughtSkill) == null)
         {
-            if (teacher.DevelopmentalStage < DevelopmentalStage.Adult)
-            {
-                return new AcceptanceReport("PE_TeacherRoleOnlyForAdults".Translate());
-            }
-            var skill = teacher.skills.GetSkill(SkillDefOf.Social);
-            if (skill.TotallyDisabled)
-            {
-                return new AcceptanceReport("PE_TeacherSkillDisabled".Translate(teacher.LabelShortCap, skill.def.LabelCap));
-            }
-            return AcceptanceReport.WasAccepted;
+            return;
         }
 
-        public override AcceptanceReport IsStudentQualified(Pawn student)
+        var xpPerTick = ProgressPerTick * CalculateStudentScore(student);
+        student.skills.Learn(taughtSkill, xpPerTick * delta);
+    }
+
+    private static IEnumerable<SkillRecord> AvailableStudySkills(IEnumerable<Pawn> students,
+        Pawn teacher)
+    {
+        if (students == null
+            || teacher?.skills?.skills == null)
         {
-            if (student.DevelopmentalStage != DevelopmentalStage.Child)
-            {
-                return new AcceptanceReport("PE_MustBeChild".Translate());
-            }
-            if (student.needs?.learning == null)
-            {
-                return new AcceptanceReport("PE_NoLearningNeed".Translate());
-            }
-            return AcceptanceReport.WasAccepted;
+            yield break;
         }
 
-        public override float LearningSpeedModifier => EducationSettings.Instance.daycareClassesLearningSpeedModifier;
+        var studentSkillDefs = students
+            .SelectMany(s => s.skills?.skills ?? [])
+            .Where(sk => sk.TotallyDisabled)
+            .Select(sk => sk.def)
+            .ToHashSet();
 
-        public override void ApplyTeachingTick(Pawn student, JobDriver_Teach jobDriver, int delta)
+        var availableSkills = teacher.skills.skills
+            .Where(sk => !sk.TotallyDisabled
+                         && !studentSkillDefs.Contains(sk.def));
+
+        foreach (var record in availableSkills)
         {
-            base.ApplyTeachingTick(student, jobDriver, delta);
-            jobDriver.taughtSkill ??= ChooseSkillDef();
-            if (jobDriver.taughtSkill is not SkillDef taughtSkill
-                || student?.skills?.GetSkill(taughtSkill) is not SkillRecord)
-            {
-                return;
-            }
-
-            var xpPerTick = CalculateProgressPerTick(studyGroup.teacher);
-            student.skills.Learn(taughtSkill, xpPerTick * delta);
+            yield return record;
         }
+    }
 
-        public override float CalculateLearningPerTick(Pawn student)
+    private static IEnumerable<SkillRecord> BestAvailableStudySkills(IEnumerable<Pawn> students,
+        Pawn teacher)
+    {
+        return AvailableStudySkills(students, teacher)
+            .OrderByDescending(s => s)
+            .Take(4);
+    }
+
+    public override float CalculateLearningPerTick(Pawn student)
+    {
+        return 2f * base.CalculateLearningPerTick(student);
+    }
+
+    public override float CalculateStudentScore(Pawn p)
+    {
+        return 1f;
+    }
+
+    public override float CalculateTeacherScore(Pawn teacher)
+    {
+        if (teacher == null
+            || studyGroup.classroom == null)
         {
-            return 2f * base.CalculateLearningPerTick(student);
+            return 0f;
         }
 
-        private IEnumerable<SkillRecord> AvailableStudySkills
+        var social = teacher.skills.GetSkill(SkillDefOf.Social).Level;
+        var intelligence = teacher.skills.GetSkill(SkillDefOf.Intellectual).Level;
+        var socialImpact = CalculateSocialImpactFactor(teacher);
+        var score = (social * 0.5f + intelligence * 0.5f) * socialImpact;
+        return score * 0.02f;
+    }
+
+    private SkillDef ChooseSkillDef()
+    {
+        return BestAvailableStudySkills(studyGroup.students, studyGroup.teacher)
+            .Select(s => s.def)
+            .RandomElementWithFallback(SkillDefOf.Social);
+    }
+
+    public override ClassSubjectLogic DeepClone(StudyGroup parent)
+    {
+        return new DaycareClassLogic(parent);
+    }
+
+    public override void DrawConfigurationUI(Rect rect, ref float curY, IClassDialog classDialog)
+    {
+    }
+
+    private List<SkillDef> GetSkillOptionsForDisplay(Pawn pawn)
+    {
+        if (Find.TickManager.TicksGame == cachedSkillOptionsForDisplayTick
+            && pawn == cachedSkillOptionsForDisplayTeacher
+            && studyGroup.students.Count == cachedSkillOptionsForDisplayStudentCount)
         {
-            get
-            {
-                if (studyGroup?.students == null || studyGroup?.teacher == null)
-                {
-                    yield break;
-                }
-
-                var disabledSkillDefs = studyGroup.students
-                    .SelectMany(student => student.skills.skills
-                        .Where(s => !s.TotallyDisabled)
-                        .Select(s => s.def))
-                    .Union(studyGroup.teacher.skills.skills
-                        .Where(s => !s.TotallyDisabled)
-                        .Select(s => s.def)).Distinct();
-
-                foreach (var skillRecord in studyGroup.teacher.skills.skills
-                    .Where(s => !disabledSkillDefs
-                        .Contains(s.def)))
-                {
-                    yield return skillRecord;
-                }
-            }
+            return cachedSkillOptionsForDisplay;
         }
 
-        private IEnumerable<SkillRecord> BestAvailableStudySkills
+        cachedSkillOptionsForDisplay =
+            BestAvailableStudySkills(studyGroup.students, pawn)
+                .Select(l => l.def)
+                .Append(SkillDefOf.Social)
+                .Distinct()
+                .Take(4)
+                .ToList();
+        cachedSkillOptionsForDisplayStudentCount = studyGroup.students.Count;
+        cachedSkillOptionsForDisplayTeacher = pawn;
+        cachedSkillOptionsForDisplayTick = Find.TickManager.TicksGame;
+        return cachedSkillOptionsForDisplay;
+    }
+
+    public override void HandleStudentLifecycleEvents()
+    {
+        foreach (var student in studyGroup.students
+                     .Where(student => student.DevelopmentalStage != DevelopmentalStage.Child))
         {
-            get
-            {
-                return AvailableStudySkills
-                    .OrderByDescending(s => s)
-                    .Take(4);
-            }
+            studyGroup.RemoveStudent(student);
+        }
+    }
+
+    public override AcceptanceReport IsStudentQualified(Pawn student)
+    {
+        var baseReport = base.IsStudentQualified(student);
+        if (!baseReport.Accepted)
+        {
+            return baseReport;
         }
 
-        private SkillDef ChooseSkillDef()
+        if (student.DevelopmentalStage != DevelopmentalStage.Child)
         {
-            return BestAvailableStudySkills
-                .Select(s => s.def)
-                .RandomElementWithFallback(SkillDefOf.Social);
+            return new AcceptanceReport("PE_MustBeChild".Translate());
         }
 
-        public override float CalculateTeacherScore(Pawn teacher)
+        if (student.needs?.learning == null)
         {
-            if (teacher == null || studyGroup.classroom == null)
-            {
-                return 0f;
-            }
-            var social = teacher.skills.GetSkill(SkillDefOf.Social).Level;
-            var intelligence = teacher.skills.GetSkill(SkillDefOf.Intellectual).Level;
-            var socialImpact = teacher.GetStatValue(StatDefOf.SocialImpact);
-            var score = ((social * 0.5f) + (intelligence * 0.5f)) * socialImpact;
-            return score * 0.02f;
+            return new AcceptanceReport("PE_NoLearningNeed".Translate());
         }
 
-        public override string TeacherTooltipFor(Pawn pawn)
+        return AcceptanceReport.WasAccepted;
+    }
+
+    public override AcceptanceReport IsTeacherQualified(Pawn teacher)
+    {
+        var baseReport = base.IsTeacherQualified(teacher);
+        if (!baseReport.Accepted)
         {
-            if (pawn == null)
-            {
-                return "";
-            }
-            var text = new StringBuilder(base.TeacherTooltipFor(pawn));
-            text.AppendLineIfNotEmpty();
-            if (pawn.skills?.GetSkill(SkillDefOf.Social) is SkillRecord social)
-            {
-                text.AppendInNewLine(SkillDefOf.Social.LabelCap);
-                text.Append(": ");
-                text.Append(social.Level);
-            }
-            if (pawn.skills?.GetSkill(SkillDefOf.Intellectual) is SkillRecord intellectual)
-            {
-                text.AppendInNewLine(SkillDefOf.Intellectual.LabelCap);
-                text.Append(": ");
-                text.Append(intellectual.Level);
-            }
-            if (pawn.GetStatValue(StatDefOf.SocialImpact) is var socialImpact)
-            {
-                text.AppendInNewLine(StatDefOf.SocialImpact.LabelCap);
-                text.Append(": ");
-                text.Append(socialImpact.ToStringPercent());
-            }
-            text.AppendLineIfNotEmpty();
-            if (CalculateProgressPerTick(pawn) is var xpPerTick and > 0f)
-            {
-                var xpPerHour = xpPerTick * GenDate.TicksPerHour;
-                text.AppendInNewLine("PE_TeachingHourlyBase".Translate());
-                text.Append(": ");
-                text.Append(xpPerHour.ToString("F0"));
-                text.Append("PE_XpPerHour".Translate());
-            }
-            return text.ToString();
+            return baseReport;
         }
 
-        public override void HandleStudentLifecycleEvents()
+        if (teacher.DevelopmentalStage < DevelopmentalStage.Adult)
         {
-            foreach (var student in studyGroup.students
-                         .Where(student => student.DevelopmentalStage != DevelopmentalStage.Child))
-            {
-                studyGroup.RemoveStudent(student);
-            }
+            return new AcceptanceReport("PE_TeacherRoleOnlyForAdults".Translate());
         }
+
+        var skill = teacher.skills?.GetSkill(SkillDefOf.Social);
+        if (skill == null
+            || skill.TotallyDisabled)
+        {
+            return new AcceptanceReport(
+                "PE_TeacherSkillDisabled".Translate(teacher.LabelShortCap,
+                    SkillDefOf.Social.LabelCap));
+        }
+
+        return AcceptanceReport.WasAccepted;
+    }
+
+    public override string StudentTooltipFor(Pawn pawn)
+    {
+        if (pawn == null
+            || !IsStudentQualified(pawn)
+            || studyGroup is not { classroom: not null })
+        {
+            return "";
+        }
+
+        return base.StudentTooltipFor(pawn);
+    }
+
+    public override string TeacherTooltipFor(Pawn pawn)
+    {
+        if (pawn == null
+            || !IsTeacherQualified(pawn)
+            || studyGroup is not { classroom: not null })
+        {
+            return "";
+        }
+
+        var text = new StringBuilder(base.TeacherTooltipFor(pawn));
+        text.AppendLineIfNotEmpty();
+        AppendSkillLevel(SkillDefOf.Social, pawn, text);
+        AppendSkillLevel(SkillDefOf.Intellectual, pawn, text);
+
+        text.AppendLineIfNotEmpty();
+        var xpPerHour = CalculateTeacherScore(pawn) * GenDate.TicksPerHour;
+        if (xpPerHour > 0)
+        {
+            text.AppendLineTagged($"{
+                "PE_HourlyTeaching".Translate().AsTipTitle()
+            }: {
+                xpPerHour
+                * LearningSpeedModifier
+                * studyGroup.classroom.ClassSpeed
+                :F0}");
+            text.AppendLine();
+            var lessonOptions = GetSkillOptionsForDisplay(pawn);
+            text.AppendLineTagged($"{"PE_LessonOptions".Translate()}:".AsTipTitle());
+            foreach (var lessonOption in lessonOptions)
+            {
+                text.AppendLine($" - {lessonOption.LabelCap}");
+            }
+
+            text.AppendLine();
+        }
+
+        var socialImpact = CalculateSocialImpactFactor(pawn);
+        text.AppendLineTagged(
+            $"{"PE_TeachingFactor".Translate()}:".AsTipTitle()
+            + $" {
+                (LearningSpeedModifier
+                 * studyGroup.classroom.ClassSpeed
+                 * socialImpact
+                ).ToStringPercent()
+            }"
+        );
+        text.AppendLine($" - {
+            "StatsReport_BaseValue".Translate()
+        }: x{
+            LearningSpeedModifier.ToStringPercent()
+        }");
+        text.AppendLine($" - {
+            "PE_ClassSpeed".Translate()
+        }: x{
+            studyGroup.classroom.ClassSpeed.ToStringPercent()
+        }");
+        text.AppendLine(
+            $" - {StatDefOf.SocialImpact.LabelCap}: x{socialImpact.ToStringPercent()}");
+
+        return text.ToString();
     }
 }

@@ -1,56 +1,62 @@
-using Verse;
+using System.Linq;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class LordToil_RingBell(StudyGroup studyGroup) : LordToil
 {
-    public class LordToil_RingBell : LordToil
+    private bool bellRung;
+
+    public override void LordToilTick()
     {
-        private readonly StudyGroup studyGroup;
-        private bool bellRung = false;
+        base.LordToilTick();
+        TryRingAutomaticBells();
+    }
 
-        public LordToil_RingBell(StudyGroup studyGroup)
+    private void TryRingAutomaticBells()
+    {
+        if (bellRung || lord.ticksInToil % 60 != 0)
         {
-            this.studyGroup = studyGroup;
+            return;
         }
 
-        public override void UpdateAllDuties()
+        foreach (var bellComp in CompBell.AllBells
+                     .Where(bellComp => bellComp.parent.Map == lord.Map
+                                        && bellComp.ShouldRingAutomatically))
         {
-            EducationLog.Message($"LordToil_RingBell.UpdateAllDuties called for class '{studyGroup.className}'");
-            TryRingAutomaticBells();
-            if (!bellRung)
-            {
-                studyGroup.teacher.mindState.duty = new PawnDuty(DefsOf.PE_RingBellDuty, studyGroup.teacher.Position);
-                EducationLog.Message($"-> Set teacher {studyGroup.teacher.LabelShort} duty to PE_RingBellDuty at position {studyGroup.teacher.Position}");
-            }
-            else
-            {
-                EducationLog.Message($"-> Bell already rung, not setting teacher duty");
-            }
+            bellComp.RingBell();
+            bellRung = true;
+            EducationLog.Message(
+                $"Automatic bell '{
+                    bellComp.parent.Label
+                }' rang for class '{
+                    studyGroup.className
+                }'. Sending BellRung memo.");
+            lord.ReceiveMemo("BellRung");
+            return;
         }
+    }
 
-        public override void LordToilTick()
+    public override void UpdateAllDuties()
+    {
+        EducationLog.Message(
+            $"LordToil_RingBell.UpdateAllDuties called for class '{studyGroup.className}'");
+        TryRingAutomaticBells();
+        if (!bellRung)
         {
-            base.LordToilTick();
-            TryRingAutomaticBells();
+            studyGroup.teacher.mindState.duty =
+                new PawnDuty(DefsOf.PE_RingBellDuty, studyGroup.teacher.Position);
+            EducationLog.Message(
+                $"-> Set teacher {
+                    studyGroup.teacher.LabelShort
+                } duty to PE_RingBellDuty at position {
+                    studyGroup.teacher.Position
+                }");
         }
-
-        private void TryRingAutomaticBells()
+        else
         {
-            if (!bellRung && lord.ticksInToil % 60 == 0)
-            {
-                foreach (var bellComp in CompBell.AllBells)
-                {
-                    if (bellComp.parent.Map == lord.Map && bellComp.ShouldRingAutomatically)
-                    {
-                        bellComp.RingBell();
-                        bellRung = true;
-                        EducationLog.Message($"Automatic bell '{bellComp.parent.Label}' rang for class '{studyGroup.className}'. Sending BellRung memo.");
-                        lord.ReceiveMemo("BellRung");
-                        return;
-                    }
-                }
-            }
+            EducationLog.Message("-> Bell already rung, not setting teacher duty");
         }
     }
 }

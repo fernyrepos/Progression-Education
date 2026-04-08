@@ -1,212 +1,166 @@
-using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using Verse.AI.Group;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HotSwappable]
+public class JobDriver_Teach : JobDriver_LessonBase
 {
-    [HotSwappable]
-    public class JobDriver_Teach : JobDriver_LessonBase
+    public SkillDef taughtSkill;
+    public int waitingTicks;
+
+    private void DoTeachingInterval(int delta)
     {
-        public SkillDef taughtSkill;
-        public int waitingTicks;
-        public override string GetReport()
+        pawn.GainComfortFromCellIfPossible(delta, true);
+        if (!StudyGroup.ClassIsActive())
         {
-            if (!(StudyGroup?.ClassIsActive() ?? true))
-            {
-                return "PE_JobReport_WaitingForStudents".Translate();
-            }
-            return base.GetReport();
-        }
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
-        {
-            return pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed);
+            return;
         }
 
-        public override IEnumerable<Toil> MakeNewToils()
+        pawn.skills?.Learn(SkillDefOf.Social, 0.1f * delta);
+
+        if (!StudyGroup.subjectLogic.IsInfinite)
         {
-            this.FailOnDespawnedOrNull(TargetIndex.A);
-            this.FailOn(() => pawn.mindState.duty.def != DefsOf.PE_TeachDuty);
-            this.FailOn(() => StudyGroup == null || StudyGroup.teacher != pawn);
-            var learningBoard = job.GetTarget(TargetIndex.A).Thing;
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-            var wanderToil = new Toil
+            StudyGroup.AddProgress(StudyGroup.subjectLogic.ProgressPerTick * delta);
+        }
+
+        foreach (var student in StudyGroup.students
+                     .Where(StudyGroup.IsStudentPresentAndAttending))
+        {
+            StudyGroup.subjectLogic.ApplyTeachingTick(student, this,
+                delta);
+        }
+    }
+
+    public override void ExposeData()
+    {
+        base.ExposeData();
+        Scribe_Defs.Look(ref taughtSkill, "taughtSkill");
+        Scribe_Values.Look(ref waitingTicks, "waitingTicks");
+    }
+
+    public override string GetReport()
+    {
+        if (!(StudyGroup?.ClassIsActive() ?? true))
+        {
+            return "PE_JobReport_WaitingForStudents".Translate();
+        }
+
+        return base.GetReport();
+    }
+
+    public override void InitializeWeapon()
+    {
+        if (StudyGroup?.subjectLogic is not ProficiencyClassLogic proficiencyLogic)
+        {
+            return;
+        }
+
+        if (proficiencyLogic.ProficiencyFocus switch
             {
-                initAction = () =>
+                ProficiencyLevel.Firearm => DefsOf.PE_Gun_AssaultRifleTraining,
+                ProficiencyLevel.HighTech => DefsOf.PE_Gun_SpacerTraining,
+                _ => null,
+            } is ThingDef weaponDef)
+        {
+            weapon = ThingMaker.MakeThing(weaponDef,
+                GenStuff.DefaultStuffFor(weaponDef));
+        }
+    }
+
+    public override IEnumerable<Toil> MakeNewToils()
+    {
+        this.FailOnDespawnedOrNull(TargetIndex.A);
+        this.FailOn(() => pawn.mindState.duty.def != DefsOf.PE_TeachDuty);
+        this.FailOn(() => StudyGroup == null || StudyGroup.teacher != pawn);
+        var learningBoard = job.GetTarget(TargetIndex.A).Thing;
+        yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
+        var wanderToil = new Toil
+        {
+            initAction = () =>
+            {
+                var waypoints = learningBoard.GetWaypointsInFrontOfBoard(pawn);
+                if (!waypoints.Any())
                 {
-                    var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
-                    if (waypoints.Any())
-                    {
-                        job.SetTarget(TargetIndex.B, waypoints.RandomElement());
-                        pawn.pather.StartPath(job.GetTarget(TargetIndex.B), PathEndMode.OnCell);
-                    }
-                },
-                defaultCompleteMode = ToilCompleteMode.PatherArrival,
-                tickIntervalAction = (delta) => waitingTicks += delta,
-            };
-            wanderToil.FailOn(() => StudyGroup == null);
-            yield return wanderToil;
+                    return;
+                }
 
-            var waitToil = Toils_General.Wait(250);
-            waitToil.handlingFacing = true;
-            waitToil.socialMode = RandomSocialMode.Off;
-            waitToil.tickIntervalAction = (delta) =>
-            {
-                PawnUtility.GainComfortFromCellIfPossible(pawn, delta, true);
-                pawn.rotationTracker.FaceCell(pawn.Position + learningBoard.Rotation.FacingCell);
-                waitingTicks += delta;
-            };
-            waitToil.FailOn(() => StudyGroup == null);
-            yield return waitToil;
-
-            yield return Toils_Jump.JumpIf(wanderToil, () => StudyGroup != null && !StudyGroup.ClassIsActive());
-
-            var gotoWaypoint = Toils_Goto.GotoCell(TargetIndex.B, PathEndMode.OnCell);
-            yield return gotoWaypoint;
-            var teachAtWaypoint = new Toil
-            {
-                defaultCompleteMode = ToilCompleteMode.Delay,
-                defaultDuration = 300,
-                handlingFacing = true,
-                initAction = delegate
-                {
-                    if (StudyGroup.subjectLogic is ProficiencyClassLogic)
-                    {
-                        pawn.rotationTracker.FaceCell(pawn.Position + learningBoard.Rotation.FacingCell);
-                    }
-                    else
-                    {
-                        pawn.rotationTracker.FaceCell(learningBoard.Position);
-                    }
-                },
-                tickIntervalAction = DoTeachingInterval
-            };
-            teachAtWaypoint.AddPreInitAction(InitializeWeapon);
-            yield return teachAtWaypoint;
-            yield return Toils_Jump.JumpIf(wanderToil, () => StudyGroup != null && !StudyGroup.ClassIsActive());
-
-            yield return Toils_Jump.JumpIf(gotoWaypoint, delegate
-            {
-                var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
                 job.SetTarget(TargetIndex.B, waypoints.RandomElement());
-                return true;
-            });
-        }
-        private void DoTeachingInterval(int delta)
+                pawn.pather.StartPath(job.GetTarget(TargetIndex.B),
+                    PathEndMode.OnCell);
+            },
+            defaultCompleteMode = ToilCompleteMode.PatherArrival,
+            tickIntervalAction = delta => waitingTicks += delta,
+        };
+        wanderToil.FailOn(() => StudyGroup == null);
+        yield return wanderToil;
+
+        var waitToil = Toils_General.Wait(250);
+        waitToil.handlingFacing = true;
+        waitToil.socialMode = RandomSocialMode.Off;
+        waitToil.tickIntervalAction = delta =>
         {
-            var studyGroup = StudyGroup;
             pawn.GainComfortFromCellIfPossible(delta, true);
-            if (studyGroup.ClassIsActive())
-            {
-                pawn.skills.Learn(SkillDefOf.Social, 0.1f * delta);
+            pawn.rotationTracker.FaceCell(pawn.Position + learningBoard.Rotation.FacingCell);
+            waitingTicks += delta;
+        };
+        waitToil.FailOn(() => StudyGroup == null);
+        yield return waitToil;
 
-                if (studyGroup.subjectLogic.IsInfinite is false)
-                {
-                    var semesterProgress = studyGroup.CalculateProgressPerTick() * delta;
-                    studyGroup.AddProgress(semesterProgress);
-                }
+        yield return Toils_Jump.JumpIf(wanderToil,
+            () => StudyGroup != null && !StudyGroup.ClassIsActive());
 
-                foreach (var student in studyGroup.students.InRandomOrder())
-                {
-                    if (IsStudentPresentAndAttending(student, studyGroup))
-                    {
-                        studyGroup.subjectLogic.ApplyTeachingTick(student, this, delta);
-                    }
-                }
-            }
-        }
-
-        private bool IsStudentPresentAndAttending(Pawn student, StudyGroup studyGroup)
+        var gotoWaypoint = Toils_Goto.GotoCell(TargetIndex.B, PathEndMode.OnCell);
+        yield return gotoWaypoint;
+        var teachAtWaypoint = new Toil
         {
-            if (student?.Spawned is false || student.Dead || student.Downed)
+            defaultCompleteMode = ToilCompleteMode.Delay,
+            defaultDuration = 300,
+            handlingFacing = true,
+            initAction = delegate
             {
-                return false;
-            }
-            if (student.Map != studyGroup.Map)
-            {
-                return false;
-            }
-            if (student.jobs?.curDriver is not JobDriver_AttendClass)
-            {
-                return false;
-            }
-            Thing learningBoard = studyGroup.classroom?.LearningBoard?.parent;
-            if (learningBoard != null)
-            {
-                Room studentRoom = student.GetRoom();
-                Room boardRoom = learningBoard.GetRoom();
-                if (studentRoom != boardRoom)
+                if (StudyGroup.subjectLogic is ProficiencyClassLogic)
                 {
-                    return false;
-                }
-            }
-            if (studyGroup.ClassIsActive() == false)
-            {
-                if (student.jobs?.curDriver is JobDriver_AttendClass attendClassDriver)
-                {
-                    if (attendClassDriver is JobDriver_AttendMeleeClass)
-                    {
-                        if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing).Contains(student.Position))
-                        {
-                            return false;
-                        }
-                    }
-                    else if (student.Position != JobDriver_AttendClass.DeskSpotStudent(attendClassDriver.job.GetTarget(TargetIndex.A).Thing))
-                    {
-                        return false;
-                    }
+                    pawn.rotationTracker.FaceCell(pawn.Position
+                                                  + learningBoard.Rotation.FacingCell);
                 }
                 else
                 {
-                    return false;
+                    pawn.rotationTracker.FaceCell(learningBoard.Position);
                 }
-            }
+            },
+            tickIntervalAction = DoTeachingInterval,
+        };
+        teachAtWaypoint.AddPreInitAction(InitializeWeapon);
+        yield return teachAtWaypoint;
+        yield return Toils_Jump.JumpIf(wanderToil,
+            () => StudyGroup != null && !StudyGroup.ClassIsActive());
 
+        yield return Toils_Jump.JumpIf(gotoWaypoint, delegate
+        {
+            var waypoints = learningBoard.GetWaypointsInFrontOfBoard(pawn);
+            job.SetTarget(TargetIndex.B, waypoints.RandomElement());
             return true;
-        }
+        });
+    }
 
-        public override void Notify_Starting()
+    public override void Notify_Starting()
+    {
+        base.Notify_Starting();
+        var learningBoard = job.GetTarget(TargetIndex.A).Thing;
+        var waypoints = learningBoard.GetWaypointsInFrontOfBoard(pawn);
+        if (waypoints.Count > 0)
         {
-            base.Notify_Starting();
-            var learningBoard = job.GetTarget(TargetIndex.A).Thing;
-
-            var waypoints = EducationUtility.GetWaypointsInFrontOfBoard(learningBoard, pawn);
-            if (waypoints.Count > 0)
-            {
-                pawn.jobs.curJob.targetB = waypoints[0];
-            }
+            pawn.jobs.curJob.targetB = waypoints[0];
         }
+    }
 
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            Scribe_Defs.Look(ref taughtSkill, "taughtSkill");
-            Scribe_Values.Look(ref waitingTicks, "waitingTicks");
-        }
-
-        public override void InitializeWeapon()
-        {
-            var studyGroup = StudyGroup;
-            if (studyGroup?.subjectLogic is ProficiencyClassLogic proficiencyLogic)
-            {
-                ThingDef weaponDef = null;
-                switch (proficiencyLogic.ProficiencyFocus)
-                {
-                    case ProficiencyLevel.Firearm:
-                        weaponDef = DefsOf.PE_Gun_AssaultRifleTraining;
-                        break;
-                    case ProficiencyLevel.HighTech:
-                        weaponDef = DefsOf.PE_Gun_SpacerTraining;
-                        break;
-                }
-
-                if (weaponDef != null)
-                {
-                    weapon = ThingMaker.MakeThing(weaponDef, GenStuff.DefaultStuffFor(weaponDef));
-                }
-            }
-        }
+    public override bool TryMakePreToilReservations(bool errorOnFailed)
+    {
+        return pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1,
+            -1, null, errorOnFailed);
     }
 }

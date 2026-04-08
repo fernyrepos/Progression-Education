@@ -1,23 +1,24 @@
+using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
-using System.Collections.Generic;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HarmonyPatch(typeof(JoyGiver), "GetSearchSet", typeof(Pawn),
+    typeof(List<Thing>))]
+public static class JoyGiver_GetSearchSet_Patch
 {
-    [HarmonyPatch(typeof(JoyGiver), "GetSearchSet", typeof(Pawn), typeof(List<Thing>))]
-    public static class JoyGiver_GetSearchSet_Patch
+    public static void Postfix(Pawn pawn, List<Thing> outCandidates)
     {
-        public static void Postfix(Pawn pawn, List<Thing> outCandidates)
+        outCandidates.RemoveAll(thing =>
         {
-            outCandidates.RemoveAll(thing =>
+            if (thing is Building building)
             {
-                if (thing is Building building)
-                {
-                    return pawn.CanUse(building) is false;
-                }
-                return false;
-            });
-        }
+                return !pawn.CanUse(building);
+            }
+
+            return false;
+        });
     }
 }
