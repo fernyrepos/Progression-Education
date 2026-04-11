@@ -1,368 +1,505 @@
 using System;
-using RimWorld;
-using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
+using RimWorld.Planet;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HotSwappable]
+public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
 {
-    [HotSwappable]
-    public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
+    public const int MaxTeacherWaitingTicks = GenDate.TicksPerHour * 2;
+
+    private static readonly Type t_MapParent_Vehicle =
+        GenTypes.GetTypeInAnyAssembly("VehicleMapFramework.MapParent_Vehicle",
+            "VehicleMapFramework");
+
+    public string className;
+    public Classroom classroom;
+    public float currentProgress;
+    public int endHour;
+    public int id = -1;
+    private List<Pawn_TimetableTracker_Fixed> priorTime = [];
+    public int semesterGoal;
+    public int startHour;
+    public List<Pawn> students = [];
+    public ClassSubjectLogic subjectLogic;
+    public bool suspended;
+    public Pawn teacher;
+    public string timeAssignmentDefName;
+
+
+    public StudyGroup(StudyGroup other)
+        : this()
     {
-        public const int MaxTeacherWaitingTicks = GenDate.TicksPerHour * 2;
-        public int id = -1;
-        public Pawn teacher;
-        public List<Pawn> students = [];
-        public string className;
-        public ClassSubjectLogic subjectLogic;
-        public int semesterGoal;
-        public float currentProgress;
-        public Classroom classroom;
-        public int startHour;
-        public int endHour;
-        public string timeAssignmentDefName;
-        public bool suspended = false;
-        private static readonly Type t_MapParent_Vehicle =
-            GenTypes.GetTypeInAnyAssembly("VehicleMapFramework.MapParent_Vehicle", "VehicleMapFramework");
-
-        public StudyGroup()
+        id = other.id;
+        teacher = other.teacher;
+        students = new List<Pawn>(other.students);
+        className = other.className;
+        semesterGoal = other.semesterGoal;
+        currentProgress = other.currentProgress;
+        classroom = other.classroom;
+        startHour = other.startHour;
+        endHour = other.endHour;
+        timeAssignmentDefName = other.timeAssignmentDefName;
+        suspended = other.suspended;
+        subjectLogic = other.subjectLogic.DeepClone(this);
+        priorTime = [];
+        foreach (var otherTimeAssignment in other.priorTime)
         {
+            var timeAssignment = new Pawn_TimetableTracker_Fixed(otherTimeAssignment.pawn);
+            priorTime.Add(timeAssignment);
+            for (var i = 0; i < 24; ++i)
+            {
+                timeAssignment.SetAssignment(i,
+                    otherTimeAssignment.GetAssignment(i));
+            }
+        }
+    }
 
+    public StudyGroup(
+        Pawn teacher,
+        List<Pawn> students,
+        string className,
+        int semesterGoal,
+        int startHour,
+        int endHour)
+        : this()
+    {
+        id = EducationManager.Instance.GetNextStudyGroupId();
+        this.teacher = teacher;
+        this.students = students;
+        this.className = className;
+        this.semesterGoal = semesterGoal;
+        currentProgress = 0;
+        classroom = null;
+        this.startHour = startHour;
+        this.endHour = endHour;
+        timeAssignmentDefName = TimeAssignmentUtility.DynamicClassPrefix + GetUniqueLoadID();
+    }
+
+    public StudyGroup()
+    {
+    }
+
+    public List<Pawn> AllParticipants => students.Append(teacher).Where(p => p != null).ToList();
+
+    public int Duration => 1
+                           + (
+                               startHour > endHour
+                                   ? 24 - startHour + endHour
+                                   : endHour - startHour
+                           );
+
+    public bool IsCompleted => !subjectLogic.IsInfinite && currentProgress >= semesterGoal;
+
+    public Map Map => classroom?.LearningBoard?.parent?.Map;
+
+    public List<Pawn_TimetableTracker_Fixed> PriorTime => priorTime;
+
+    public float ProgressPercentage => semesterGoal <= 0
+        ? 1f
+        : Mathf.Clamp01(currentProgress / semesterGoal);
+
+    public void ExposeData()
+    {
+        Scribe_Values.Look(ref id, nameof(id), -1);
+        Scribe_References.Look(ref teacher, nameof(teacher));
+        Scribe_Collections.Look(ref students, nameof(students),
+            LookMode.Reference);
+        Scribe_Values.Look(ref className, nameof(className));
+        Scribe_Deep.Look(ref subjectLogic, nameof(subjectLogic), this);
+        if (Scribe.mode == LoadSaveMode.PostLoadInit
+            && subjectLogic == null)
+        {
+            subjectLogic = new SkillClassLogic(this);
         }
 
-        public StudyGroup(Pawn teacher, List<Pawn> students, string className, int semesterGoal, int startHour, int endHour)
+        Scribe_Values.Look(ref semesterGoal, nameof(semesterGoal));
+        Scribe_Values.Look(ref currentProgress, nameof(currentProgress));
+        Scribe_References.Look(ref classroom, nameof(classroom));
+        Scribe_Values.Look(ref startHour, nameof(startHour));
+        Scribe_Values.Look(ref endHour, nameof(endHour));
+        Scribe_Values.Look(ref timeAssignmentDefName, nameof(timeAssignmentDefName));
+        Scribe_Values.Look(ref suspended, nameof(suspended));
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
-            id = EducationManager.Instance.GetNextStudyGroupId();
-            this.teacher = teacher;
-            this.students = students;
-            this.className = className;
-            this.semesterGoal = semesterGoal;
-            currentProgress = 0;
-            classroom = null;
-            this.startHour = startHour;
-            this.endHour = endHour;
-            timeAssignmentDefName = TimeAssignmentUtility.DynamicClassPrefix + GetUniqueLoadID();
-        }
-
-        public AcceptanceReport IsValid()
-        {
-            if (string.IsNullOrEmpty(className))
+            foreach (var pawn in AllParticipants)
             {
-                return new AcceptanceReport("PE_EnterClassName".Translate());
-            }
-
-            if (teacher == null)
-            {
-                return new AcceptanceReport("PE_SelectTeacher".Translate());
-            }
-
-            if (students.NullOrEmpty())
-            {
-                return new AcceptanceReport("PE_SelectAtLeastOneStudent".Translate());
-            }
-
-            var prerequisitesMet = subjectLogic.ArePrerequisitesMet();
-            return !prerequisitesMet.Accepted ? prerequisitesMet : AcceptanceReport.WasAccepted;
-        }
-
-        public AcceptanceReport ArePrerequisitesMet()
-        {
-            var subjectPrerequisites = subjectLogic.ArePrerequisitesMet();
-            if (!subjectPrerequisites.Accepted)
-            {
-                return subjectPrerequisites;
-            }
-
-            if (classroom?.LearningBoard?.parent == null)
-            {
-                return new AcceptanceReport("PE_NoLearningBoard".Translate());
-            }
-
-            if (!EducationUtility.HasBellOnMap(classroom.LearningBoard.parent.Map, false))
-            {
-                return new AcceptanceReport("PE_NoBell".Translate());
-            }
-
-            return AcceptanceReport.WasAccepted;
-        }
-
-        public AcceptanceReport AreWorkspacesAvailable()
-        {
-            string benchLabel = subjectLogic.BenchLabel;
-            if (!string.IsNullOrEmpty(benchLabel) && subjectLogic.BenchCount < students.Count)
-            {
-                return new AcceptanceReport("PE_NotEnoughBenches".Translate(benchLabel, students.Count, subjectLogic.BenchCount));
-            }
-
-            if (!EducationUtility.HasBellOnMap(Map, false))
-            {
-                return new AcceptanceReport("PE_NoBell".Translate());
-            }
-            return AcceptanceReport.WasAccepted;
-        }
-
-        public void AddProgress(float amount)
-        {
-            currentProgress += amount;
-        }
-
-        public float ProgressPercentage => (float)currentProgress / semesterGoal;
-        public bool IsCompleted => !subjectLogic.IsInfinite && currentProgress >= semesterGoal;
-
-        public float CalculateProgressPerTick()
-        {
-            return subjectLogic.CalculateProgressPerTick();
-        }
-        public void RemoveStudent(Pawn student)
-        {
-            if (students.Contains(student))
-            {
-                students.Remove(student);
-                TimeAssignmentUtility.ClearScheduleFromPawns(this, new List<Pawn> { student });
-                var lord = student.GetLord();
-                if (lord != null && lord.LordJob is LordJob_AttendClass)
-                {
-                    lord.RemovePawn(student);
-                    student.jobs.StopAll();
-                }
+                TimeAssignmentUtility.TryRepairTimetable(pawn);
             }
         }
 
-        public void ExposeData()
+        Scribe_Collections.Look(ref priorTime, nameof(priorTime),
+            LookMode.Deep);
+        if (Scribe.mode == LoadSaveMode.PostLoadInit
+            && priorTime == null)
         {
-            Scribe_Values.Look(ref id, "id", -1);
-            Scribe_References.Look(ref teacher, "teacher");
-            Scribe_Collections.Look(ref students, "students", LookMode.Reference);
-            Scribe_Values.Look(ref className, "className");
-            Scribe_Deep.Look(ref subjectLogic, "subjectLogic", this);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && subjectLogic == null)
-            {
-                subjectLogic = new SkillClassLogic(this);
-            }
-            Scribe_Values.Look(ref semesterGoal, "semesterGoal");
-            Scribe_Values.Look(ref currentProgress, "currentProgress");
-            Scribe_References.Look(ref classroom, "classroom");
-            Scribe_Values.Look(ref startHour, "startHour", 0);
-            Scribe_Values.Look(ref endHour, "endHour", 0);
-            Scribe_Values.Look(ref timeAssignmentDefName, "timeAssignmentDefName");
-            Scribe_Values.Look(ref suspended, "suspended", false);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                var pawns = new List<Pawn>
-                {
-                    teacher
-                }.Concat(students).ToList();
-                foreach (var pawn in pawns)
-                {
-                    TimeAssignmentUtility.TryRepairTimetable(pawn);
-                }
-            }
+            priorTime = [];
+        }
+    }
+
+    public string GetUniqueLoadID()
+    {
+        return "StudyGroup_" + id;
+    }
+
+    public string RenamableLabel
+    {
+        get => className;
+        set => className = value;
+    }
+
+    public string InspectLabel => className;
+
+    public string BaseLabel => className;
+
+    public void AddProgress(float amount)
+    {
+        currentProgress += amount;
+    }
+
+    public void AddStudent(Pawn student)
+    {
+        if (students.Contains(student))
+        {
+            return;
         }
 
-        public string GetUniqueLoadID()
+        students.Add(student);
+        TimeAssignmentUtility.ApplyScheduleToPawn(this, student);
+    }
+
+    public bool AllStudentsPresentAndAttending()
+    {
+        return students.All(IsStudentPresentAndAttending);
+    }
+
+    public AcceptanceReport ArePrerequisitesMet()
+    {
+        var subjectPrerequisites = subjectLogic.ArePrerequisitesMet();
+        if (!subjectPrerequisites.Accepted)
         {
-            return "StudyGroup_" + id;
+            return subjectPrerequisites;
         }
 
-        public string RenamableLabel
+        if (classroom?.LearningBoard?.parent == null)
         {
-            get => className;
-            set => className = value;
+            return new AcceptanceReport("PE_NoLearningBoard".Translate());
         }
 
-        public string InspectLabel => className;
-
-        public string BaseLabel => className;
-
-        public void Suspend(bool suspend)
+        if (!EducationUtility.HasBellOnMap(classroom.LearningBoard.parent.Map,
+                false))
         {
-            if (suspended != suspend)
-            {
-                suspended = suspend;
-                var participants = new List<Pawn> { teacher }.Concat(students).ToList();
-                if (suspend)
-                {
-                    TimeAssignmentUtility.ClearScheduleFromPawns(this, participants);
-                }
-                else
-                {
-                    TimeAssignmentUtility.ApplyScheduleToPawns(this, participants);
-                }
-
-                if (suspended)
-                {
-                    var map = Map;
-                    if (map != null)
-                    {
-                        Lord lordToCancel = map.lordManager.lords.FirstOrDefault(l =>
-                            l.LordJob is LordJob_AttendClass lordJob && lordJob.studyGroup == this);
-
-                        if (lordToCancel != null)
-                        {
-                            lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
-                        }
-                    }
-                }
-            }
+            return new AcceptanceReport("PE_NoBell".Translate());
         }
 
-        public TeacherRole GetTeacherRole()
+        return AcceptanceReport.WasAccepted;
+    }
+
+    public AcceptanceReport AreWorkspacesAvailable()
+    {
+        var benchLabel = subjectLogic.BenchLabel;
+        if (!string.IsNullOrEmpty(benchLabel)
+            && subjectLogic.BenchCount < students.Count)
         {
-            return new TeacherRole(this);
+            return new AcceptanceReport("PE_NotEnoughBenches".Translate(benchLabel,
+                students.Count,
+                subjectLogic.BenchCount));
         }
 
-        public StudentRole GetStudentRole()
+        if (!EducationUtility.HasBellOnMap(Map, false))
         {
-            return new StudentRole(this);
+            return new AcceptanceReport("PE_NoBell".Translate());
         }
 
-        public Map Map => classroom?.LearningBoard?.parent?.Map;
+        return AcceptanceReport.WasAccepted;
+    }
 
-        public bool ClassIsActive()
+    public AcceptanceReport CanAcceptMoreStudents()
+    {
+        var studentRole = GetStudentRole();
+        if (students.Count + 1 > studentRole.MaxCount)
         {
-            if (subjectLogic is DaycareClassLogic)
-            {
-                return true;
-            }
-
-            if (students.NullOrEmpty())
-            {
-                return false;
-            }
-
-            if (subjectLogic is SkillClassLogic)
-            {
-                var teachingPawn = teacher;
-                if (teachingPawn?.jobs?.curDriver is JobDriver_Teach teachDriver)
-                {
-                    if (teachDriver.waitingTicks >= MaxTeacherWaitingTicks)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return AllStudentsPresent();
+            return new AcceptanceReport("PE_StudyGroupFull".Translate(studentRole.MaxCount));
         }
 
-        public bool AllStudentsPresent()
+        if (students.Count + 1 > subjectLogic.BenchCount)
         {
-            foreach (var student in students)
-            {
-                if (student.Dead || student.Downed)
-                {
-                    return false;
-                }
-                if (student.jobs?.curDriver is not JobDriver_AttendClass attendClassDriver)
-                {
-                    return false;
-                }
+            return new AcceptanceReport("PE_NotEnoughBenches".Translate(
+                subjectLogic.BenchLabel,
+                students.Count + 1,
+                subjectLogic.BenchCount));
+        }
 
-                if (attendClassDriver is JobDriver_AttendMeleeClass)
-                {
-                    if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing).Contains(student.Position))
-                    {
-                        return false;
-                    }
-                }
-                else if (student.Position != JobDriver_AttendClass.DeskSpotStudent(attendClassDriver.job.GetTarget(TargetIndex.A).Thing))
-                {
-                    return false;
-                }
-            }
+        return AcceptanceReport.WasAccepted;
+    }
+
+    public void CancelClass()
+    {
+        if (Map?.lordManager?.lords?
+                .FirstOrDefault(l =>
+                    l.LordJob is LordJob_AttendClass lordJob
+                    && lordJob.studyGroup == this)
+            is { } lordToCancel)
+        {
+            lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
+        }
+    }
+
+    public bool ClassIsActive()
+    {
+        if (students.NullOrEmpty())
+        {
+            return false;
+        }
+
+        if (subjectLogic is DaycareClassLogic)
+        {
             return true;
         }
 
-        public AcceptanceReport ValidateClassStatus()
+        if (subjectLogic is SkillClassLogic
+            && teacher?.jobs?.curDriver is JobDriver_Teach
+            {
+                waitingTicks: >= MaxTeacherWaitingTicks,
+            })
         {
-            if (suspended)
-            {
-                return AcceptanceReport.WasRejected;
-            }
-            var learningBoard = classroom?.LearningBoard?.parent;
-            if (classroom is null || learningBoard?.Map == null)
-            {
-                return new AcceptanceReport("PE_NoLearningBoard".Translate());
-            }
-            var facingCell = learningBoard.Position + learningBoard.Rotation.FacingCell;
-            var blockingBuilding = facingCell.GetFirstBuilding(classroom.LearningBoard.parent.Map);
-            if (blockingBuilding != null && blockingBuilding.def.passability != Traversability.Standable && blockingBuilding.def != ThingDefOf.HiddenConduit)
-            {
-                return new AcceptanceReport("PE_LearningBoardIsBlocked".Translate(classroom.LearningBoard.parent.def.label));
-            }
+            return true;
+        }
 
-            var workspaceReport = AreWorkspacesAvailable();
-            if (!workspaceReport.Accepted)
+        return AllStudentsPresentAndAttending();
+    }
+
+    public StudentRole GetStudentRole()
+    {
+        return new StudentRole(this);
+    }
+
+    public TeacherRole GetTeacherRole()
+    {
+        return new TeacherRole(this);
+    }
+
+    public bool IsStudentPresentAndAttending(Pawn student)
+    {
+        if (!student.CanAttendClass())
+        {
+            return false;
+        }
+
+        if (student.Map != Map)
+        {
+            return false;
+        }
+
+        if (student.jobs?.curDriver is not JobDriver_AttendClass attendClassDriver)
+        {
+            return false;
+        }
+
+        if (classroom?.LearningBoard?.parent is ThingWithComps learningBoard)
+        {
+            var studentRoom = student.GetRoom();
+            var boardRoom = learningBoard.GetRoom();
+            if (studentRoom != boardRoom)
             {
-                return workspaceReport;
+                return false;
             }
+        }
 
-            var learningBoardSourceMap = MapOrSourceMap(classroom.LearningBoard.parent);
-            if (!teacher.Spawned || MapOrSourceMap(teacher) != learningBoardSourceMap)
+        if (attendClassDriver is JobDriver_AttendMeleeClass)
+        {
+            if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing)
+                    .Contains(student.Position))
             {
-                return new AcceptanceReport("PE_TeacherOffMap".Translate());
+                return false;
             }
+        }
+        else if (student.Position
+                 != JobDriver_AttendClass.DeskSpotForStudent(attendClassDriver.job
+                     .GetTarget(TargetIndex.A)
+                     .Thing))
+        {
+            return false;
+        }
 
-            var teacherRole = GetTeacherRole();
-            var teacherQualification = teacherRole.CanAcceptPawn(teacher);
-            if (!teacherQualification.Accepted)
+        return true;
+    }
+
+    public AcceptanceReport IsValid()
+    {
+        if (teacher == null)
+        {
+            return new AcceptanceReport("PE_SelectTeacher".Translate());
+        }
+
+        if (students.NullOrEmpty()
+            && !subjectLogic.IsInfinite)
+        {
+            return new AcceptanceReport("PE_SelectAtLeastOneStudent".Translate());
+        }
+
+        var prerequisitesMet = subjectLogic.ArePrerequisitesMet();
+        return !prerequisitesMet.Accepted ? prerequisitesMet : AcceptanceReport.WasAccepted;
+    }
+
+    public void RemoveStudent(Pawn student)
+    {
+        if (!students.Contains(student))
+        {
+            return;
+        }
+
+        students.Remove(student);
+        TimeAssignmentUtility.ClearScheduleFromPawn(this, student);
+        if (student.GetLord() is not Lord lord
+            || lord.LordJob is not LordJob_AttendClass)
+        {
+            return;
+        }
+
+        lord.RemovePawn(student);
+        student.jobs?.StopAll();
+    }
+
+    public void Suspend(bool suspend)
+    {
+        if (suspended == suspend)
+        {
+            return;
+        }
+
+        if (!suspend
+            && suspended
+            && students.NullOrEmpty())
+        {
+            Messages.Message("PE_CannotUnsuspendNoStudents".Translate(),
+                MessageTypeDefOf.RejectInput);
+            return;
+        }
+
+        suspended = suspend;
+        if (suspend)
+        {
+            TimeAssignmentUtility.ClearScheduleFromPawns(this,
+                AllParticipants);
+        }
+        else
+        {
+            TimeAssignmentUtility.ApplyScheduleToPawns(this,
+                AllParticipants);
+        }
+
+        if (suspended)
+        {
+            CancelClass();
+        }
+    }
+
+    public AcceptanceReport ValidateClassStatus()
+    {
+        if (suspended)
+        {
+            return AcceptanceReport.WasRejected;
+        }
+
+        var learningBoard = classroom?.LearningBoard?.parent;
+        if (classroom == null
+            || learningBoard?.Map == null)
+        {
+            return new AcceptanceReport("PE_NoLearningBoard".Translate());
+        }
+
+        var facingCell = learningBoard.Position + learningBoard.Rotation.FacingCell;
+        var blockingBuilding = facingCell.GetFirstBuilding(classroom.LearningBoard.parent.Map);
+        if (blockingBuilding != null
+            && blockingBuilding.def.passability != Traversability.Standable
+            && blockingBuilding.def != ThingDefOf.HiddenConduit)
+        {
+            return new AcceptanceReport(
+                "PE_LearningBoardIsBlocked".Translate(classroom.LearningBoard.parent.def.label));
+        }
+
+        var workspaceReport = AreWorkspacesAvailable();
+        if (!workspaceReport.Accepted)
+        {
+            return workspaceReport;
+        }
+
+        var learningBoardSourceMap = MapOrSourceMap(classroom.LearningBoard.parent);
+        if (!teacher.Spawned
+            || MapOrSourceMap(teacher) != learningBoardSourceMap)
+        {
+            return new AcceptanceReport("PE_TeacherOffMap".Translate());
+        }
+
+        var teacherRole = GetTeacherRole();
+        var teacherQualification = teacherRole.CanAcceptPawn(teacher);
+        if (!teacherQualification.Accepted)
+        {
+            return teacherQualification;
+        }
+
+        var studentRole = GetStudentRole();
+        List<Pawn> studentsOffMap = [];
+        List<Pawn> unqualifiedStudents = [];
+
+        foreach (var student in students)
+        {
+            if (!student.Spawned
+                || MapOrSourceMap(student) != learningBoardSourceMap)
             {
-                return teacherQualification;
-            }
-
-            var studentRole = GetStudentRole();
-            List<Pawn> studentsOffMap = [];
-            List<Pawn> unqualifiedStudents = [];
-
-            foreach (var student in students)
-            {
-                if (!student.Spawned || MapOrSourceMap(student) != learningBoardSourceMap)
+                if (student.Map?.Parent is PocketMapParent mapParent
+                    && mapParent.sourceMap == classroom.LearningBoard.parent.Map)
                 {
-                    if (student.Map is not null && student.Map.Parent is PocketMapParent mapParent && mapParent.sourceMap == classroom.LearningBoard.parent.Map)
-                    {
-                        continue;
-                    }
-                    studentsOffMap.Add(student);
                     continue;
                 }
 
-                var studentQualification = studentRole.CanAcceptPawn(student);
-                if (!studentQualification.Accepted)
-                {
-                    unqualifiedStudents.Add(student);
-                    continue;
-                }
+                studentsOffMap.Add(student);
+                continue;
             }
 
-            if (studentsOffMap.Count > 0)
+            var studentQualification = studentRole.CanAcceptPawn(student);
+            if (!studentQualification.Accepted)
             {
-                return new AcceptanceReport("PE_StudentsOffMap".Translate());
+                unqualifiedStudents.Add(student);
             }
+        }
 
-            if (unqualifiedStudents.Count > 0)
+        if (studentsOffMap.Count > 0)
+        {
+            return new AcceptanceReport("PE_StudentsOffMap".Translate());
+        }
+
+        if (unqualifiedStudents.Count > 0)
+        {
+            return new AcceptanceReport("PE_StudentsUnqualified".Translate());
+        }
+
+        if (students.Count == 0)
+        {
+            return new AcceptanceReport("PE_NoStudents".Translate());
+        }
+
+        return AcceptanceReport.WasAccepted;
+
+        Map MapOrSourceMap(Thing thing)
+        {
+            var map = thing.Map;
+            var sourceMap = map.PocketMapParent?.sourceMap;
+            if (sourceMap != null
+                && map.Parent.GetType().SameOrSubclassOf(t_MapParent_Vehicle))
             {
-                return new AcceptanceReport("PE_StudentsUnqualified".Translate());
+                return sourceMap;
             }
 
-            if (students.Count == 0)
-            {
-                return new AcceptanceReport("PE_NoStudents".Translate());
-            }
-
-            return AcceptanceReport.WasAccepted;
-
-            Map MapOrSourceMap(Thing thing)
-            {
-                Map map = thing.Map;
-                Map sourceMap = map.PocketMapParent?.sourceMap;
-                if (sourceMap != null && map.Parent.GetType().SameOrSubclassOf(t_MapParent_Vehicle))
-                {
-                    return sourceMap;
-                }
-                return map;
-            }
+            return map;
         }
     }
 }

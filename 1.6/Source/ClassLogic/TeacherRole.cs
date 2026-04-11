@@ -1,31 +1,32 @@
-﻿using RimWorld;
-using Verse;
+﻿using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class TeacherRole(StudyGroup studyGroup)
+    : ClassRole(
+        "teacher",
+        1,
+        1,
+        "PE_TeacherRole".Translate(),
+        "PE_TeacherRole".Translate(),
+        studyGroup
+    )
 {
-    public class TeacherRole : ClassRole
+    public override AcceptanceReport CanAcceptPawn(Pawn pawn)
     {
-        public TeacherRole(StudyGroup studyGroup) : base("teacher", 1, 1, "PE_TeacherRole".Translate(), "PE_TeacherRole".Translate(), studyGroup)
+        var baseReport = base.CanAcceptPawn(pawn);
+        if (!baseReport.Accepted)
         {
+            return baseReport;
         }
 
-        public override AcceptanceReport CanAcceptPawn(Pawn pawn)
-        {
-            var baseReport = base.CanAcceptPawn(pawn);
-            if (!baseReport.Accepted)
-            {
-                return baseReport;
-            }
-            if (pawn.DevelopmentalStage != DevelopmentalStage.Adult)
-            {
-                return new AcceptanceReport("PE_TeacherRoleOnlyForAdults".Translate());
-            }
+        return studyGroup?.subjectLogic?.IsTeacherQualified(pawn)
+               ?? AcceptanceReport.WasRejected;
+    }
 
-            if (pawn.skills.GetSkill(SkillDefOf.Social).TotallyDisabled)
-            {
-                return new AcceptanceReport("PE_TeacherRoleRequiresSocialSkill".Translate());
-            }
-            return studyGroup.subjectLogic != null ? studyGroup.subjectLogic.IsTeacherQualified(pawn) : (AcceptanceReport)false;
-        }
+    public override float ScoreFor(Pawn pawn)
+    {
+        return studyGroup?.subjectLogic?.CalculateTeacherScore(pawn)
+               ?? base.ScoreFor(pawn);
     }
 }

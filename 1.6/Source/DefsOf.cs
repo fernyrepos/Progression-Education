@@ -2,34 +2,33 @@ using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[DefOf]
+public static class DefsOf
 {
-    [DefOf]
-    public static class DefsOf
+    public static JobDef PE_AttendClass;
+    [DefAlias("PE_AttendClass")] public static DutyDef PE_AttendClassDuty;
+    public static JobDef PE_AttendMeleeClass;
+    public static JobDef PE_AttendShootingClass;
+    public static StatDef PE_ClassSpeed;
+    public static TraitDef PE_FirearmProficiency;
+    public static ThingDef PE_Gun_AssaultRifleTraining;
+
+    public static ThingDef PE_Gun_SpacerTraining;
+    public static TraitDef PE_HighTechProficiency;
+
+    public static TraitDef PE_LowTechProficiency;
+    public static JobDef PE_RingBell;
+    [DefAlias("PE_RingBell")] public static DutyDef PE_RingBellDuty;
+    public static JobDef PE_Teach;
+    [DefAlias("PE_Teach")] public static DutyDef PE_TeachDuty;
+
+    public static MainButtonDef Schedule;
+
+
+    static DefsOf()
     {
-        [DefAlias("PE_AttendClass")] public static DutyDef PE_AttendClassDuty;
-        [DefAlias("PE_Teach")] public static DutyDef PE_TeachDuty;
-        [DefAlias("PE_RingBell")] public static DutyDef PE_RingBellDuty;
-
-        public static JobDef PE_AttendClass;
-        public static JobDef PE_AttendMeleeClass;
-        public static JobDef PE_AttendShootingClass;
-        public static JobDef PE_RingBell;
-        public static JobDef PE_Teach;
-
-        public static TraitDef PE_LowTechProficiency;
-        public static TraitDef PE_FirearmProficiency;
-        public static TraitDef PE_HighTechProficiency;
-
-        public static ThingDef PE_Gun_SpacerTraining;
-        public static ThingDef PE_Gun_AssaultRifleTraining;
-
-        public static MainButtonDef Schedule;
-
-
-        static DefsOf()
-        {
-            DefOfHelper.EnsureInitializedInCtor(typeof(DefsOf));
-        }
+        DefOfHelper.EnsureInitializedInCtor(typeof(DefsOf));
     }
 }

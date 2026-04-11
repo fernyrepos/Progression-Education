@@ -1,143 +1,62 @@
 using RimWorld;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HotSwappable]
+public class Classroom : IExposable, ILoadReferenceable, IRenameable
 {
-    [HotSwappable]
-    public class Classroom : IExposable, ILoadReferenceable, IRenameable
+    public Color color;
+    public int id;
+    public bool interruptJobs = true;
+    public bool addKids = true;
+    private Thing learningBoardThing;
+    public string name;
+    public bool restrictReservationsDuringClass;
+
+    public Classroom()
     {
-        public int id;
-        public string name;
-        public Color color;
-        private Thing learningBoardThing;
-        public CompLearningBoard LearningBoard => learningBoardThing.TryGetComp<CompLearningBoard>();
-        public int participantCount;
-        public bool restrictReservationsDuringClass = true;
-        public bool interruptJobs = false;
-
-        public Classroom()
-        {
-        }
-
-        public Classroom(Thing board)
-        {
-            learningBoardThing = board;
-            var educationManager = EducationManager.Instance;
-            id = educationManager.GetNextClassroomId();
-            name = "PE_Classroom".Translate() + " " + (educationManager.Classrooms.Count + 1);
-            color = new Color(Rand.Value, Rand.Value, Rand.Value);
-            participantCount = 0;
-        }
-
-        public void SetParticipantCount(int count)
-        {
-            participantCount = count;
-        }
-
-        public float CalculateLearningModifier()
-        {
-            FindEducationalFacilities(out var learningBoards, out var projectors);
-            float bestBoardBonus = CalculateBestBoardBonus(learningBoards);
-            float totalProjectorBonus = CalculateTotalProjectorBonus(projectors);
-            float deskSpeedModifier = CalculateAverageDeskSpeedModifier();
-            return bestBoardBonus * (1f + totalProjectorBonus) * deskSpeedModifier;
-        }
-
-        private void FindEducationalFacilities(out List<Thing> boards, out List<CompProjector> projectors)
-        {
-            boards = [learningBoardThing];
-            projectors = [];
-
-            var facilities = learningBoardThing.TryGetComp<CompAffectedByFacilities>();
-            if (facilities != null)
-            {
-                foreach (var facility in facilities.LinkedFacilitiesListForReading)
-                {
-                    var projector = facility.TryGetComp<CompProjector>();
-                    if (projector != null)
-                    {
-                        projectors.Add(projector);
-                    }
-                }
-            }
-        }
-
-        private float CalculateBestBoardBonus(List<Thing> boards)
-        {
-            float bestBonus = 0f;
-            foreach (var boardThing in boards)
-            {
-                var learningBoard = boardThing.TryGetComp<CompLearningBoard>();
-                float qualityBonus = 1f;
-                var compQuality = boardThing.TryGetComp<CompQuality>();
-                if (compQuality != null)
-                {
-                    qualityBonus = learningBoard.Props.GetQualityBonus(compQuality.Quality);
-                }
-                bestBonus = Math.Max(bestBonus, qualityBonus);
-            }
-            return bestBonus;
-        }
-
-        private float CalculateTotalProjectorBonus(List<CompProjector> projectors)
-        {
-            float totalBonus = 0.0f;
-            foreach (var projector in projectors)
-            {
-                totalBonus += projector.Props.learningBonus;
-            }
-            return totalBonus;
-        }
-
-        private float CalculateAverageDeskSpeedModifier()
-        {
-            var compFacility = learningBoardThing.TryGetComp<CompFacility>();
-            float totalModifier = 0f;
-            int deskCount = 0;
-
-            foreach (var facility in compFacility.linkedBuildings)
-            {
-                var deskComp = facility.TryGetComp<CompSchoolDesk>();
-                if (deskComp != null)
-                {
-                    totalModifier += deskComp.Props.speedModifier;
-                    deskCount++;
-                }
-            }
-            if (deskCount == 0)
-            {
-                return 1f;
-            }
-            return totalModifier / (float)deskCount;
-        }
-
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref id, "id", 0);
-            Scribe_Values.Look(ref name, "name");
-            Scribe_Values.Look(ref color, "color");
-            Scribe_References.Look(ref learningBoardThing, "learningBoard");
-            Scribe_Values.Look(ref participantCount, "participantCount");
-            Scribe_Values.Look(ref restrictReservationsDuringClass, "restrictReservationsDuringClass", true);
-            Scribe_Values.Look(ref interruptJobs, "interruptJobs");
-        }
-
-        public string GetUniqueLoadID()
-        {
-            return "Classroom_" + id;
-        }
-
-        public string RenamableLabel
-        {
-            get => name;
-            set => name = value;
-        }
-
-        public string BaseLabel => name;
-
-        public string InspectLabel => name;
     }
+
+    public Classroom(Thing board)
+    {
+        learningBoardThing = board;
+        var educationManager = EducationManager.Instance;
+        id = educationManager.GetNextClassroomId();
+        name = "PE_Classroom".Translate() + " " + (educationManager.Classrooms.Count + 1);
+        color = new Color(Rand.Value, Rand.Value, Rand.Value);
+    }
+
+    public float ClassSpeed => learningBoardThing.GetStatValue(DefsOf.PE_ClassSpeed);
+
+    public CompLearningBoard LearningBoard => learningBoardThing.TryGetComp<CompLearningBoard>();
+
+    public void ExposeData()
+    {
+        Scribe_Values.Look(ref id, "id");
+        Scribe_Values.Look(ref name, "name");
+        Scribe_Values.Look(ref color, "color");
+        Scribe_References.Look(ref learningBoardThing, "learningBoard");
+        Scribe_Values.Look(ref restrictReservationsDuringClass,
+            "restrictReservationsDuringClass",
+            true);
+        Scribe_Values.Look(ref interruptJobs, "interruptJobs", true);
+        Scribe_Values.Look(ref addKids, "addKids", true);
+    }
+
+    public string GetUniqueLoadID()
+    {
+        return "Classroom_" + id;
+    }
+
+    public string RenamableLabel
+    {
+        get => name;
+        set => name = value;
+    }
+
+    public string BaseLabel => name;
+
+    public string InspectLabel => name;
 }

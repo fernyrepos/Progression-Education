@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+
 [assembly: AssemblyTitle("ProgressionEducation")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]

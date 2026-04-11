@@ -1,43 +1,51 @@
 using System.Collections.Generic;
 using System.Linq;
-using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public static class EducationUtility
 {
-    public static class EducationUtility
+    public static bool CanAttendClass(this Pawn pawn)
     {
-        public static bool HasBellOnMap(Map map, bool checkForPower)
-        {
-            if (map == null)
+        return pawn != null
+               && pawn.Spawned
+               && !pawn.DeadOrDowned
+               && !pawn.InMentalState
+               && !pawn.Deathresting;
+    }
+
+
+    public static List<IntVec3> GetWaypointsInFrontOfBoard(this Thing board, Pawn pawn)
+    {
+        var map = board.Map;
+        return board.OccupiedRect()
+            .Select(cell => cell + board.Rotation.FacingCell)
+            .SelectMany(forward => new[]
             {
-                return false;
-            }
-            return CompBell.AllBells.Any(b => b.parent.Map == map && (!checkForPower || !b.ShouldRingAutomatically || b.IsPowered));
-        }
+                forward,
+                forward + board.Rotation.RighthandCell,
+                forward - board.Rotation.RighthandCell,
+            })
+            .Where(c => c.InBounds(map)
+                        && c.GetFirstBuilding(map) == null
+                        && c.Walkable(map)
+                        && pawn.CanReach(c, PathEndMode.OnCell,
+                            Danger.Deadly))
+            .ToList();
+    }
 
-        public static bool IsSchoolDesk(this ThingDef def)
-        {
-            return def.HasComp(typeof(CompSchoolDesk));
-        }
+    public static bool HasBellOnMap(Map map, bool checkForPower)
+    {
+        return map != null
+               && CompBell.AllBells
+                   .Any(b => b.parent.Map == map
+                             && (!checkForPower || !b.ShouldRingAutomatically || b.IsPowered));
+    }
 
-
-        public static List<IntVec3> GetWaypointsInFrontOfBoard(Thing board, Pawn pawn)
-        {
-            var map = pawn.Map;
-            var waypoints = new HashSet<IntVec3>();
-            foreach (var cell in board.OccupiedRect())
-            {
-                var forward = cell + board.Rotation.FacingCell;
-                waypoints.AddRange(new[] {
-                    forward,
-                    forward + board.Rotation.RighthandCell,
-                    forward - board.Rotation.RighthandCell
-                });
-            }
-
-            return waypoints.Where(c => c.InBounds(map) && c.GetFirstBuilding(map) == null && c.Walkable(map) && pawn.CanReach(c, PathEndMode.OnCell, Danger.Deadly)).ToList();
-        }
+    public static bool IsSchoolDesk(this ThingDef def)
+    {
+        return def.HasComp(typeof(CompSchoolDesk));
     }
 }

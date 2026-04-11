@@ -9,54 +9,49 @@ using Verse;
 namespace ProgressionEducation;
 
 [HotSwappable]
-public class Dialog_CreateClass : Window, IClassDialog
+public class Dialog_EditClass : Window, IClassDialog
 {
-    private readonly DaycareClassLogic daycareClassLogic;
     private readonly Map map;
     private readonly PawnClassRoleSelectionWidget participantsDrawer;
-    private readonly ProficiencyClassLogic proficiencyClassLogic;
-    private readonly SkillClassLogic skillClassLogic;
+    private readonly StudyGroup referenceStudyGroup;
     private readonly StudyGroup studyGroup;
 
     private Vector2 scrollPosition = Vector2.zero;
 
-    public Dialog_CreateClass(Map map)
+    public Dialog_EditClass(StudyGroup studyGroup)
     {
-        this.map = map;
-        studyGroup = new StudyGroup(
-            null,
-            [],
-            "",
-            10000,
-            8,
-            15
-        );
+        referenceStudyGroup = studyGroup;
+        this.studyGroup = new StudyGroup(studyGroup);
+        map = studyGroup.Map;
         TeacherRole = studyGroup.GetTeacherRole();
         StudentRole = studyGroup.GetStudentRole();
-        AssignmentsManager = new ClassAssignmentsManager(TeacherRole,
-            StudentRole, map);
+        var forcedRoles = studyGroup.subjectLogic switch
+        {
+            SkillClassLogic
+                or ProficiencyClassLogic => new Dictionary<string, Pawn>
+                {
+                    [TeacherRole.RoleId] = studyGroup.teacher,
+                },
+            _ => null,
+        };
+        AssignmentsManager =
+            new ClassAssignmentsManager(TeacherRole, StudentRole,
+                map, forcedRoles);
         CandidatePool = new ClassCandidatePool(map);
         participantsDrawer = new PawnClassRoleSelectionWidget(CandidatePool,
             AssignmentsManager)
         {
             studyGroup = studyGroup,
         };
-        skillClassLogic = new SkillClassLogic(studyGroup);
-        proficiencyClassLogic = new ProficiencyClassLogic(studyGroup);
-        daycareClassLogic = new DaycareClassLogic(studyGroup);
-        studyGroup.subjectLogic = skillClassLogic;
-
-        var educationManager = EducationManager.Instance;
-        if (educationManager.Classrooms.Count > 0)
-        {
-            studyGroup.classroom = educationManager.Classrooms[0];
-        }
 
         closeOnAccept = false;
         closeOnClickedOutside = false;
         absorbInputAroundWindow = true;
         forcePause = true;
-        AssignmentsManager.FillPawns();
+
+        AssignmentsManager.FillRole(StudentRole, studyGroup.students,
+            out _);
+        AssignmentsManager.TryAssign(studyGroup.teacher, TeacherRole, out _);
     }
 
     public override Vector2 InitialSize => new(845f, 740f);
@@ -75,11 +70,11 @@ public class Dialog_CreateClass : Window, IClassDialog
                         || Event.current.keyCode == KeyCode.KeypadEnter);
         Text.Font = GameFont.Medium;
         Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 35f),
-            "PE_CreateClass".Translate());
+            "PE_EditClass".Translate());
         Text.Font = GameFont.Small;
         var descriptionRect =
             new Rect(inRect.x, inRect.y + 35f, inRect.width, 40f);
-        Widgets.Label(descriptionRect, "PE_CreateClassDesc".Translate());
+        Widgets.Label(descriptionRect, "PE_EditClassDesc".Translate());
         var contentRect = new Rect(inRect.x, inRect.y + 80f, inRect.width,
             inRect.height - 125f);
         var leftRect = new Rect(contentRect.x, contentRect.y,
@@ -98,10 +93,10 @@ public class Dialog_CreateClass : Window, IClassDialog
 
         if (Widgets.ButtonText(
                 new Rect(inRect.width - 150f, buttonY, 150f, 35f),
-                "PE_Create".Translate())
+                "Save".Translate())
             || enter)
         {
-            StartClassCreation();
+            StartClassEditing();
         }
     }
 
@@ -117,41 +112,8 @@ public class Dialog_CreateClass : Window, IClassDialog
         curY += 30f;
         Widgets.Label(new Rect(viewRect.x, curY, 150f, 25f),
             "PE_Subject".Translate());
-        if (Widgets.ButtonText(
-                new Rect(viewRect.x + 160f, curY, 200f, 25f),
-                studyGroup.subjectLogic.LabelCap))
-        {
-            var options = new List<FloatMenuOption>
-            {
-                new(skillClassLogic.LabelCap, () =>
-                {
-                    studyGroup.subjectLogic = skillClassLogic;
-                    studyGroup.semesterGoal = 10000;
-                    studyGroup.subjectLogic.UnassignParticipants(this);
-                }),
-            };
-            if (EducationSettings.Instance.enableProficiencySystem)
-            {
-                options.Add(new FloatMenuOption(proficiencyClassLogic.LabelCap, () =>
-                {
-                    studyGroup.subjectLogic = proficiencyClassLogic;
-                    studyGroup.semesterGoal = proficiencyClassLogic.ProficiencyFocus switch
-                    {
-                        ProficiencyLevel.Firearm => ProficiencyClassLogic.FirearmTeachingDuration,
-                        _ => ProficiencyClassLogic.HighTechTeachingDuration,
-                    };
-                    studyGroup.subjectLogic.UnassignParticipants(this);
-                }));
-            }
-
-            options.Add(new FloatMenuOption(daycareClassLogic.LabelCap, () =>
-            {
-                studyGroup.subjectLogic = daycareClassLogic;
-                studyGroup.subjectLogic.UnassignParticipants(this);
-            }));
-            Find.WindowStack.Add(new FloatMenu(options));
-        }
-
+        Widgets.Label(new Rect(viewRect.x + 160f, curY, 200f, 25f),
+            studyGroup.subjectLogic.LabelCap);
         curY += 30f;
         studyGroup.subjectLogic.DrawConfigurationUI(viewRect, ref curY,
             this);
@@ -164,10 +126,9 @@ public class Dialog_CreateClass : Window, IClassDialog
                 studyGroup.classroom?.name ?? "PE_SelectClassroom".Translate()))
         {
             var options = EducationManager.Instance.Classrooms
-                .OrderBy(c => c.name)
-                .Select(c => new FloatMenuOption(c.name, () =>
+                .Select(classroom => new FloatMenuOption(classroom.name, () =>
                 {
-                    studyGroup.classroom = c;
+                    studyGroup.classroom = classroom;
                     ValidateAndRemovePawns();
                 }))
                 .ToList();
@@ -269,7 +230,7 @@ public class Dialog_CreateClass : Window, IClassDialog
             .ToList();
     }
 
-    private void StartClassCreation()
+    private void StartClassEditing()
     {
         studyGroup.teacher = AssignmentsManager.FirstAssignedPawn(TeacherRole);
         studyGroup.students = AssignmentsManager.AssignedPawns(StudentRole).ToList();
@@ -298,6 +259,7 @@ public class Dialog_CreateClass : Window, IClassDialog
         }
 
         if (EducationManager.Instance.StudyGroups
+                .Except(referenceStudyGroup)
                 .FirstOrDefault(group =>
                     group.classroom == studyGroup.classroom
                     && studyGroup.HasConflict(group)
@@ -329,9 +291,26 @@ public class Dialog_CreateClass : Window, IClassDialog
             return;
         }
 
-        EducationManager.Instance.AddStudyGroup(studyGroup);
-        TimeAssignmentUtility.GenerateTimeAssignmentDef(studyGroup);
-        EducationManager.ApplyScheduleToPawns(studyGroup);
+        var removedStudents = referenceStudyGroup.students.Except(studyGroup.students).ToList();
+        foreach (var student in removedStudents)
+        {
+            referenceStudyGroup.RemoveStudent(student);
+        }
+
+        referenceStudyGroup.CancelClass();
+        var allPriorParticipants = referenceStudyGroup.AllParticipants;
+        TimeAssignmentUtility.ClearScheduleFromPawns(referenceStudyGroup,
+            allPriorParticipants);
+        referenceStudyGroup.teacher = studyGroup.teacher;
+        referenceStudyGroup.students = studyGroup.students;
+        referenceStudyGroup.className = studyGroup.className;
+        referenceStudyGroup.startHour = studyGroup.startHour;
+        referenceStudyGroup.endHour = studyGroup.endHour;
+        referenceStudyGroup.classroom = studyGroup.classroom;
+        referenceStudyGroup.semesterGoal = studyGroup.semesterGoal;
+        referenceStudyGroup.Suspend(referenceStudyGroup.suspended
+                                    || referenceStudyGroup.students.Count == 0);
+        EducationManager.ApplyScheduleToPawns(referenceStudyGroup);
         Close();
     }
 
@@ -368,7 +347,6 @@ public class Dialog_CreateClass : Window, IClassDialog
             AssignmentsManager.Unassign(student, StudentRole);
         }
     }
-
 
     public override void WindowUpdate()
     {

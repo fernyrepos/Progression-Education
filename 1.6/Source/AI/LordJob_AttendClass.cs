@@ -1,221 +1,257 @@
-using System;
 using System.Linq;
 using RimWorld;
 using Verse;
-using Verse.AI;
 using Verse.AI.Group;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class LordJob_AttendClass : LordJob
 {
-    public class LordJob_AttendClass : LordJob
+    public const string MemoBellRung = "BellRung";
+    public const string MemoClassCancelled = "ClassCancelled";
+
+    public const string MemoClassCancelledTeacherIncapacitated =
+        "ClassCancelled_TeacherIncapacitated";
+
+    public const string MemoClassCompleted = "ClassCompleted";
+    public const string MemoClassTimeFinished = "ClassTimeFinished";
+
+    public bool classStartedSuccessfully = false;
+    public StudyGroup studyGroup;
+
+    public LordJob_AttendClass()
     {
-        public StudyGroup studyGroup;
-        public bool classStartedSuccessfully = false;
-        public const string MemoBellRung = "BellRung";
-        public const string MemoClassCompleted = "ClassCompleted";
-        public const string MemoClassTimeFinished = "ClassTimeFinished";
-        public const string MemoClassCancelled = "ClassCancelled";
-        public const string MemoClassCancelledTeacherIncapacitated = "ClassCancelled_TeacherIncapacitated";
+    }
 
-        public LordJob_AttendClass()
-        {
-        }
+    public LordJob_AttendClass(StudyGroup studyGroup)
+    {
+        this.studyGroup = studyGroup;
+        EducationLog.Message($"LordJob_AttendClass created for class '{studyGroup.className}'");
+    }
 
-        public LordJob_AttendClass(StudyGroup studyGroup)
+    private void CancelOtherJobs()
+    {
+        foreach (var member in studyGroup.students
+                     .Append(studyGroup.teacher)
+                     .Where(m => m.CanAttendClass()
+                                 && m.CurJob?.def != DefsOf.PE_RingBell
+                                 && (studyGroup.classroom.interruptJobs
+                                     || CanInterruptJob(m)))
+                )
         {
-            this.studyGroup = studyGroup;
-            EducationLog.Message($"LordJob_AttendClass created for class '{studyGroup.className}'");
-        }
-
-        public override void LordJobTick()
-        {
-            base.LordJobTick();
-            if (studyGroup?.teacher is null || studyGroup.teacher.Dead || studyGroup.teacher.Downed || studyGroup.teacher.InMentalState)
+            member.jobs?.StopAll();
+            if (member.drafter != null)
             {
-                EducationLog.Message($"Class '{studyGroup?.className}' is being cancelled: teacher is dead, downed, or in mental state.");
-                lord.ReceiveMemo(MemoClassCancelledTeacherIncapacitated);
-            }
-            else if (studyGroup.teacher.GetLord() != lord)
-            {
-                EducationLog.Message($"Class '{studyGroup.className}' is being cancelled: teacher is no longer in the class.");
-                lord.ReceiveMemo(MemoClassCancelled);
-            }
-            else if (TimeAssignmentUtility.IsPawnScheduledForClass(studyGroup.teacher, studyGroup) is false)
-            {
-                lord.ReceiveMemo(MemoClassTimeFinished);
-                EducationLog.Message($"Class '{studyGroup.className}' is finished: teacher is no longer scheduled for class.");
-            }
-            else
-            {
-                var validationReport = studyGroup.ValidateClassStatus();
-                if (!validationReport.Accepted)
-                {
-                    EducationLog.Message($"Class '{studyGroup.className}' is being cancelled: {validationReport.Reason}");
-                    lord.ReceiveMemo(MemoClassCancelled);
-                }
+                member.drafter.Drafted = true;
+                member.drafter.Drafted = false;
             }
         }
+    }
 
-        public override StateGraph CreateGraph()
+    private static bool CanInterruptJob(Pawn member)
+    {
+        var lordJob = member.GetLord()?.LordJob;
+        if (lordJob is LordJob_Joinable_MarriageCeremony or LordJob_Ritual)
         {
-            StateGraph stateGraph = new();
-            LordToil_RingBell ringBellToil = new(studyGroup);
-            stateGraph.AddToil(ringBellToil);
-            LordToil_AttendClass attendClassToil = new(studyGroup);
-            stateGraph.AddToil(attendClassToil);
-            Transition ringToAttendTransition = new(ringBellToil, attendClassToil);
-            ringToAttendTransition.AddTrigger(new Trigger_Memo(MemoBellRung));
-            ringToAttendTransition.AddPreAction(new TransitionAction_Custom((Action)delegate
-            {
-                var members = studyGroup.students.ToList();
-                members.Add(studyGroup.teacher);
-                foreach (var member in members)
-                {
-                    if (member.Downed)
-                    {
-                        continue;
-                    }
-                    Job curJob = member.CurJob;
-                    if (curJob?.def != DefsOf.PE_RingBell && member.Deathresting is false)
-                    {
-                        if (studyGroup.classroom.interruptJobs || CanInterruptJob(member))
-                        {
-                            member.jobs.StopAll();
-                            if (member.drafter != null)
-                            {
-                                member.drafter.Drafted = true;
-                                member.drafter.Drafted = false;
-                            }
-                        }
-                    }
-                }
-            }));
-            ringToAttendTransition.AddPostAction(new TransitionAction_AddStudentsToLord(studyGroup));
-            stateGraph.AddTransition(ringToAttendTransition);
-            LordToil_End endToil = new();
-            stateGraph.AddToil(endToil);
-
-            Transition timeFinishedEndTransition_Ring = new(ringBellToil, endToil);
-            timeFinishedEndTransition_Ring.AddTrigger(new Trigger_Memo(MemoClassTimeFinished));
-            timeFinishedEndTransition_Ring.AddPreAction(new TransitionAction_Custom(CheckTeacherBellFailure));
-            stateGraph.AddTransition(timeFinishedEndTransition_Ring);
-
-            Transition teacherIncapacitatedTransition_Ring = new(ringBellToil, endToil);
-            teacherIncapacitatedTransition_Ring.AddTrigger(new Trigger_Memo(MemoClassCancelledTeacherIncapacitated));
-            stateGraph.AddTransition(teacherIncapacitatedTransition_Ring);
-
-            Transition cancelledEndTransition_Ring = new(ringBellToil, endToil);
-            cancelledEndTransition_Ring.AddTrigger(new Trigger_Memo(MemoClassCancelled));
-            stateGraph.AddTransition(cancelledEndTransition_Ring);
-
-            Transition attendToClassEndTransition = new(attendClassToil, endToil);
-            attendToClassEndTransition.AddTrigger(new Trigger_Memo(MemoClassCompleted));
-            stateGraph.AddTransition(attendToClassEndTransition);
-
-            Transition timeFinishedEndTransition = new(attendClassToil, endToil);
-            timeFinishedEndTransition.AddTrigger(new Trigger_Memo(MemoClassTimeFinished));
-            timeFinishedEndTransition.AddPreAction(new TransitionAction_Custom(CheckProficiencyClassStartFailure));
-            stateGraph.AddTransition(timeFinishedEndTransition);
-
-            Transition cancelledEndTransition = new(attendClassToil, endToil);
-            cancelledEndTransition.AddTrigger(new Trigger_Memo(MemoClassCancelled));
-            stateGraph.AddTransition(cancelledEndTransition);
-
-            Transition teacherIncapacitatedTransition = new(attendClassToil, endToil);
-            teacherIncapacitatedTransition.AddTrigger(new Trigger_Memo(MemoClassCancelledTeacherIncapacitated));
-            stateGraph.AddTransition(teacherIncapacitatedTransition);
-
-            return stateGraph;
-        }
-
-        private static bool CanInterruptJob(Pawn member)
-        {
-            var lordJob = member.GetLord()?.LordJob;
-            if (lordJob is LordJob_Joinable_MarriageCeremony or LordJob_Ritual)
-            {
-                return false;
-            }
-            if (member.jobs.curDriver?.asleep ?? false)
-            {
-                return true;
-            }
-            var curDriver = member.jobs.curDriver;
-            if (curDriver is JobDriver_Meditate or JobDriver_Research)
-            {
-                return true;
-            }
-            var jobGiver = member.jobs.curDriver?.job?.jobGiver;
-            if (jobGiver is JobGiver_GetJoy)
-            {
-                return true;
-            }
             return false;
         }
 
-        public override void ExposeData()
+        if (member.jobs.curDriver?.asleep ?? false)
         {
-            base.ExposeData();
-            Scribe_References.Look(ref studyGroup, "studyGroup");
+            return true;
         }
 
-        private void CheckProficiencyClassStartFailure()
+        var curDriver = member.jobs.curDriver;
+        if (curDriver is JobDriver_Meditate or JobDriver_Research)
         {
-            if (!classStartedSuccessfully && studyGroup.subjectLogic is ProficiencyClassLogic)
-            {
-                Messages.Message("PE_ProficiencyClassNeverStarted".Translate(studyGroup.className), MessageTypeDefOf.NegativeEvent);
-            }
+            return true;
         }
 
-        private void CheckTeacherBellFailure()
+        var jobGiver = member.jobs.curDriver?.job?.jobGiver;
+        if (jobGiver is JobGiver_GetJoy)
         {
-            if (CompBell.AllBells.Count > 0)
-            {
-                bool hasManualBell = false;
-                foreach (var bellComp in CompBell.AllBells)
-                {
-                    if (bellComp.parent.Map == studyGroup.Map && !bellComp.ShouldRingAutomatically)
-                    {
-                        hasManualBell = true;
-                        break;
-                    }
-                }
-
-                if (hasManualBell)
-                {
-                    Messages.Message("PE_TeacherBellFailure".Translate(), MessageTypeDefOf.NegativeEvent);
-                }
-            }
+            return true;
         }
 
-        public class TransitionAction_AddStudentsToLord : TransitionAction
-        {
-            private readonly StudyGroup studyGroup;
+        return false;
+    }
 
-            public TransitionAction_AddStudentsToLord(StudyGroup studyGroup)
+    private void CheckProficiencyClassStartFailure()
+    {
+        if (!classStartedSuccessfully
+            && studyGroup.subjectLogic is ProficiencyClassLogic)
+        {
+            Messages.Message(
+                "PE_ProficiencyClassNeverStarted".Translate(studyGroup.className),
+                MessageTypeDefOf.NegativeEvent);
+        }
+    }
+
+    private void CheckTeacherBellFailure()
+    {
+        if (CompBell.AllBells.Count > 0)
+        {
+            var hasManualBell = CompBell.AllBells.Any(bellComp =>
+                bellComp.parent.Map == studyGroup.Map
+                && !bellComp.ShouldRingAutomatically);
+
+            if (hasManualBell)
             {
-                this.studyGroup = studyGroup;
+                Messages.Message("PE_TeacherBellFailure".Translate(),
+                    MessageTypeDefOf.NegativeEvent);
+            }
+        }
+    }
+
+    public override StateGraph CreateGraph()
+    {
+        var stateGraph = new StateGraph();
+
+        var ringBellToil = new LordToil_RingBell(studyGroup);
+        stateGraph.AddToil(ringBellToil);
+
+        var attendClassToil = new LordToil_AttendClass(studyGroup);
+        stateGraph.AddToil(attendClassToil);
+
+        var bellRungTransition = new Transition(ringBellToil, attendClassToil);
+        bellRungTransition.AddTrigger(new Trigger_Memo(MemoBellRung));
+        bellRungTransition.AddPreAction(new TransitionAction_Custom(CancelOtherJobs));
+        bellRungTransition.AddPostAction(new TransitionAction_AddStudentsToLord(studyGroup));
+        stateGraph.AddTransition(bellRungTransition);
+
+        var endToil = new LordToil_End();
+        stateGraph.AddToil(endToil);
+
+        var classTimeFinishedTransition =
+            new Transition(ringBellToil, endToil);
+        classTimeFinishedTransition.AddTrigger(new Trigger_Memo(MemoClassTimeFinished));
+        classTimeFinishedTransition.AddPreAction(
+            new TransitionAction_Custom(CheckTeacherBellFailure));
+        stateGraph.AddTransition(classTimeFinishedTransition);
+
+        var classCancelledTeacherIncapacitatedTransition =
+            new Transition(ringBellToil, endToil);
+        classCancelledTeacherIncapacitatedTransition.AddTrigger(
+            new Trigger_Memo(MemoClassCancelledTeacherIncapacitated));
+        stateGraph.AddTransition(classCancelledTeacherIncapacitatedTransition);
+
+        var classCancelledTransition = new Transition(ringBellToil, endToil);
+        classCancelledTransition.AddTrigger(new Trigger_Memo(MemoClassCancelled));
+        stateGraph.AddTransition(classCancelledTransition);
+
+        var classCompletedTransition =
+            new Transition(attendClassToil, endToil);
+        classCompletedTransition.AddTrigger(new Trigger_Memo(MemoClassCompleted));
+        stateGraph.AddTransition(classCompletedTransition);
+
+        var timeFinishedEndTransition =
+            new Transition(attendClassToil, endToil);
+        timeFinishedEndTransition.AddTrigger(new Trigger_Memo(MemoClassTimeFinished));
+        timeFinishedEndTransition.AddPreAction(
+            new TransitionAction_Custom(CheckProficiencyClassStartFailure));
+        stateGraph.AddTransition(timeFinishedEndTransition);
+
+        var cancelledEndTransition = new Transition(attendClassToil, endToil);
+        cancelledEndTransition.AddTrigger(new Trigger_Memo(MemoClassCancelled));
+        stateGraph.AddTransition(cancelledEndTransition);
+
+        var teacherIncapacitatedTransition =
+            new Transition(attendClassToil, endToil);
+        teacherIncapacitatedTransition.AddTrigger(
+            new Trigger_Memo(MemoClassCancelledTeacherIncapacitated));
+        stateGraph.AddTransition(teacherIncapacitatedTransition);
+
+        return stateGraph;
+    }
+
+    public override void ExposeData()
+    {
+        base.ExposeData();
+        Scribe_References.Look(ref studyGroup, "studyGroup");
+    }
+
+    public override void LordJobTick()
+    {
+        base.LordJobTick();
+        if (studyGroup == null)
+        {
+            EducationLog.Message(
+                "LordJob_AttendClass.LordJobTick Study group is null. Canceling class.");
+            lord.ReceiveMemo(MemoClassCancelled);
+            return;
+        }
+
+        if (studyGroup?.teacher == null
+            || studyGroup.teacher.DeadOrDowned
+            || studyGroup.teacher.InMentalState)
+        {
+            EducationLog.Message(
+                $"LordJob_AttendClass.LordJobTick Class '{
+                    studyGroup?.className
+                }' is being cancelled: teacher is dead, downed, or in mental state.");
+            lord.ReceiveMemo(MemoClassCancelledTeacherIncapacitated);
+            return;
+        }
+
+        if (studyGroup.teacher.GetLord() != lord)
+        {
+            EducationLog.Message(
+                $"LordJob_AttendClass.LordJobTick Class '{
+                    studyGroup.className
+                }' is being cancelled: teacher is no longer in the class.");
+            lord.ReceiveMemo(MemoClassCancelled);
+            return;
+        }
+
+        if (!TimeAssignmentUtility.IsPawnScheduledForClass(studyGroup.teacher,
+                studyGroup))
+        {
+            lord.ReceiveMemo(MemoClassTimeFinished);
+            EducationLog.Message(
+                $"LordJob_AttendClass.LordJobTick Class '{
+                    studyGroup.className
+                }' is finished: teacher is no longer scheduled for class.");
+            return;
+        }
+
+        if (studyGroup.ValidateClassStatus() is { Accepted: false } validationReport)
+        {
+            EducationLog.Message(
+                $"LordJob_AttendClass.LordJobTick Class '{
+                    studyGroup.className
+                }' is being cancelled: {
+                    validationReport.Reason
+                }");
+            lord.ReceiveMemo(MemoClassCancelled);
+        }
+    }
+
+    public class TransitionAction_AddStudentsToLord(StudyGroup studyGroup) : TransitionAction
+    {
+        public override void DoAction(Transition trans)
+        {
+            if (trans?.target?.lord is not Lord lord)
+            {
+                return;
             }
 
-            public override void DoAction(Transition trans)
+            var studentRole = studyGroup.GetStudentRole();
+            foreach (var student in studyGroup.students
+                         .Where(s => s.CanAttendClass()
+                                     && s.GetLord() == null))
             {
-                var lord = trans.target.lord;
-                if (lord != null)
+                if (!studentRole.CanAcceptPawn(student).Accepted)
                 {
-                    var studentRole = studyGroup.GetStudentRole();
-
-                    foreach (var student in studyGroup.students)
-                    {
-                        var studentQualification = studentRole.CanAcceptPawn(student);
-                        if (studentQualification.Accepted)
-                        {
-                            if (!student.Downed && student.GetLord() == null)
-                            {
-                                lord.AddPawn(student);
-                                EducationLog.Message($"Added student {student.LabelShort} to lord for class '{studyGroup.className}'");
-                            }
-                        }
-                    }
+                    continue;
                 }
+
+                lord.AddPawn(student);
+                EducationLog.Message(
+                    $"LordJob_AttendClass.TransitionAction_AddStudentsToLord Added student {
+                        student.LabelShort
+                    } to lord for class '{
+                        studyGroup.className
+                    }'");
             }
         }
     }

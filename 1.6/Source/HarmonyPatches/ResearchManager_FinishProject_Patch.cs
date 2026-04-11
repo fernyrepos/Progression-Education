@@ -1,30 +1,34 @@
 using HarmonyLib;
 using RimWorld;
-using System.Collections.Generic;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HarmonyPatch(typeof(ResearchManager),
+    nameof(ResearchManager.FinishProject))]
+public static class ResearchManager_FinishProject_Patch
 {
-    [HarmonyPatch(typeof(ResearchManager), nameof(ResearchManager.FinishProject))]
-    public static class ResearchManager_FinishProject_Patch
+    public static void Postfix(ResearchProjectDef proj)
     {
-        public static void Postfix(ResearchProjectDef proj)
+        if (!EducationSettings.Instance.enableProficiencySystem)
         {
-            if (!EducationSettings.Instance.enableProficiencySystem)
+            return;
+        }
+
+        var extension = proj.GetModExtension<ResearchGrantsTrait>();
+        if (extension != null)
+        {
+            foreach (var pawn in PawnsFinder
+                         .AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
             {
-                return;
+                ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait,
+                    true);
             }
-            var extension = proj.GetModExtension<ResearchGrantsTrait>();
-            if (extension != null)
+
+            if (Find.TickManager.TicksGame >= 5000)
             {
-                foreach (Pawn pawn in PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
-                {
-                    ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait, true);
-                }
-                if (Find.TickManager.TicksGame >= 5000)
-                {
-                    Find.LetterStack.ReceiveLetter(extension.title, extension.desc, LetterDefOf.PositiveEvent);
-                }
+                Find.LetterStack.ReceiveLetter(extension.title, extension.desc,
+                    LetterDefOf.PositiveEvent);
             }
         }
     }

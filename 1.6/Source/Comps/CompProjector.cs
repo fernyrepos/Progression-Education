@@ -1,18 +1,17 @@
-﻿using Verse;
+using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class CompProperties_Projector
+    : CompProperties
 {
-    public class CompProperties_Projector : CompProperties
+    public CompProperties_Projector()
     {
-        public float learningBonus = 0.1f;
+        compClass = typeof(CompProjector);
+    }
+}
 
-        public CompProperties_Projector()
-        {
-            compClass = typeof(CompProjector);
-        }
-    }
-    public class CompProjector : ThingComp
-    {
-        public CompProperties_Projector Props => (CompProperties_Projector)props;
-    }
+public class CompProjector : ThingComp
+{
+    public CompProperties_Projector Props => (CompProperties_Projector)props;
 }

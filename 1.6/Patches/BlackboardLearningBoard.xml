@@ -1,27 +1,49 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Patch>
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/description</xpath>
+    <value>
+      <description>A flat stone-like surface for writing on with chalk. Placing a board marks the area as a classroom, which can then be assigned classes.</description>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/statBases</xpath>
+    <value>
+      <PE_ClassSpeed>1.0</PE_ClassSpeed>
+    </value>
+  </Operation>
+
   <Operation Class="PatchOperationAdd">
     <xpath>/Defs/ThingDef[defName="Blackboard"]/comps</xpath>
     <value>
-      <li Class="ProgressionEducation.CompProperties_LearningBoard">
-        <qualityBonuses>
-          <Awful>0.8</Awful>
-          <Poor>0.9</Poor>
-          <Normal>1</Normal>
-          <Good>1.1</Good>
-          <Excellent>1.2</Excellent>
-          <Masterwork>1.3</Masterwork>
-          <Legendary>1.5</Legendary>
-        </qualityBonuses>
-      </li>
+      <li Class="ProgressionEducation.CompProperties_LearningBoard" />
     </value>
   </Operation>
+
   <Operation Class="PatchOperationAdd">
     <xpath>/Defs/ThingDef[defName="Blackboard"]/placeWorkers</xpath>
     <value>
       <li>ProgressionEducation.PlaceWorker_SingleLearningBoard</li>
     </value>
   </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/comps</xpath>
+    <value>
+      <li Class="CompProperties_AffectedByFacilities">
+        <linkableFacilities>
+          <li>PE_Projector</li>
+        </linkableFacilities>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationRemove">
+    <xpath>/Defs/ThingDef[defName="Blackboard"]/comps/li[@Class="CompProperties_Facility"]</xpath>
+    <success>Always</success>
+  </Operation>
+
   <Operation Class="PatchOperationRemove">
     <xpath>Defs/ThingDef/comps/li[compClass="CompStatEntrySchoolDesk"]</xpath>
     <success>Always</success>

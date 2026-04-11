@@ -2,14 +2,15 @@
 using RimWorld;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HarmonyPatch(typeof(JobGiver_GetRest),
+    nameof(JobGiver_GetRest.GetPriority))]
+public static class JobGiver_GetRest_GetPriority_Patch
 {
-    [HarmonyPatch(typeof(JobGiver_GetRest), nameof(JobGiver_GetRest.GetPriority))]
-    public static class JobGiver_GetRest_GetPriority_Patch
+    public static bool Prefix(Pawn pawn, ref float __result)
     {
-        public static bool Prefix(Pawn pawn, ref float __result)
-        {
-            return !TimeAssignmentUtility.ShouldPreventPriorityForStudyGroup(pawn, ref __result);
-        }
+        return !TimeAssignmentUtility.ShouldPreventPriorityForStudyGroup(pawn,
+            ref __result);
     }
 }

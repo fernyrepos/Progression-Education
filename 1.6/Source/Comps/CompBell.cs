@@ -1,54 +1,56 @@
-﻿using RimWorld;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.Sound;
 
-namespace ProgressionEducation
-{
-    public class CompProperties_Bell : CompProperties
-    {
-        public int ticksToRing = 0;
-        public SoundDef soundDef;
+namespace ProgressionEducation;
 
-        public CompProperties_Bell()
+public class CompProperties_Bell : CompProperties
+{
+    public const int TicksToRing = GenDate.TicksPerHour / 4;
+    public SoundDef soundDef;
+    public int ticksToRing = TicksToRing;
+
+    public CompProperties_Bell()
+    {
+        compClass = typeof(CompBell);
+    }
+}
+
+public class CompBell : ThingComp
+{
+    public static List<CompBell> AllBells = [];
+
+    public bool IsPowered
+    {
+        get
         {
-            compClass = typeof(CompBell);
+            var powerComp = parent.GetComp<CompPowerTrader>();
+            return powerComp != null && powerComp.PowerOn;
         }
     }
-    public class CompBell : ThingComp
+
+    public CompProperties_Bell Props => (CompProperties_Bell)props;
+
+    public bool ShouldRingAutomatically => Props.ticksToRing == 0 && IsPowered;
+
+    public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
     {
-        public static List<CompBell> AllBells = [];
-        public CompProperties_Bell Props => (CompProperties_Bell)props;
+        AllBells.Remove(this);
+        base.PostDeSpawn(map, mode);
+    }
 
-        public bool IsPowered
+    public override void PostSpawnSetup(bool respawningAfterLoad)
+    {
+        base.PostSpawnSetup(respawningAfterLoad);
+        if (!AllBells.Contains(this))
         {
-            get
-            {
-                var powerComp = parent.GetComp<CompPowerTrader>();
-                return powerComp != null && powerComp.PowerOn;
-            }
+            AllBells.Add(this);
         }
+    }
 
-        public bool ShouldRingAutomatically => Props.ticksToRing == 0 && IsPowered;
-
-        public override void PostSpawnSetup(bool respawningAfterLoad)
-        {
-            base.PostSpawnSetup(respawningAfterLoad);
-            if (!AllBells.Contains(this))
-            {
-                AllBells.Add(this);
-            }
-        }
-
-        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
-        {
-            AllBells.Remove(this);
-            base.PostDeSpawn(map, mode);
-        }
-
-        public void RingBell()
-        {
-            Props.soundDef.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
-        }
+    public void RingBell()
+    {
+        Props.soundDef.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
     }
 }

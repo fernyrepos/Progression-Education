@@ -1,18 +1,17 @@
 using HarmonyLib;
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HarmonyPatch(typeof(Pawn), "ExposeData")]
+public static class Pawn_ExposeData_Patch
 {
-    [HarmonyPatch(typeof(Pawn), "ExposeData")]
-    public static class Pawn_ExposeData_Patch
+    public static void Postfix(Pawn __instance)
     {
-        public static void Postfix(Pawn __instance)
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                ProficiencyUtility.ApplyProficiencyTraitToPawn(__instance);
-                TimeAssignmentUtility.TryRepairTimetable(__instance);
-            }
+            ProficiencyUtility.ApplyProficiencyTraitToPawn(__instance);
+            TimeAssignmentUtility.TryRepairTimetable(__instance);
         }
     }
 }

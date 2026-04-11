@@ -1,14 +1,13 @@
 using HarmonyLib;
 using RimWorld;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+[HarmonyPatch(typeof(SchoolUtility), nameof(SchoolUtility.FindTeacher))]
+public static class SchoolUtility_FindTeacher_Patch
 {
-    [HarmonyPatch(typeof(SchoolUtility), nameof(SchoolUtility.FindTeacher))]
-    public static class SchoolUtility_FindTeacher_Patch
+    public static bool Prefix()
     {
-        public static bool Prefix()
-        {
-            return false;
-        }
+        return false;
     }
 }

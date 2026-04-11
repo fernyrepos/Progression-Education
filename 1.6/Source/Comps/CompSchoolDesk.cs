@@ -1,19 +1,17 @@
 using Verse;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class CompProperties_SchoolDesk
+    : CompProperties
 {
-    public class CompProperties_SchoolDesk : CompProperties
+    public CompProperties_SchoolDesk()
     {
-        public float speedModifier = 1.0f;
-
-        public CompProperties_SchoolDesk()
-        {
-            compClass = typeof(CompSchoolDesk);
-        }
+        compClass = typeof(CompSchoolDesk);
     }
+}
 
-    public class CompSchoolDesk : ThingComp
-    {
-        public CompProperties_SchoolDesk Props => (CompProperties_SchoolDesk)props;
-    }
+public class CompSchoolDesk : ThingComp
+{
+    public CompProperties_SchoolDesk Props => (CompProperties_SchoolDesk)props;
 }

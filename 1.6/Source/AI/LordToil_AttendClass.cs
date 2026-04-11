@@ -1,102 +1,132 @@
+using System.Text;
 using RimWorld;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace ProgressionEducation
+namespace ProgressionEducation;
+
+public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
 {
-    public class LordToil_AttendClass : LordToil
+    private bool partialAttendanceWarningShown;
+
+    public override void LordToilTick()
     {
-        private readonly StudyGroup studyGroup;
-        private bool partialAttendanceWarningShown = false;
-
-        public LordToil_AttendClass(StudyGroup studyGroup)
+        base.LordToilTick();
+        if (studyGroup.IsCompleted)
         {
-            this.studyGroup = studyGroup;
-        }
+            EducationLog.Message(
+                $"Class '{
+                    studyGroup.className
+                }' has completed its semester goal. Granting rewards and ending lord.");
+            studyGroup.subjectLogic.GrantCompletionRewards();
 
-        public override void UpdateAllDuties()
-        {
-            EducationLog.Message($"LordToil_AttendClass.UpdateAllDuties called for class '{studyGroup.className}'");
-            if (studyGroup.teacher.Downed)
+            var label = "PE_ClassCompleted".Translate(studyGroup.className);
+            var text = new StringBuilder("PE_ClassCompletedDesc".Translate(studyGroup.className));
+            var graduates = new StringBuilder();
+            foreach (var student in studyGroup.students)
             {
-                lord.ReceiveMemo(LordJob_AttendClass.MemoClassCancelledTeacherIncapacitated);
-                return;
+                graduates.AppendWithComma(student.LabelShort);
             }
-            else
+
+            text.AppendLineIfNotEmpty();
+            text.AppendInNewLine("PE_ClassGraduates".Translate(graduates.ToString()));
+            Find.LetterStack.ReceiveLetter(label, text.ToString(),
+                LetterDefOf.PositiveEvent);
+            EducationManager.Instance.RemoveStudyGroup(studyGroup);
+            lord.ReceiveMemo("ClassCompleted");
+        }
+        else
+        {
+            if (studyGroup.ClassIsActive())
             {
-                studyGroup.teacher.mindState.duty = new PawnDuty(DefsOf.PE_TeachDuty, studyGroup.teacher.Position);
-                EducationLog.Message($"-> Set teacher {studyGroup.teacher.LabelShort} duty to PE_TeachDuty at position {studyGroup.teacher.Position}");
+                var lordJob = lord.LordJob as LordJob_AttendClass;
+                lordJob?.classStartedSuccessfully = true;
+            }
+
+            if (!partialAttendanceWarningShown
+                && studyGroup.subjectLogic is SkillClassLogic)
+            {
+                if (studyGroup.teacher?.jobs?.curDriver
+                        is JobDriver_Teach { waitingTicks: >= StudyGroup.MaxTeacherWaitingTicks }
+                    && !studyGroup.AllStudentsPresentAndAttending())
+                {
+                    Messages.Message(
+                        "PE_ClassPartiallyFunctioningWarning".Translate(studyGroup.className),
+                        MessageTypeDefOf.CautionInput);
+                    partialAttendanceWarningShown = true;
+                }
             }
 
             foreach (var student in studyGroup.students)
             {
-                if (student.Downed)
+                if (!student.CanAttendClass()
+                    || student.CurJob is not Job job
+                    || job.def == DefsOf.PE_AttendClass
+                    || !student.mindState.IsIdle)
                 {
-                    lord.RemovePawn(student);
+                    continue;
                 }
-                else
+
+                student.jobs.StopAll();
+                EducationLog.Message(
+                    $"-> Stopped job for student {
+                        student.LabelShort
+                    } because it was not PE_AttendClass");
+                if (lord.ownedPawns.Contains(student)
+                    || !CanAddPawn(student))
                 {
-                    student.mindState.duty = new PawnDuty(DefsOf.PE_AttendClassDuty, student.Position);
-                    EducationLog.Message($"-> Set student {student.LabelShort} duty to PE_AttendClassDuty at position {student.Position}");
+                    continue;
                 }
+
+                EducationLog.Message(
+                    $"-> Adding student {
+                        student.LabelShort
+                    } to Lord PE_AttendClass because it was orphaned");
+                lord.AddPawn(student);
             }
-            EducationLog.Message($"-> Finished setting duties for {studyGroup.students.Count} students");
+        }
+    }
+
+    public override void UpdateAllDuties()
+    {
+        EducationLog.Message(
+            $"LordToil_AttendClass.UpdateAllDuties called for class '{studyGroup.className}'");
+        if (!studyGroup.teacher.CanAttendClass())
+        {
+            lord.ReceiveMemo(LordJob_AttendClass.MemoClassCancelledTeacherIncapacitated);
+            return;
         }
 
-        public override void LordToilTick()
+        studyGroup.teacher.mindState.duty =
+            new PawnDuty(DefsOf.PE_TeachDuty, studyGroup.teacher.Position);
+        EducationLog.Message(
+            $"-> Set teacher {
+                studyGroup.teacher.LabelShort
+            } duty to PE_TeachDuty at position {
+                studyGroup.teacher.Position
+            }");
+
+        foreach (var student in studyGroup.students)
         {
-            base.LordToilTick();
-            if (studyGroup.IsCompleted)
+            if (student.Downed)
             {
-                EducationLog.Message($"Class '{studyGroup.className}' has completed its semester goal. Granting rewards and ending lord.");
-                studyGroup.subjectLogic.GrantCompletionRewards();
-
-                string label = "PE_ClassCompleted".Translate(studyGroup.className);
-                string text = "PE_ClassCompletedDesc".Translate(studyGroup.className);
-                string graduates = "";
-                foreach (var student in studyGroup.students)
-                {
-                    if (!string.IsNullOrEmpty(graduates))
-                    {
-                        graduates += ", ";
-                    }
-
-                    graduates += student.LabelShort;
-                }
-
-                text += "\n\n" + "PE_ClassGraduates".Translate(graduates);
-                Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.PositiveEvent);
-                EducationManager.Instance.RemoveStudyGroup(studyGroup);
-                lord.ReceiveMemo("ClassCompleted");
+                lord.RemovePawn(student);
             }
             else
             {
-                if (studyGroup.ClassIsActive())
-                {
-                    var lordJob = lord.LordJob as LordJob_AttendClass;
-                    lordJob.classStartedSuccessfully = true;
-                }
-
-                if (!partialAttendanceWarningShown && studyGroup.subjectLogic is SkillClassLogic)
-                {
-                    var teacherJobDriver = studyGroup.teacher?.jobs?.curDriver as JobDriver_Teach;
-                    if (teacherJobDriver != null && teacherJobDriver.waitingTicks >= StudyGroup.MaxTeacherWaitingTicks && studyGroup.AllStudentsPresent() is false)
-                    {
-                        Messages.Message("PE_ClassPartiallyFunctioningWarning".Translate(studyGroup.className), MessageTypeDefOf.CautionInput);
-                        partialAttendanceWarningShown = true;
-                    }
-                }
-
-                foreach (var student in studyGroup.students)
-                {
-                    if (!student.Downed && student.CurJob is Job job && job.def != DefsOf.PE_AttendClass && student.mindState.IsIdle)
-                    {
-                        student.jobs.StopAll();
-                        EducationLog.Message($"-> Stopped job for student {student.LabelShort} because it was not PE_AttendClass");
-                    }
-                }
+                student.mindState.duty = new PawnDuty(DefsOf.PE_AttendClassDuty,
+                    student.Position);
+                EducationLog.Message(
+                    $"-> Set student {
+                        student.LabelShort
+                    } duty to PE_AttendClassDuty at position {
+                        student.Position
+                    }");
             }
         }
+
+        EducationLog.Message(
+            $"-> Finished setting duties for {studyGroup.students.Count} students");
     }
 }

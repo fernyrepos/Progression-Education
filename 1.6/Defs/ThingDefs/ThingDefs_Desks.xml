@@ -57,11 +57,6 @@
         <building>
             <paintable>false</paintable>
         </building>
-        <comps>
-            <li Class="ProgressionEducation.CompProperties_SchoolDesk">
-                <speedModifier>0.6</speedModifier>
-            </li>
-        </comps>
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
@@ -125,11 +120,6 @@
         <building>
             <paintable>true</paintable>
         </building>
-        <comps>
-            <li Class="ProgressionEducation.CompProperties_SchoolDesk">
-                <speedModifier>1.5</speedModifier>
-            </li>
-        </comps>
     </ThingDef>
 
 </Defs>

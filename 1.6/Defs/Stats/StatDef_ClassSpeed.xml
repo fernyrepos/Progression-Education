@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+    <StatDef>
+        <defName>PE_ClassSpeed</defName>
+        <label>class speed</label>
+        <description>Provides a bonus to the speed of classes conducted in the same room</description>
+        <workerClass>ProgressionEducation.StatWorker_ClassSpeed</workerClass>
+        <category>Building</category>
+        <cacheable>true</cacheable>
+        <defaultBaseValue>1</defaultBaseValue>
+        <minValue>0</minValue>
+        <toStringStyle>PercentZero</toStringStyle>
+        <displayPriorityInCategory>60000</displayPriorityInCategory>
+    </StatDef>
+</Defs>
