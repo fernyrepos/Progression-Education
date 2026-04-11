@@ -136,4 +136,6 @@
   <PE_TeachingFactor>Teaching factor</PE_TeachingFactor>
   <PE_LessonOptions>Lesson options</PE_LessonOptions>
   <PE_CantChangeTeacher>Class is ongoing so the teacher role is locked</PE_CantChangeTeacher>
+  <PE_AddKids>Can accept children on age-up</PE_AddKids>
+  <PE_AddKids_Desc>If enabled, daycares in this classroom are allowed to add children when they age-up.</PE_AddKids_Desc>
 </LanguageData>

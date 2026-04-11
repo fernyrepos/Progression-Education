@@ -10,6 +10,7 @@ public class Classroom : IExposable, ILoadReferenceable, IRenameable
     public Color color;
     public int id;
     public bool interruptJobs = true;
+    public bool addKids = true;
     private Thing learningBoardThing;
     public string name;
     public bool restrictReservationsDuringClass;
@@ -40,7 +41,8 @@ public class Classroom : IExposable, ILoadReferenceable, IRenameable
         Scribe_Values.Look(ref restrictReservationsDuringClass,
             "restrictReservationsDuringClass",
             true);
-        Scribe_Values.Look(ref interruptJobs, "interruptJobs");
+        Scribe_Values.Look(ref interruptJobs, "interruptJobs", true);
+        Scribe_Values.Look(ref addKids, "addKids", true);
     }
 
     public string GetUniqueLoadID()

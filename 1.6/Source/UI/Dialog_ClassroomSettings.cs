@@ -42,6 +42,13 @@ public class Dialog_ClassroomSettings : Window
         TooltipHandler.TipRegion(
             new Rect(15f, curY, inRect.width - 30f, rowHeight),
             "PE_InterruptJobsDuringClass_Desc".Translate());
+        curY += rowHeight + 10f;
+        Widgets.CheckboxLabeled(
+            new Rect(15f, curY, inRect.width - 30f, rowHeight),
+            "PE_AddKids".Translate(), ref classroom.addKids);
+        TooltipHandler.TipRegion(
+            new Rect(15f, curY, inRect.width - 30f, rowHeight),
+            "PE_AddKids_Desc".Translate());
 
         curY += rowHeight + 10f;
         var buttonRect = new Rect((inRect.width - 150f) / 2f, inRect.height - 40f,

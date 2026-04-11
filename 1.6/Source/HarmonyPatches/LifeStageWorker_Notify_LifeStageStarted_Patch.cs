@@ -17,7 +17,8 @@ public static class LifeStageWorker_Notify_LifeStageStarted_Patch
         }
 
         var daycareGroups = EducationManager.Instance.studyGroups
-            .Where(sg => sg.subjectLogic is DaycareClassLogic)
+            .Where(sg => sg.subjectLogic is DaycareClassLogic
+            && (sg.classroom?.addKids ?? false))
             .ToList();
         if (daycareGroups.Count == 0)
         {
