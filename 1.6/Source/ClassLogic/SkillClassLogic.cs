@@ -226,6 +226,7 @@ public class SkillClassLogic : ClassSubjectLogic
                         leftAlignedLabel: "PE_Xp".Translate(1000.ToString("N0")),
                         rightAlignedLabel: "PE_Xp".Translate(100000.ToString("N0")),
                         roundTo: 1000);
+                    curY += 30f;
                 }
 
                 Widgets.Label(new Rect(rect.x + 160f, curY, 200f, 25f),
