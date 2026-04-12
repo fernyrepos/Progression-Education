@@ -213,6 +213,11 @@ public class EducationManager(World world) : WorldComponent(world)
             return;
         }
 
+        if (studyGroup.suspended)
+        {
+            return;
+        }
+
         var validationReport = studyGroup.ValidateClassStatus();
         if (!validationReport.Accepted)
         {
@@ -231,6 +236,7 @@ public class EducationManager(World world) : WorldComponent(world)
                         validationReport.Reason
                     }",
                     MessageTypeDefOf.NegativeEvent);
+                studyGroup.Notify_TeacherUnavailable();
                 checkedStudyGroups.Add(studyGroup);
             }
 
@@ -271,6 +277,15 @@ public class EducationManager(World world) : WorldComponent(world)
                 $"-> An existing LordJob_AttendClass was found for class '{
                     studyGroup.className
                 }'. Not initiating another class.");
+            return;
+        }
+
+        if (!GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
+        {
+            EducationLog.Message($"-> but {
+                studyGroup.teacher.LabelShort
+            } is unavailable. Suspending class.");
+            studyGroup.Notify_TeacherUnavailable();
             return;
         }
 

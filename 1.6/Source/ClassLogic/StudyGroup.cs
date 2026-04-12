@@ -288,7 +288,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
 
     public bool IsStudentPresentAndAttending(Pawn student)
     {
-        if (!student.CanAttendClass())
+        if (!GatheringsUtility.PawnCanStartOrContinueGathering(student))
         {
             return false;
         }
@@ -377,13 +377,23 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
 
         if (!suspend
             && suspended
-            && students.NullOrEmpty())
+            )
         {
-            Messages.Message("PE_CannotUnsuspendNoStudents".Translate(),
-                MessageTypeDefOf.RejectInput);
-            return;
-        }
+            if (students.NullOrEmpty())
+            {
+                Messages.Message("PE_CannotUnsuspendNoStudents".Translate(),
+                    MessageTypeDefOf.RejectInput);
+                return;
+            }
 
+            if (!teacher.CanAttendClass())
+            {
+                Messages.Message("PE_CannotUnsuspendNoTeacher".Translate(),
+                    MessageTypeDefOf.RejectInput);
+                return;
+            }
+        }
+      
         suspended = suspend;
         if (suspend)
         {
@@ -400,6 +410,13 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         {
             CancelClass();
         }
+    }
+    public void Notify_TeacherUnavailable()
+    {
+        Messages.Message(
+            "PE_CannotAttendClass".Translate(className,
+                teacher.LabelShort), MessageTypeDefOf.CautionInput);
+        Suspend(true);
     }
 
     public AcceptanceReport ValidateClassStatus()
@@ -436,7 +453,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         if (!teacher.Spawned
             || MapOrSourceMap(teacher) != learningBoardSourceMap)
         {
-            return new AcceptanceReport("PE_TeacherOffMap".Translate());
+            return new AcceptanceReport("PE_TeacherOffMap".Translate(className));
         }
 
         var teacherRole = GetTeacherRole();

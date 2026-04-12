@@ -131,6 +131,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         {
             return;
         }
+
         var progressRemaining = studyGroup.semesterGoal - studyGroup.currentProgress;
         var estimatedTicks = Mathf.CeilToInt(progressRemaining / progressPerTick);
         Widgets.Label(new Rect(rect.x, curY, 360f, 25f),
@@ -271,7 +272,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
                 "PE_TeacherNotQualifiedProficiency".Translate(teacher.LabelShort,
                     proficiencyLabel));
         }
-        
+
         if (studyGroup.currentProgress > 0f
             && teacher != studyGroup.teacher)
         {

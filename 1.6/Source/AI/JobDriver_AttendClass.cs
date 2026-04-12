@@ -77,6 +77,7 @@ public class JobDriver_AttendClass : JobDriver_LessonBase
 
     public override IEnumerable<Toil> MakeNewToils()
     {
+        this.FailOn(() => !GatheringsUtility.PawnCanStartOrContinueGathering(pawn));
         this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
         this.FailOn(() => pawn.mindState.duty.def != DefsOf.PE_AttendClassDuty);
         this.FailOn(IsFailOnLordChanged);
@@ -87,6 +88,10 @@ public class JobDriver_AttendClass : JobDriver_LessonBase
 
     public override bool TryMakePreToilReservations(bool errorOnFailed)
     {
+        if (!pawn.CanAttendClass())
+        {
+            return false;
+        }
         TimeAssignmentUtility.allowUsing = true;
         var reserveThing =
             pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1,

@@ -32,6 +32,7 @@ public class JobDriver_RingBell : JobDriver
         this.FailOn(() => pawn.mindState.duty.def != DefsOf.PE_RingBellDuty);
         this.FailOn(IsFailOnPowerLost);
         this.FailOn(IsFailOnLordChanged);
+        this.FailOn(() => !GatheringsUtility.PawnCanStartOrContinueGathering(pawn));
         yield return Toils_Reserve.Reserve(TargetIndex.A);
         yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
         var ringBell = new Toil
