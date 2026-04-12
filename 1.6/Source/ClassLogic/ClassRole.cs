@@ -41,8 +41,10 @@ public class ClassRole(
 
         if (EducationManager.Instance.StudyGroups
                 .Except(studyGroup)
-                .FirstOrDefault(sg => (sg.students.Contains(pawn) || sg.teacher == pawn)
-                                      && studyGroup.HasConflict(sg)) is StudyGroup otherGroup)
+                .FirstOrDefault(sg => !sg.suspended
+                                      && (sg.students.Contains(pawn) || sg.teacher == pawn)
+                                      && studyGroup.HasConflict(sg))
+            is StudyGroup otherGroup)
         {
             return new AcceptanceReport("PE_CannotParticipateScheduled".Translate(
                 otherGroup.startHour,

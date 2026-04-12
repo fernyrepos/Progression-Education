@@ -62,7 +62,14 @@ public class LordJob_AttendClass : LordJob
         }
 
         var curDriver = member.jobs.curDriver;
-        if (curDriver is JobDriver_Meditate or JobDriver_Research)
+        if (curDriver is JobDriver_Meditate
+            or JobDriver_Research
+            or JobDriver_Floordrawing
+            or JobDriver_Radiotalking
+            or JobDriver_Skydreaming
+            or JobDriver_NatureRunning
+            or JobDriver_Workwatching
+            or JobDriver_Lessontaking)
         {
             return true;
         }
@@ -241,7 +248,7 @@ public class LordJob_AttendClass : LordJob
             var studentRole = studyGroup.GetStudentRole();
             foreach (var student in studyGroup.students
                          .Where(s => !GatheringsUtility.PawnCanStartOrContinueGathering(s)
-                                        && s.GetLord() == null))
+                                     && s.GetLord() == null))
             {
                 if (!studentRole.CanAcceptPawn(student).Accepted)
                 {

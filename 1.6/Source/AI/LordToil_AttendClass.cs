@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using RimWorld;
 using Verse;
@@ -58,21 +59,19 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
                 }
             }
 
-            foreach (var student in studyGroup.students)
+            foreach (var student in studyGroup.students
+                         .Where(student =>
+                             GatheringsUtility.PawnCanStartOrContinueGathering(student)
+                             && student.CurJob is Job job
+                             && job.def != DefsOf.PE_AttendClass
+                             && (student.mindState.IsIdle || studyGroup.classroom.interruptJobs)))
             {
-                if (!GatheringsUtility.PawnCanStartOrContinueGathering(student)
-                    || student.CurJob is not Job job
-                    || job.def == DefsOf.PE_AttendClass
-                    || !student.mindState.IsIdle)
-                {
-                    continue;
-                }
-
                 student.jobs.StopAll();
                 EducationLog.Message(
                     $"-> Stopped job for student {
                         student.LabelShort
                     } because it was not PE_AttendClass");
+
                 if (lord.ownedPawns.Contains(student)
                     || !CanAddPawn(student))
                 {

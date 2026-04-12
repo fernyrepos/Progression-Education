@@ -92,6 +92,7 @@ public class JobDriver_AttendClass : JobDriver_LessonBase
         {
             return false;
         }
+
         TimeAssignmentUtility.allowUsing = true;
         var reserveThing =
             pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1,

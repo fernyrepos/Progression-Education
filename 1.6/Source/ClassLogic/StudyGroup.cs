@@ -349,6 +349,14 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         return !prerequisitesMet.Accepted ? prerequisitesMet : AcceptanceReport.WasAccepted;
     }
 
+    public void Notify_TeacherUnavailable()
+    {
+        Messages.Message(
+            "PE_CannotAttendClass".Translate(className,
+                teacher.LabelShort), MessageTypeDefOf.CautionInput);
+        Suspend(true);
+    }
+
     public void RemoveStudent(Pawn student)
     {
         if (!students.Contains(student))
@@ -377,7 +385,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
 
         if (!suspend
             && suspended
-            )
+           )
         {
             if (students.NullOrEmpty())
             {
@@ -392,8 +400,24 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
                     MessageTypeDefOf.RejectInput);
                 return;
             }
+
+            if (EducationManager.Instance.StudyGroups
+                    .Except(this)
+                    .FirstOrDefault(sg => !sg.suspended
+                                          && this.HasConflict(sg)
+                                          && (students.Intersect(sg.students).Any()
+                                              || teacher == sg.teacher))
+                is StudyGroup otherGroup)
+            {
+                Messages.Message("PE_CannotParticipateScheduled".Translate(
+                        otherGroup.startHour,
+                        otherGroup.endHour,
+                        otherGroup.className),
+                    MessageTypeDefOf.RejectInput);
+                return;
+            }
         }
-      
+
         suspended = suspend;
         if (suspend)
         {
@@ -410,13 +434,6 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         {
             CancelClass();
         }
-    }
-    public void Notify_TeacherUnavailable()
-    {
-        Messages.Message(
-            "PE_CannotAttendClass".Translate(className,
-                teacher.LabelShort), MessageTypeDefOf.CautionInput);
-        Suspend(true);
     }
 
     public AcceptanceReport ValidateClassStatus()
