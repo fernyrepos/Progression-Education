@@ -7,10 +7,10 @@ namespace ProgressionEducation;
 [HotSwappable]
 public class Classroom : IExposable, ILoadReferenceable, IRenameable
 {
+    public bool addKids = true;
     public Color color;
     public int id;
     public bool interruptJobs = true;
-    public bool addKids = true;
     private Thing learningBoardThing;
     public string name;
     public bool restrictReservationsDuringClass;

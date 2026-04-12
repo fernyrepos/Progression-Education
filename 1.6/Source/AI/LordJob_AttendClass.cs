@@ -33,7 +33,7 @@ public class LordJob_AttendClass : LordJob
     {
         foreach (var member in studyGroup.students
                      .Append(studyGroup.teacher)
-                     .Where(m => m.CanAttendClass()
+                     .Where(m => GatheringsUtility.PawnCanStartOrContinueGathering(m)
                                  && m.CurJob?.def != DefsOf.PE_RingBell
                                  && (studyGroup.classroom.interruptJobs
                                      || CanInterruptJob(m)))
@@ -178,18 +178,22 @@ public class LordJob_AttendClass : LordJob
             EducationLog.Message(
                 "LordJob_AttendClass.LordJobTick Study group is null. Canceling class.");
             lord.ReceiveMemo(MemoClassCancelled);
+
             return;
         }
 
-        if (studyGroup?.teacher == null
-            || studyGroup.teacher.DeadOrDowned
-            || studyGroup.teacher.InMentalState)
+        if (!GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
         {
+            Messages.Message(
+                "PE_CannotAttendClass".Translate(studyGroup.className,
+                    studyGroup.teacher.LabelShort), MessageTypeDefOf.NegativeEvent);
             EducationLog.Message(
                 $"LordJob_AttendClass.LordJobTick Class '{
-                    studyGroup?.className
-                }' is being cancelled: teacher is dead, downed, or in mental state.");
+                    studyGroup.className
+                }' is being cancelled: teacher is unavailable.");
             lord.ReceiveMemo(MemoClassCancelledTeacherIncapacitated);
+            studyGroup.Notify_TeacherUnavailable();
+
             return;
         }
 
@@ -199,7 +203,7 @@ public class LordJob_AttendClass : LordJob
                 $"LordJob_AttendClass.LordJobTick Class '{
                     studyGroup.className
                 }' is being cancelled: teacher is no longer in the class.");
-            lord.ReceiveMemo(MemoClassCancelled);
+            studyGroup.Notify_TeacherUnavailable();
             return;
         }
 
@@ -222,7 +226,6 @@ public class LordJob_AttendClass : LordJob
                 }' is being cancelled: {
                     validationReport.Reason
                 }");
-            lord.ReceiveMemo(MemoClassCancelled);
         }
     }
 
@@ -237,8 +240,8 @@ public class LordJob_AttendClass : LordJob
 
             var studentRole = studyGroup.GetStudentRole();
             foreach (var student in studyGroup.students
-                         .Where(s => s.CanAttendClass()
-                                     && s.GetLord() == null))
+                         .Where(s => !GatheringsUtility.PawnCanStartOrContinueGathering(s)
+                                        && s.GetLord() == null))
             {
                 if (!studentRole.CanAcceptPawn(student).Accepted)
                 {

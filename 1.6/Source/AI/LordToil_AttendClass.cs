@@ -60,7 +60,7 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
 
             foreach (var student in studyGroup.students)
             {
-                if (!student.CanAttendClass()
+                if (!GatheringsUtility.PawnCanStartOrContinueGathering(student)
                     || student.CurJob is not Job job
                     || job.def == DefsOf.PE_AttendClass
                     || !student.mindState.IsIdle)
@@ -109,7 +109,7 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
 
         foreach (var student in studyGroup.students)
         {
-            if (student.Downed)
+            if (!GatheringsUtility.PawnCanStartOrContinueGathering(student))
             {
                 lord.RemovePawn(student);
             }

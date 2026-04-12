@@ -1,3 +1,4 @@
+using RimWorld;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -9,12 +10,12 @@ public class JobGiver_Teach : ThinkNode_JobGiver
     public override Job TryGiveJob(Pawn pawn)
     {
         EducationLog.Message($"JobGiver_Teach.TryGiveJob called for pawn: {pawn.LabelShort}");
-        if (!pawn.CanAttendClass())
+        if (!GatheringsUtility.PawnCanStartOrContinueGathering(pawn))
         {
             EducationLog.Message(
                 $"-> Pawn {
                     pawn.LabelShort
-                } is not spawned, dead, downed, or in a mental state. Returning null.");
+                } cannot gather at this time. Returning null.");
             return null;
         }
 

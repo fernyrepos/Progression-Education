@@ -368,8 +368,7 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
         {
             EducationLog.Message(
                 $"-> Processing pawn: {pawn.LabelShort}, stage: {pawn.DevelopmentalStage}");
-            if (!pawn.CanAttendClass()
-                || pawn.Downed)
+            if (!pawn.CanAttendClass())
             {
                 EducationLog.Message(
                     $"-> Skipping {pawn.LabelShort} because they are unable to attend classes");

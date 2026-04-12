@@ -11,12 +11,12 @@ public class JobGiver_RingBell : ThinkNode_JobGiver
     public override Job TryGiveJob(Pawn pawn)
     {
         EducationLog.Message($"JobGiver_RingBell.TryGiveJob called for pawn: {pawn.LabelShort}");
-        if (!pawn.CanAttendClass())
+        if (!GatheringsUtility.PawnCanStartOrContinueGathering(pawn))
         {
             EducationLog.Message(
                 $"-> Pawn {
                     pawn.LabelShort
-                } is not spawned, dead, downed, or in a mental state. Returning null.");
+                } is cannot gather at this time. Returning null.");
             return null;
         }
 

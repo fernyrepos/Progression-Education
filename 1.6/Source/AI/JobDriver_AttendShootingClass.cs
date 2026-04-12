@@ -108,6 +108,7 @@ public class JobDriver_AttendShootingClass : JobDriver_AttendClass
 
     protected override Toil MakeLearningToil()
     {
+        this.FailOn(() => !GatheringsUtility.PawnCanStartOrContinueGathering(pawn));
         return new Toil
         {
             initAction = delegate

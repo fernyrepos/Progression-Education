@@ -169,7 +169,7 @@ public class SkillClassLogic : ClassSubjectLogic
         Widgets.Label(new Rect(rect.x, curY, 360f, 25f),
             "PE_StudySessionsNeeded".Translate(sessionsNeeded.ToString("F0")
                 .Colorize(ColoredText.DateTimeColor)));
-        
+
         curY += 30f;
     }
 

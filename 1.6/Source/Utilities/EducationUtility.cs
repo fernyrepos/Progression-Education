@@ -9,11 +9,14 @@ public static class EducationUtility
 {
     public static bool CanAttendClass(this Pawn pawn)
     {
-        return pawn != null
-               && pawn.Spawned
-               && !pawn.DeadOrDowned
-               && !pawn.InMentalState
-               && !pawn.Deathresting;
+        return pawn is
+        {
+            Spawned: true,
+            DeadOrDowned: false,
+            InMentalState: false,
+            Deathresting: false,
+            DevelopmentalStage: >= DevelopmentalStage.Child,
+        };
     }
 
 

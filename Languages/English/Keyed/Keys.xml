@@ -109,7 +109,7 @@
   <PE_NoBellToCreateClass>You must build a class bell or chime before you can create a class.</PE_NoBellToCreateClass>
   <PE_LearningBoardIsBlocked>{0} is blocked.</PE_LearningBoardIsBlocked>
   <PE_Suspended>(suspended)</PE_Suspended>
-  <PE_TeacherOffMap>Class {0} was cancelled as the teacher is not on the map it takes place in.</PE_TeacherOffMap>
+  <PE_TeacherOffMap>Class {0} was cancelled because the teacher is not on its map.</PE_TeacherOffMap>
   <PE_NoStudents>Class {0} was cancelled as there were no students.</PE_NoStudents>
   <PE_AddStudents>Add students</PE_AddStudents>
   <PE_ToggleStudentList>Toggle student list</PE_ToggleStudentList>
@@ -138,4 +138,6 @@
   <PE_CantChangeTeacher>Class is ongoing so the teacher role is locked</PE_CantChangeTeacher>
   <PE_AddKids>Can accept children on age-up</PE_AddKids>
   <PE_AddKids_Desc>If enabled, daycares in this classroom are allowed to add children when they age-up.</PE_AddKids_Desc>
+  <PE_CannotAttendClass>Class {0} was suspended because the teacher is not available.</PE_CannotAttendClass>
+  <PE_CannotUnsuspendNoTeacher>Cannot unsuspend class: Teacher unavailable to teach</PE_CannotUnsuspendNoTeacher>
 </LanguageData>

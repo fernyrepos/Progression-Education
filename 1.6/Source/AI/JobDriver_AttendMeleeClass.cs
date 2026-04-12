@@ -83,6 +83,7 @@ public class JobDriver_AttendMeleeClass : JobDriver_AttendClass
 
     protected override Toil MakeLearningToil()
     {
+        this.FailOn(() => !GatheringsUtility.PawnCanStartOrContinueGathering(pawn));
         return new Toil
         {
             initAction = () =>
