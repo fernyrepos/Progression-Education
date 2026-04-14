@@ -1,6 +1,5 @@
 using System.Linq;
 using RimWorld;
-using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
@@ -49,9 +48,6 @@ public class LordToil_RingBell(StudyGroup studyGroup) : LordToil
             EducationLog.Message($"-> but {
                 studyGroup.teacher.LabelShort
             } is unavailable. Suspending class.");
-            Messages.Message(
-                "PE_CannotAttendClass".Translate(studyGroup.className,
-                    studyGroup.teacher.LabelShort), MessageTypeDefOf.CautionInput);
             lord.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
             studyGroup.Notify_TeacherUnavailable();
             return;

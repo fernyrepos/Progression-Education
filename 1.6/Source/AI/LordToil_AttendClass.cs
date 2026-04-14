@@ -63,7 +63,7 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
                          .Where(student =>
                              GatheringsUtility.PawnCanStartOrContinueGathering(student)
                              && student.CurJob is Job job
-                             && job.def != DefsOf.PE_AttendClass
+                             && job.GetCachedDriverDirect is not JobDriver_AttendClass
                              && (student.mindState.IsIdle || studyGroup.classroom.interruptJobs)))
             {
                 student.jobs.StopAll();

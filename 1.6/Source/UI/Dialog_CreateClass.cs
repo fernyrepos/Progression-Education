@@ -333,6 +333,10 @@ public class Dialog_CreateClass : Window, IClassDialog
         EducationManager.Instance.AddStudyGroup(studyGroup);
         TimeAssignmentUtility.GenerateTimeAssignmentDef(studyGroup);
         EducationManager.ApplyScheduleToPawns(studyGroup);
+        if (studyGroup.students.Count < 1)
+        {
+            studyGroup.Suspend(true);
+        }
         Close();
     }
 

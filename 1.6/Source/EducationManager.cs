@@ -163,6 +163,11 @@ public class EducationManager(World world) : WorldComponent(world)
         }
     }
 
+    public void Notify_ClassInvalidated(StudyGroup studyGroup)
+    {
+        checkedStudyGroups.Remove(studyGroup);
+    }
+
     public void RemoveClassroom(Classroom classroom)
     {
         EducationLog.Message("EducationManager.RemoveClassroom");
@@ -236,7 +241,7 @@ public class EducationManager(World world) : WorldComponent(world)
                         validationReport.Reason
                     }",
                     MessageTypeDefOf.NegativeEvent);
-                studyGroup.Notify_TeacherUnavailable();
+                studyGroup.Suspend(true);
                 checkedStudyGroups.Add(studyGroup);
             }
 

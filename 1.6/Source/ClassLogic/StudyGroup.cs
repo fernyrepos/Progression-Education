@@ -352,8 +352,8 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
     public void Notify_TeacherUnavailable()
     {
         Messages.Message(
-            "PE_CannotAttendClass".Translate(className,
-                teacher.LabelShort), MessageTypeDefOf.CautionInput);
+            "PE_CannotAttendClass".Translate(className, teacher.LabelShort),
+            MessageTypeDefOf.CautionInput);
         Suspend(true);
     }
 
@@ -401,6 +401,13 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
                 return;
             }
 
+            if (subjectLogic.ArePrerequisitesMet() is var report
+                && !report.Accepted)
+            {
+                Messages.Message(report.Reason, MessageTypeDefOf.RejectInput);
+                return;
+            }
+
             if (EducationManager.Instance.StudyGroups
                     .Except(this)
                     .FirstOrDefault(sg => !sg.suspended
@@ -434,6 +441,8 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         {
             CancelClass();
         }
+        
+        EducationManager.Instance.Notify_ClassInvalidated(this);
     }
 
     public AcceptanceReport ValidateClassStatus()
