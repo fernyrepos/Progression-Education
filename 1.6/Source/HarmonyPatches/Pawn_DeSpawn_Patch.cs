@@ -13,10 +13,11 @@ public static class Pawn_DeSpawn_Patch
         {
             return;
         }
+
         foreach (var studyGroup in EducationManager.Instance.StudyGroups
                      .ToList()
                      .Where(sg => sg.teacher == __instance
-                     && sg.teacher.Dead))
+                                  && sg.teacher.Dead))
         {
             EducationManager.Instance.RemoveStudyGroup(studyGroup);
         }

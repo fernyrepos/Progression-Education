@@ -57,6 +57,9 @@
         <building>
             <paintable>false</paintable>
         </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_SchoolDesk" />
+        </comps>
     </ThingDef>
 
     <ThingDef ParentName="BuildingBase">
@@ -120,6 +123,9 @@
         <building>
             <paintable>true</paintable>
         </building>
+        <comps>
+            <li Class="ProgressionEducation.CompProperties_SchoolDesk" />
+        </comps>
     </ThingDef>
 
 </Defs>

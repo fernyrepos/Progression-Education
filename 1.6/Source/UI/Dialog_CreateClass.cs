@@ -301,6 +301,7 @@ public class Dialog_CreateClass : Window, IClassDialog
                 .FirstOrDefault(group =>
                     group.classroom == studyGroup.classroom
                     && studyGroup.HasConflict(group)
+                    && !group.suspended
                 )
             is { } otherGroup)
         {

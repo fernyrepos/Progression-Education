@@ -46,7 +46,9 @@ public class LordToil_RingBell(StudyGroup studyGroup) : LordToil
             $"LordToil_RingBell.UpdateAllDuties called for class '{studyGroup.className}'");
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
         {
-            EducationLog.Message($"-> but {studyGroup.teacher.LabelShort} is unavailable. Suspending class.");
+            EducationLog.Message($"-> but {
+                studyGroup.teacher.LabelShort
+            } is unavailable. Suspending class.");
             Messages.Message(
                 "PE_CannotAttendClass".Translate(studyGroup.className,
                     studyGroup.teacher.LabelShort), MessageTypeDefOf.CautionInput);
@@ -54,6 +56,7 @@ public class LordToil_RingBell(StudyGroup studyGroup) : LordToil
             studyGroup.Notify_TeacherUnavailable();
             return;
         }
+
         TryRingAutomaticBells();
         if (!bellRung)
         {

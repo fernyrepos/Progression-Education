@@ -258,13 +258,15 @@ public class Dialog_EditClass : Window, IClassDialog
             return;
         }
 
-        if (EducationManager.Instance.StudyGroups
-                .Except(referenceStudyGroup)
-                .FirstOrDefault(group =>
-                    group.classroom == studyGroup.classroom
-                    && studyGroup.HasConflict(group)
-                )
-            is { } otherGroup)
+        if (!studyGroup.suspended
+            && EducationManager.Instance.StudyGroups
+                    .Except(referenceStudyGroup)
+                    .FirstOrDefault(group =>
+                        group.classroom == studyGroup.classroom
+                        && studyGroup.HasConflict(group)
+                        && !group.suspended
+                    )
+                is { } otherGroup)
         {
             Messages.Message(
                 "PE_CannotSchedule".Translate(

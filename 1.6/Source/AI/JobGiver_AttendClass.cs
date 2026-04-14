@@ -46,9 +46,7 @@ public class JobGiver_AttendClass : ThinkNode_JobGiver
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(pawn))
         {
             EducationLog.Message(
-                $"-> Pawn {
-                    pawn.LabelShort
-                } cannot gather at this time. Returning null.");
+                $"-> Pawn {pawn.LabelShort} cannot gather at this time. Returning null.");
             return null;
         }
 
