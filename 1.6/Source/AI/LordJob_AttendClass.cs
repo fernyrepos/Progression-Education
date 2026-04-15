@@ -191,9 +191,6 @@ public class LordJob_AttendClass : LordJob
 
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
         {
-            Messages.Message(
-                "PE_CannotAttendClass".Translate(studyGroup.className,
-                    studyGroup.teacher.LabelShort), MessageTypeDefOf.NegativeEvent);
             EducationLog.Message(
                 $"LordJob_AttendClass.LordJobTick Class '{
                     studyGroup.className

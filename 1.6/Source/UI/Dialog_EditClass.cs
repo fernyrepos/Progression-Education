@@ -312,6 +312,7 @@ public class Dialog_EditClass : Window, IClassDialog
         referenceStudyGroup.semesterGoal = studyGroup.semesterGoal;
         referenceStudyGroup.Suspend(referenceStudyGroup.suspended
                                     || referenceStudyGroup.students.Count == 0);
+        EducationManager.Instance.Notify_ClassInvalidated(referenceStudyGroup);
         EducationManager.ApplyScheduleToPawns(referenceStudyGroup);
         Close();
     }
