@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+    <!-- DUNE: ATREIDES ARMOUR & WEAPON PACK PATCHES -->
+
+    <!-- GEAR -->
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_Knife"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_Gladius"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_Spear"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_LucerneHammer"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_ZeusHammer"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_PlasmaSword"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_ZeusHammerPersona"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_PlasmaswordPersona"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+</Patch>
