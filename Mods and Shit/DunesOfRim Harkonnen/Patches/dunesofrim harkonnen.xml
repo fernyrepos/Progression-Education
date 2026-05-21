@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+    <!-- DUNE: HARKONNEN ARMOUR & WEAPON PACK PATCHES -->
+
+    <!-- GEAR -->
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="MeleeWeapon_HarkonnenKnife"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="MeleeWeapon_HarkonnenSword"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="MeleeWeapon_HarkonnenMace"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="MeleeWeapon_HarkonnenMonosword"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="MeleeWeapon_HarkonnenPlasmasword"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="MeleeWeapon_HarkonnenMonoswordPersona"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+    <Operation Class="PatchOperationAddModExtension">
+        <xpath>Defs/ThingDef/[defName="MeleeWeapon_HarkonnenPlasmaswordPersona"]</xpath>
+        <value>
+            <li Class="ProgressionEducation.ItemProficiencyRequirement">
+                <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+            </li>
+        </value>
+    </Operation>
+
+</Patch>
