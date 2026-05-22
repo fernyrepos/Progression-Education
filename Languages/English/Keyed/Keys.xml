@@ -112,7 +112,7 @@
   <PE_TeacherOffMap>Class {0} was cancelled because the teacher is not on its map.</PE_TeacherOffMap>
   <PE_NoStudents>Class {0} was cancelled as there were no students.</PE_NoStudents>
   <PE_AddStudents>Add students</PE_AddStudents>
-  <PE_ToggleStudentList>Toggle student list</PE_ToggleStudentList>
+  <PE_ToggleStudentList>Edit class</PE_ToggleStudentList>
   <PE_AddedToDaycareOnAgeUp>{0} has aged up and has been automatically added to the "{1}" daycare.</PE_AddedToDaycareOnAgeUp>
   <PE_StudyGroupFull>Study group already has {0} students and cannot accept more.</PE_StudyGroupFull>
   <PE_CannotUnsuspendNoStudents>Cannot unsuspend class: No students</PE_CannotUnsuspendNoStudents>
