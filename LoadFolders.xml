@@ -31,9 +31,9 @@
     <li IfModActive="Ludeon.RimWorld.Royalty">Mods and Shit/Royalty</li>
     <li IfModActive="RF.LUNARTIKAAA">Mods and Shit/Rimfather</li>
     <li IfModActive="kp.bravenewfrontier">Mods and Shit/Brave New Frontier</li>
-    <li IfModActive="Collapse.DunesOfRim.Atreides">Mods and Shit/DunesOfRim Atreides</li>
+    <!-- <li IfModActive="Collapse.DunesOfRim.Atreides">Mods and Shit/DunesOfRim Atreides</li>
     <li IfModActive="Collapse.DunesOfRim.Harkonnen">Mods and Shit/DunesOfRim Harkonnen</li>
-    <li IfModActive="Collapse.DunesOfRim.Fremen">Mods and Shit/DunesOfRim Fremen</li>
+    <li IfModActive="Collapse.DunesOfRim.Fremen">Mods and Shit/DunesOfRim Fremen</li> -->
     <li>1.6</li>
   </v1.6>
 </loadFolders>
