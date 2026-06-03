@@ -2,7 +2,7 @@
 <Defs>
   <TraitDef>
     <defName>PE_LowTechProficiency</defName>
-    <label>low-tech proficient</label>
+    <label>low-tech</label>
     <description>This person is proficient with low-tech equipment.</description>
     <commonality>0</commonality>
     <degreeDatas>
@@ -15,7 +15,7 @@
 
   <TraitDef>
     <defName>PE_FirearmProficiency</defName>
-    <label>firearm proficient</label>
+    <label>firearm</label>
     <description>This person is proficient with firearm equipment.</description>
     <commonality>0</commonality>
     <degreeDatas>
@@ -28,13 +28,108 @@
 
   <TraitDef>
     <defName>PE_HighTechProficiency</defName>
-    <label>high-tech proficient</label>
+    <label>high-tech</label>
     <description>This person is proficient with high-tech equipment.</description>
     <commonality>0</commonality>
     <degreeDatas>
       <li>
         <label>high-tech proficient</label>
         <description>This person is proficient with high-tech equipment.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_AnimalRidingProficiency</defName>
+    <label>animal</label>
+    <description>This person is proficient with animal riding.</description>
+    <commonality>0</commonality>
+    <degreeDatas>
+      <li>
+        <label>animal riding</label>
+        <description>This person is proficient with animal riding.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_AutomobileDrivingProficiency</defName>
+    <label>automobile</label>
+    <commonality>0</commonality>
+    <description>This person is proficient with automobile driving.</description>
+    <degreeDatas>
+      <li>
+        <label>automobile driving</label>
+        <description>This person is proficient with automobile driving.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_AerialPilotingProficiency</defName>
+    <commonality>0</commonality>
+    <label>aerial</label>
+    <description>This person is proficient with aerial piloting.</description>
+    <degreeDatas>
+      <li>
+        <label>aerial piloting</label>
+        <description>This person is proficient with aerial piloting.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_OrbitalPilotingProficiency</defName>
+    <commonality>0</commonality>
+    <label>orbital</label>
+    <description>This person is proficient with orbital piloting.</description>
+    <degreeDatas>
+      <li>
+        <label>orbital piloting</label>
+        <description>This person is proficient with orbital piloting.</description>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_MuteProficiency</defName>
+    <commonality>0</commonality>
+    <label>mute</label>
+    <degreeDatas>
+      <li>
+        <label>mute</label>
+        <statFactors>
+          <SocialImpact>0</SocialImpact>
+          <NegotiationAbility>0</NegotiationAbility>
+          <TradePriceImprovement>0</TradePriceImprovement>
+        </statFactors>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_BasicSpeechProficiency</defName>
+    <commonality>0</commonality>
+    <label>basic speech</label>
+    <degreeDatas>
+      <li>
+        <label>basic speech</label>
+        <statFactors>
+          <SocialImpact>0.75</SocialImpact>
+          <NegotiationAbility>0.75</NegotiationAbility>
+          <TradePriceImprovement>0.75</TradePriceImprovement>
+        </statFactors>
+      </li>
+    </degreeDatas>
+  </TraitDef>
+
+  <TraitDef>
+    <defName>PE_FluentSpeechProficiency</defName>
+    <commonality>0</commonality>
+    <label>fluent speech</label>
+    <degreeDatas>
+      <li>
+        <label>fluent</label>
       </li>
     </degreeDatas>
   </TraitDef>

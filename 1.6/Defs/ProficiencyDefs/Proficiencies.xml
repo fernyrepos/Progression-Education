@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <ProgressionEducation.ProficiencyDef>
+    <defName>PE_WeaponTrack</defName>
+    <label>weapon</label>
+    <tiers>
+      <li>PE_LowTechTier</li>
+      <li>PE_FirearmTier</li>
+      <li>PE_HighTechTier</li>
+    </tiers>
+  </ProgressionEducation.ProficiencyDef>
+
+  <ProgressionEducation.ProficiencyDef>
+    <defName>PE_VehicleTrack</defName>
+    <label>vehicle</label>
+    <tiers>
+      <li MayRequire="MemeGoddess.GiddyUp">PE_AnimalRidingTier</li>
+      <li MayRequire="SmashPhil.VehicleFramework">PE_AutomobileDrivingTier</li>
+      <li MayRequire="SmashPhil.VehicleFramework">PE_AerialPilotingTier</li>
+      <li MayRequire="ludeon.rimworld.odyssey">PE_OrbitalPilotingTier</li>
+    </tiers>
+  </ProgressionEducation.ProficiencyDef>
+
+  <ProgressionEducation.ProficiencyDef>
+    <defName>PE_SpeechTrack</defName>
+    <label>speech</label>
+    <tiers>
+      <li>PE_MuteTier</li>
+      <li>PE_BasicSpeechTier</li>
+      <li>PE_FluentSpeechTier</li>
+    </tiers>
+  </ProgressionEducation.ProficiencyDef>
+
+  <ProgressionEducation.ProficiencyTierDef>
+    <defName>PE_LowTechTier</defName>
+    <label>low-tech</label>
+    <traitDef>PE_LowTechProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Weapon/LowTech</iconPath>
+    <generationTechLevel>Neolithic</generationTechLevel>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef>
+    <defName>PE_FirearmTier</defName>
+    <label>firearm</label>
+    <traitDef>PE_FirearmProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Weapon/Firearm</iconPath>
+    <trainingWeaponDef>PE_Gun_AssaultRifleTraining</trainingWeaponDef>
+    <semesterGoal>30000</semesterGoal>
+    <generationTechLevel>Industrial</generationTechLevel>
+    <legacyNames>
+      <li>Firearm</li>
+    </legacyNames>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef>
+    <defName>PE_HighTechTier</defName>
+    <label>high-tech</label>
+    <traitDef>PE_HighTechProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Weapon/HighTech</iconPath>
+    <trainingWeaponDef>PE_Gun_SpacerTraining</trainingWeaponDef>
+    <semesterGoal>60000</semesterGoal>
+    <generationTechLevel>Spacer</generationTechLevel>
+    <legacyNames>
+      <li>HighTech</li>
+    </legacyNames>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef MayRequire="MemeGoddess.GiddyUp">
+    <defName>PE_AnimalRidingTier</defName>
+    <label>animal riding</label>
+    <traitDef>PE_AnimalRidingProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Vehicle/Animals</iconPath>
+    <generationTechLevel>Neolithic</generationTechLevel>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef MayRequire="SmashPhil.VehicleFramework">
+    <defName>PE_AutomobileDrivingTier</defName>
+    <label>automobile driving</label>
+    <traitDef>PE_AutomobileDrivingProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Vehicle/Automobile</iconPath>
+    <semesterGoal>30000</semesterGoal>
+    <generationTechLevel>Industrial</generationTechLevel>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef MayRequire="SmashPhil.VehicleFramework">
+    <defName>PE_AerialPilotingTier</defName>
+    <label>aerial piloting</label>
+    <traitDef>PE_AerialPilotingProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Vehicle/AerialVehicles</iconPath>
+    <semesterGoal>60000</semesterGoal>
+    <generationTechLevel>Spacer</generationTechLevel>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef MayRequire="ludeon.rimworld.odyssey">
+    <defName>PE_OrbitalPilotingTier</defName>
+    <label>orbital piloting</label>
+    <traitDef>PE_OrbitalPilotingProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Vehicle/OrbitalTravel</iconPath>
+    <semesterGoal>90000</semesterGoal>
+    <generationTechLevel>Ultra</generationTechLevel>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef>
+    <defName>PE_MuteTier</defName>
+    <label>mute</label>
+    <traitDef>PE_MuteProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Speech/SpeechIncapable</iconPath>
+    <isDefaultChild>true</isDefaultChild>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef>
+    <defName>PE_BasicSpeechTier</defName>
+    <label>basic speech</label>
+    <traitDef>PE_BasicSpeechProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Speech/BasicSpeech</iconPath>
+    <semesterGoal>30000</semesterGoal>
+  </ProgressionEducation.ProficiencyTierDef>
+
+  <ProgressionEducation.ProficiencyTierDef>
+    <defName>PE_FluentSpeechTier</defName>
+    <label>fluent speech</label>
+    <traitDef>PE_FluentSpeechProficiency</traitDef>
+    <iconPath>UI/ProficiencyIcons/Speech/FluentSpeech</iconPath>
+    <semesterGoal>60000</semesterGoal>
+    <isDefaultAdult>true</isDefaultAdult>
+  </ProgressionEducation.ProficiencyTierDef>
+
+</Defs>

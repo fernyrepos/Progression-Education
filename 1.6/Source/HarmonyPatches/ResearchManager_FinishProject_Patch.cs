@@ -10,7 +10,7 @@ public static class ResearchManager_FinishProject_Patch
 {
     public static void Postfix(ResearchProjectDef proj)
     {
-        if (!EducationSettings.Instance.enableProficiencySystem)
+        if (!EducationMod.settings.enableProficiencySystem)
         {
             return;
         }
@@ -18,17 +18,32 @@ public static class ResearchManager_FinishProject_Patch
         var extension = proj.GetModExtension<ResearchGrantsTrait>();
         if (extension != null)
         {
-            foreach (var pawn in PawnsFinder
-                         .AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
+            if (EducationMod.settings.bestowProficiencyToAll || Find.TickManager.TicksGame < 5000)
             {
-                ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait,
-                    true);
+                foreach (var pawn in PawnsFinder
+                             .AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
+                {
+                    ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait);
+                }
+                if (Find.TickManager.TicksGame >= 5000)
+                {
+                    Find.LetterStack.ReceiveLetter(extension.title, extension.desc, LetterDefOf.PositiveEvent);
+                }
             }
-
-            if (Find.TickManager.TicksGame >= 5000)
+            else
             {
-                Find.LetterStack.ReceiveLetter(extension.title, extension.desc,
-                    LetterDefOf.PositiveEvent);
+                if (PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction
+                    .Any(p => p.IsFreeColonist && p.skills != null && !p.skills.GetSkill(SkillDefOf.Intellectual).TotallyDisabled))
+                {
+                    Find.WindowStack.Add(new Dialog_BestowProficiency(extension));
+                }
+                else
+                {
+                    foreach (var pawn in PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
+                    {
+                        ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait);
+                    }
+                }
             }
         }
     }

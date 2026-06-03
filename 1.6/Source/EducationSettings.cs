@@ -11,8 +11,11 @@ public class EducationSettings : ModSettings
     public float globalLearningSpeedModifier = 1f;
     public float proficiencyClassesLearningSpeedModifier = 1f;
     public float skillClassesLearningSpeedModifier = 1f;
-
-    public static EducationSettings Instance => EducationMod.settings;
+    public bool enableKnowledgePanel = true;
+    public bool bestowProficiencyToAll = false;
+    public bool enableWeaponProficiency = true;
+    public bool enableVehicleProficiency = true;
+    public bool enableSpeechProficiency = true;
 
     public void DoSettingsWindowContents(Rect inRect)
     {
@@ -46,6 +49,12 @@ public class EducationSettings : ModSettings
             ref enableProficiencySystem);
 
         listing.Gap();
+        listing.CheckboxLabeled("PE_EnableKnowledgePanel".Translate(), ref enableKnowledgePanel);
+        listing.CheckboxLabeled("PE_BestowProficiencyToAll".Translate(), ref bestowProficiencyToAll);
+        listing.CheckboxLabeled("PE_EnableWeaponProficiency".Translate(), ref enableWeaponProficiency);
+        listing.CheckboxLabeled("PE_EnableVehicleProficiency".Translate(), ref enableVehicleProficiency);
+        listing.CheckboxLabeled("PE_EnableSpeechProficiency".Translate(), ref enableSpeechProficiency);
+        listing.Gap();
         listing.CheckboxLabeled("PE_EnableDebugMode".Translate(), ref debugMode);
         listing.End();
     }
@@ -64,5 +73,10 @@ public class EducationSettings : ModSettings
         Scribe_Values.Look(ref enableProficiencySystem, "enableProficiencySystem",
             true);
         Scribe_Values.Look(ref debugMode, "debugMode");
+        Scribe_Values.Look(ref enableKnowledgePanel, "enableKnowledgePanel", true);
+        Scribe_Values.Look(ref bestowProficiencyToAll, "bestowProficiencyToAll", false);
+        Scribe_Values.Look(ref enableWeaponProficiency, "enableWeaponProficiency", true);
+        Scribe_Values.Look(ref enableVehicleProficiency, "enableVehicleProficiency", true);
+        Scribe_Values.Look(ref enableSpeechProficiency, "enableSpeechProficiency", true);
     }
 }

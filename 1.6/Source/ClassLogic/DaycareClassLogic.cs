@@ -33,7 +33,7 @@ public class DaycareClassLogic : ClassSubjectLogic
     public override string Label => "PE_SubjectDaycare".Translate();
 
     public override float LearningSpeedModifier =>
-        EducationSettings.Instance.daycareClassesLearningSpeedModifier;
+        EducationMod.settings.daycareClassesLearningSpeedModifier;
 
     public override float ProgressPerTick
     {
@@ -247,13 +247,9 @@ public class DaycareClassLogic : ClassSubjectLogic
         var xpPerHour = CalculateTeacherScore(pawn) * GenDate.TicksPerHour;
         if (xpPerHour > 0)
         {
-            text.AppendLineTagged($"{
-                "PE_HourlyTeaching".Translate().AsTipTitle()
-            }: {
-                xpPerHour
+            text.AppendLineTagged($"{"PE_HourlyTeaching".Translate().AsTipTitle()}: {xpPerHour
                 * LearningSpeedModifier
-                * studyGroup.classroom.ClassSpeed
-                :F0}");
+                * studyGroup.classroom.ClassSpeed:F0}");
             text.AppendLine();
             var lessonOptions = GetSkillOptionsForDisplay(pawn);
             text.AppendLineTagged($"{"PE_LessonOptions".Translate()}:".AsTipTitle());
@@ -268,23 +264,13 @@ public class DaycareClassLogic : ClassSubjectLogic
         var socialImpact = CalculateSocialImpactFactor(pawn);
         text.AppendLineTagged(
             $"{"PE_TeachingFactor".Translate()}:".AsTipTitle()
-            + $" {
-                (LearningSpeedModifier
+            + $" {(LearningSpeedModifier
                  * studyGroup.classroom.ClassSpeed
                  * socialImpact
-                ).ToStringPercent()
-            }"
+                ).ToStringPercent()}"
         );
-        text.AppendLine($" - {
-            "StatsReport_BaseValue".Translate()
-        }: x{
-            LearningSpeedModifier.ToStringPercent()
-        }");
-        text.AppendLine($" - {
-            "PE_ClassSpeed".Translate()
-        }: x{
-            studyGroup.classroom.ClassSpeed.ToStringPercent()
-        }");
+        text.AppendLine($" - {"StatsReport_BaseValue".Translate()}: x{LearningSpeedModifier.ToStringPercent()}");
+        text.AppendLine($" - {"PE_ClassSpeed".Translate()}: x{studyGroup.classroom.ClassSpeed.ToStringPercent()}");
         text.AppendLine(
             $" - {StatDefOf.SocialImpact.LabelCap}: x{socialImpact.ToStringPercent()}");
 

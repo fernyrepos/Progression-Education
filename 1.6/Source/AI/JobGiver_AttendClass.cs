@@ -13,9 +13,7 @@ public class JobGiver_AttendClass : ThinkNode_JobGiver
     private Thing FindUnoccupiedThing(List<Thing> things, Pawn pawn,
         Predicate<Thing> thingValidator)
     {
-        EducationLog.Message($"JobGiver_AttendClass.FindUnoccupiedThing called for pawn {
-            pawn.LabelShort
-        }");
+        EducationLog.Message($"JobGiver_AttendClass.FindUnoccupiedThing called for pawn {pawn.LabelShort}");
         foreach (var thing in things
                      .Where(thing => thingValidator(thing)))
         {

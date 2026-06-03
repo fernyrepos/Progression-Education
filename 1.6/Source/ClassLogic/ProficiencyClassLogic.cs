@@ -9,9 +9,8 @@ namespace ProgressionEducation;
 [HotSwappable]
 public class ProficiencyClassLogic : ClassSubjectLogic
 {
-    public const int FirearmTeachingDuration = 30000;
-    public const int HighTechTeachingDuration = 60000;
-    private ProficiencyLevel proficiencyFocus = ProficiencyLevel.Firearm;
+    public ProficiencyDef proficiencyTrack;
+    public ProficiencyTierDef targetTier;
 
     public ProficiencyClassLogic()
     {
@@ -20,27 +19,27 @@ public class ProficiencyClassLogic : ClassSubjectLogic
     public ProficiencyClassLogic(StudyGroup parent)
         : base(parent)
     {
+        proficiencyTrack = DefsOf.PE_WeaponTrack;
+        targetTier = DefsOf.PE_FirearmTier;
     }
 
     public override string Description =>
-        "PE_TrainingProficiency".Translate(ProficiencyFocus.ToStringHuman());
+        "PE_TrainingProficiency".Translate(GetLabel(targetTier).CapitalizeFirst());
 
     public override string Label => "PE_SubjectProficiency".Translate();
 
     public override float LearningSpeedModifier =>
-        EducationSettings.Instance.proficiencyClassesLearningSpeedModifier;
+        EducationMod.settings.proficiencyClassesLearningSpeedModifier;
 
-    public ProficiencyLevel ProficiencyFocus
+    public override string LabelFocus => GetLabel(targetTier).CapitalizeFirst();
+
+    public static string GetLabel(ProficiencyTierDef tier)
     {
-        get => proficiencyFocus;
-        set
+        if (tier.traitDef.degreeDatas.Count > 0)
         {
-            if (proficiencyFocus != value)
-            {
-                proficiencyFocus = value;
-                cachedValidLearningBenches = null;
-            }
+            return tier.traitDef.degreeDatas[0].label;
         }
+        return tier.label;
     }
 
     public override float ProgressPerTick
@@ -88,25 +87,15 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         }
 
         var techTraitModifier = 1f;
-        if (pawn.story.traits.HasTrait(DefsOf.PE_FirearmProficiency))
+        var currentTier = ProficiencyUtility.GetCurrentTier(pawn, proficiencyTrack);
+        if (currentTier != null)
         {
-            if (proficiencyFocus == ProficiencyLevel.Firearm)
+            var tierIndex = proficiencyTrack.tiers.IndexOf(currentTier);
+            if (currentTier == targetTier)
             {
                 techTraitModifier += 0.2f;
             }
-            else
-            {
-                techTraitModifier -= 0.1f;
-            }
-        }
-
-        if (pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency))
-        {
-            if (ProficiencyFocus == ProficiencyLevel.HighTech)
-            {
-                techTraitModifier += 0.2f;
-            }
-            else
+            else if (tierIndex > 0)
             {
                 techTraitModifier -= 0.1f;
             }
@@ -119,7 +108,8 @@ public class ProficiencyClassLogic : ClassSubjectLogic
     {
         return new ProficiencyClassLogic(parent)
         {
-            proficiencyFocus = proficiencyFocus,
+            proficiencyTrack = proficiencyTrack,
+            targetTier = targetTier,
         };
     }
 
@@ -148,7 +138,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
 
     private void DrawProficiencyUI(Rect rect, ref float curY, IClassDialog classDialog)
     {
-        var proficiencyLabel = ProficiencyFocus.ToStringHuman();
+        var proficiencyLabel = GetLabel(targetTier).CapitalizeFirst();
         switch (classDialog)
         {
             case Dialog_CreateClass:
@@ -158,23 +148,22 @@ public class ProficiencyClassLogic : ClassSubjectLogic
                         new Rect(rect.x + 160f, curY, 200f, 25f),
                         proficiencyLabel))
                 {
-                    List<FloatMenuOption> options =
-                    [
-                        new(ProficiencyLevel.Firearm.ToStringHuman().CapitalizeFirst(),
-                            () =>
+                    var options = new List<FloatMenuOption>();
+                    foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
+                    {
+                        if (!ProficiencyUtility.IsTrackEnabled(track)) continue;
+                        for (int i = 1; i < track.tiers.Count; i++)
+                        {
+                            var tier = track.tiers[i];
+                            options.Add(new FloatMenuOption(GetLabel(tier).CapitalizeFirst(), () =>
                             {
-                                ProficiencyFocus = ProficiencyLevel.Firearm;
-                                studyGroup.semesterGoal = FirearmTeachingDuration;
+                                proficiencyTrack = track;
+                                targetTier = tier;
+                                studyGroup.semesterGoal = tier.semesterGoal;
                                 studyGroup.subjectLogic.UnassignParticipants(classDialog);
-                            }),
-                        new(ProficiencyLevel.HighTech.ToStringHuman().CapitalizeFirst(),
-                            () =>
-                            {
-                                ProficiencyFocus = ProficiencyLevel.HighTech;
-                                studyGroup.semesterGoal = HighTechTeachingDuration;
-                                studyGroup.subjectLogic.UnassignParticipants(classDialog);
-                            }),
-                    ];
+                            }));
+                        }
+                    }
                     Find.WindowStack.Add(new FloatMenu(options));
                 }
 
@@ -193,40 +182,42 @@ public class ProficiencyClassLogic : ClassSubjectLogic
     public override void ExposeData()
     {
         base.ExposeData();
-        Scribe_Values.Look(ref proficiencyFocus, "proficiencyFocus");
+        string rawFocus = null;
+        if (Scribe.mode == LoadSaveMode.LoadingVars)
+        {
+            Scribe_Values.Look(ref rawFocus, "proficiencyFocus");
+        }
+        Scribe_Defs.Look(ref proficiencyTrack, "proficiencyTrack");
+        Scribe_Defs.Look(ref targetTier, "targetTier");
+        if (Scribe.mode == LoadSaveMode.PostLoadInit && rawFocus != null)
+        {
+            foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
+            {
+                foreach (var tier in track.tiers)
+                {
+                    if (tier.legacyNames.Contains(rawFocus))
+                    {
+                        proficiencyTrack = track;
+                        targetTier = tier;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public override void GrantCompletionRewards()
     {
-        var traitDef = ProficiencyFocus switch
-        {
-            ProficiencyLevel.Firearm => DefsOf.PE_FirearmProficiency,
-            ProficiencyLevel.HighTech => DefsOf.PE_HighTechProficiency,
-            _ => null,
-        };
-
         foreach (var student in studyGroup.students)
         {
-            ProficiencyUtility.GrantProficiencyTrait(student, traitDef);
+            ProficiencyUtility.GrantTier(student, proficiencyTrack, targetTier);
         }
     }
 
     private bool HasProficiency(Pawn pawn, out string proficiencyLabel)
     {
-        (proficiencyLabel, var hasProficiency) = ProficiencyFocus switch
-        {
-            ProficiencyLevel.Firearm => (
-                ProficiencyLevel.Firearm.ToStringHuman(),
-                pawn.story.traits.HasTrait(DefsOf.PE_FirearmProficiency)
-                || pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency)
-            ),
-            ProficiencyLevel.HighTech => (
-                ProficiencyLevel.HighTech.ToStringHuman(),
-                pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency)
-            ),
-            _ => ("", false),
-        };
-        return hasProficiency;
+        proficiencyLabel = GetLabel(targetTier);
+        return ProficiencyUtility.MeetsOrExceedsTier(pawn, proficiencyTrack, targetTier);
     }
 
     public override AcceptanceReport IsStudentQualified(Pawn student)
@@ -248,11 +239,9 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return new AcceptanceReport("PE_CannotAddOngoing".Translate());
         }
 
-        if (HasProficiency(student, out var proficiencyLabel))
+        if (!ProficiencyUtility.IsOneTierBelow(student, proficiencyTrack, targetTier))
         {
-            return new AcceptanceReport(
-                "PE_StudentAlreadyHasProficiency".Translate(student.LabelShort,
-                    proficiencyLabel));
+            return new AcceptanceReport("PE_StudentMustBeOneTierBelow".Translate(GetLabel(targetTier)));
         }
 
         return AcceptanceReport.WasAccepted;
@@ -266,11 +255,9 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return baseReport;
         }
 
-        if (!HasProficiency(teacher, out var proficiencyLabel))
+        if (!ProficiencyUtility.MeetsOrExceedsTier(teacher, proficiencyTrack, targetTier))
         {
-            return new AcceptanceReport(
-                "PE_TeacherNotQualifiedProficiency".Translate(teacher.LabelShort,
-                    proficiencyLabel));
+            return new AcceptanceReport("PE_TeacherMustHaveProficiency".Translate(GetLabel(targetTier)));
         }
 
         if (studyGroup.currentProgress > 0f
@@ -300,30 +287,20 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         if (xpPerHour > 0)
         {
             var percentPerHour = xpPerHour / studyGroup.semesterGoal;
-            text.AppendLineTagged($"{
-                "PE_HourlyTeaching".Translate().AsTipTitle()
-            }: {
-                percentPerHour.ToStringPercent()
-            }");
+            text.AppendLineTagged($"{"PE_HourlyTeaching".Translate().AsTipTitle()}: {percentPerHour.ToStringPercent()}");
             text.AppendLine();
         }
 
         var socialImpact = CalculateSocialImpactFactor(pawn);
         text.AppendLineTagged(
             $"{"PE_TeachingFactor".Translate()}:".AsTipTitle()
-            + $" {
-                (LearningSpeedModifier
+            + $" {(LearningSpeedModifier
                  * studyGroup.classroom.ClassSpeed
                  * socialImpact
-                ).ToStringPercent()
-            }"
+                ).ToStringPercent()}"
         );
         var techTraitModifier = CalculateTechTraitModifier(pawn);
-        text.AppendLine($" - {
-            "PE_ProficiencyFocus".Translate()
-        }: x{
-            techTraitModifier.ToStringPercent()
-        }");
+        text.AppendLine($" - {"PE_ProficiencyFocus".Translate()}: x{techTraitModifier.ToStringPercent()}");
         text.AppendLine(
             $" - {StatDefOf.SocialImpact.LabelCap}:"
             + $" x{socialImpact.ToStringPercent()}");

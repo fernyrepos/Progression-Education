@@ -22,11 +22,7 @@ public static class EquipmentUtility_CanEquip_Patch
             var proficiencyLevel = ProficiencyUtility.GetProficiencyLevelString(thing.def);
             cantReason = "PE_CannotEquipItem".Translate(proficiencyLevel);
             EducationLog.Message(
-                $"EquipmentUtility_CanEquip blocked {
-                    pawn.LabelShort
-                } from equipping {
-                    thing.LabelCap
-                } due to missing proficiency.");
+                $"EquipmentUtility_CanEquip blocked {pawn.LabelShort} from equipping {thing.LabelCap} due to missing proficiency.");
         }
     }
 }

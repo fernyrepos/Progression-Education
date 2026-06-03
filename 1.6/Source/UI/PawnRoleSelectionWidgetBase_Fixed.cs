@@ -748,7 +748,7 @@ public abstract class PawnRoleSelectionWidgetBase_Fixed<RoleType>(
 
                 var rect6 = rect3.ContractedBy(4f);
                 DragAndDropWidget.DropArea(dragAndDropGroup, rect6,
-                    delegate(object pawn)
+                    delegate (object pawn)
                     {
                         assignAction((Pawn)pawn, Event.current.mousePosition);
                     }, dropAreaContext);

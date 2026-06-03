@@ -25,17 +25,9 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
     {
         EducationLog.Message("ClassAssignmentsManager constructor called");
         EducationLog.Message(
-            $"teacherRole: {
-                teacherRole?.Label ?? "null"
-            }, category: {
-                teacherRole?.CategoryLabel ?? "null"
-            }");
+            $"teacherRole: {teacherRole?.Label ?? "null"}, category: {teacherRole?.CategoryLabel ?? "null"}");
         EducationLog.Message(
-            $"studentRole: {
-                studentRole?.Label ?? "null"
-            }, category: {
-                studentRole?.CategoryLabel ?? "null"
-            }");
+            $"studentRole: {studentRole?.Label ?? "null"}, category: {studentRole?.CategoryLabel ?? "null"}");
 
         Roles.Add(teacherRole);
         Roles.Add(studentRole);
@@ -185,11 +177,7 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
         Pawn insertBefore = null)
     {
         EducationLog.Message(
-            $"TryAssign called for pawn: {
-                pawn?.LabelShort ?? "null"
-            } to role: {
-                role?.LabelCap ?? "null"
-            }");
+            $"TryAssign called for pawn: {pawn?.LabelShort ?? "null"} to role: {role?.LabelCap ?? "null"}");
         reason = PsychicRitualRoleDef.Reason.None;
         if (pawn == null
             || role == null)
@@ -201,9 +189,7 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
         if (!assignedPawns.ContainsKey(role))
         {
             EducationLog.Message(
-                $"-> role is not one of the supported roles: {
-                    assignedPawns.Keys.ToStringSafeEnumerable()
-                }");
+                $"-> role is not one of the supported roles: {assignedPawns.Keys.ToStringSafeEnumerable()}");
             return false;
         }
 
@@ -211,11 +197,7 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
             && role != forcedRole)
         {
             EducationLog.Message(
-                $"-> pawn has forced role {
-                    forcedRole.LabelCap
-                } which is different from requested role {
-                    role.LabelCap
-                }");
+                $"-> pawn has forced role {forcedRole.LabelCap} which is different from requested role {role.LabelCap}");
             return false;
         }
 
@@ -314,11 +296,7 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
         foreach (var kvp in assignedPawns)
         {
             EducationLog.Message(
-                $"FillPawns - clearing role: {
-                    kvp.Key?.Label ?? "null"
-                }, current count: {
-                    kvp.Value.Count
-                }");
+                $"FillPawns - clearing role: {kvp.Key?.Label ?? "null"}, current count: {kvp.Value.Count}");
             kvp.Value.Clear();
         }
 
@@ -351,11 +329,7 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
     public void FillRole(ClassRole role, List<Pawn> pawns, out List<Pawn> unassignedPawns)
     {
         EducationLog.Message(
-            $"FillRole called for role {
-                role?.LabelCap ?? "null"
-            } with {
-                pawns.ToStringSafeEnumerable()
-            }");
+            $"FillRole called for role {role?.LabelCap ?? "null"} with {pawns.ToStringSafeEnumerable()}");
         unassignedPawns = [];
         if (role == null)
         {
@@ -442,11 +416,7 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
                 && assignedPawns[role].Contains(insertBefore))
             {
                 EducationLog.Message(
-                    $"TryAssignToFirstAvailableRole - inserting pawn before: {
-                        insertBefore.LabelShort ?? "null"
-                    } in role {
-                        role.Label
-                    }");
+                    $"TryAssignToFirstAvailableRole - inserting pawn before: {insertBefore.LabelShort ?? "null"} in role {role.Label}");
                 var index = assignedPawns[role].IndexOf(insertBefore);
                 assignedPawns[role].Insert(index, pawn);
             }

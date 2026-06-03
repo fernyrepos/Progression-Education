@@ -50,7 +50,7 @@ public class SkillClassLogic : ClassSubjectLogic
     }
 
     public override float LearningSpeedModifier =>
-        EducationSettings.Instance.skillClassesLearningSpeedModifier;
+        EducationMod.settings.skillClassesLearningSpeedModifier;
 
     public override float ProgressPerTick
     {
@@ -147,7 +147,6 @@ public class SkillClassLogic : ClassSubjectLogic
             skillFocus = skillFocus,
         };
     }
-
 
     public override void DrawConfigurationUI(Rect rect, ref float curY, IClassDialog classDialog)
     {
@@ -392,11 +391,7 @@ public class SkillClassLogic : ClassSubjectLogic
             text.AppendLineTagged(
                 relevantSkill.def.description.Colorize(ColoredText.SubtleGrayColor));
             text.AppendLine();
-            text.AppendLineTagged($"{
-                "SkillLevel".Translate().CapitalizeFirst().AsTipTitle()
-            }: {
-                relevantSkill.GetLevelForUI()
-            }");
+            text.AppendLineTagged($"{"SkillLevel".Translate().CapitalizeFirst().AsTipTitle()}: {relevantSkill.GetLevelForUI()}");
             text.AppendLine();
             text.AppendLineTagged(
                 $"{"Experience".Translate().CapitalizeFirst()}:".AsTipTitle()
@@ -409,11 +404,9 @@ public class SkillClassLogic : ClassSubjectLogic
             {
                 text.AppendLineTagged(
                     $"{"PE_HourlyProgress".Translate()}:".AsTipTitle()
-                    + $" {
-                        xpPerHour
+                    + $" {xpPerHour
                         * LearningSpeedModifier
-                        * studyGroup.classroom.ClassSpeed
-                        :F0}"
+                        * studyGroup.classroom.ClassSpeed:F0}"
                 );
                 text.AppendLine();
             }
@@ -422,34 +415,16 @@ public class SkillClassLogic : ClassSubjectLogic
             var learnRateFactor = relevantSkill.LearnRateFactor(true);
             text.AppendLineTagged(
                 $"{"PE_LearningFactor".Translate()}:".AsTipTitle()
-                + $" {
-                    (LearningSpeedModifier
+                + $" {(LearningSpeedModifier
                      * studyGroup.classroom.ClassSpeed
                      * globalLearningFactor
                      * learnRateFactor
-                    ).ToStringPercent()
-                }"
+                    ).ToStringPercent()}"
             );
-            text.AppendLine($" - {
-                "StatsReport_BaseValue".Translate()
-            }: x{
-                LearningSpeedModifier.ToStringPercent()
-            }");
-            text.AppendLine($" - {
-                "PE_ClassSpeed".Translate()
-            }: x{
-                studyGroup.classroom.ClassSpeed.ToStringPercent()
-            }");
-            text.AppendLine($" - {
-                relevantSkill.passion.GetLabel()
-            }: x{
-                learnRateFactor.ToStringPercent()
-            }");
-            text.AppendLine($" - {
-                StatDefOf.GlobalLearningFactor.LabelCap
-            }: x{
-                globalLearningFactor.ToStringPercent()
-            }");
+            text.AppendLine($" - {"StatsReport_BaseValue".Translate()}: x{LearningSpeedModifier.ToStringPercent()}");
+            text.AppendLine($" - {"PE_ClassSpeed".Translate()}: x{studyGroup.classroom.ClassSpeed.ToStringPercent()}");
+            text.AppendLine($" - {relevantSkill.passion.GetLabel()}: x{learnRateFactor.ToStringPercent()}");
+            text.AppendLine($" - {StatDefOf.GlobalLearningFactor.LabelCap}: x{globalLearningFactor.ToStringPercent()}");
 
             if (pawn.needs?.learning != null)
             {
@@ -498,41 +473,25 @@ public class SkillClassLogic : ClassSubjectLogic
             var passionBonus = CalculatePassionBonus(pawn);
             text.AppendLineTagged(
                 $"{"PE_HourlyTeaching".Translate()}:".AsTipTitle()
-                + $" {
-                    xpPerHour
+                + $" {xpPerHour
                     * LearningSpeedModifier
-                    * studyGroup.classroom.ClassSpeed
-                    :F0}"
+                    * studyGroup.classroom.ClassSpeed:F0}"
             );
             text.AppendLine();
             text.AppendLineTagged(
                 $"{"PE_TeachingFactor".Translate()}:".AsTipTitle()
-                + $" {
-                    (LearningSpeedModifier
+                + $" {(LearningSpeedModifier
                      * studyGroup.classroom.ClassSpeed
                      * socialImpactFactor
-                     * passionBonus).ToStringPercent()
-                }"
+                     * passionBonus).ToStringPercent()}"
             );
-            text.AppendLine($" - {
-                "StatsReport_BaseValue".Translate()
-            }: x{
-                LearningSpeedModifier.ToStringPercent()
-            }");
-            text.AppendLine($" - {
-                "PE_ClassSpeed".Translate()
-            }: x{
-                studyGroup.classroom.ClassSpeed.ToStringPercent()
-            }");
+            text.AppendLine($" - {"StatsReport_BaseValue".Translate()}: x{LearningSpeedModifier.ToStringPercent()}");
+            text.AppendLine($" - {"PE_ClassSpeed".Translate()}: x{studyGroup.classroom.ClassSpeed.ToStringPercent()}");
             text.AppendLine(
                 $" - {StatDefOf.SocialImpact.LabelCap}:"
                 + $" x{socialImpactFactor.ToStringPercent()}"
             );
-            text.AppendLine($" - {
-                "PE_SkillPassionBonus".Translate()
-            }: x{
-                passionBonus.ToStringPercent()
-            }");
+            text.AppendLine($" - {"PE_SkillPassionBonus".Translate()}: x{passionBonus.ToStringPercent()}");
         }
 
         return text.ToString().TrimEndNewlines();

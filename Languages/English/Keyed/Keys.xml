@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <PE_Create>Create</PE_Create>
   <PE_Select>Select</PE_Select>
@@ -140,4 +140,23 @@
   <PE_AddKids_Desc>If enabled, daycares in this classroom are allowed to add children when they age-up.</PE_AddKids_Desc>
   <PE_CannotAttendClass>Class {0} was suspended because the teacher is not available.</PE_CannotAttendClass>
   <PE_CannotUnsuspendNoTeacher>Cannot unsuspend class: Teacher unavailable to teach</PE_CannotUnsuspendNoTeacher>
+  <PE_BestowProficiency>Bestow Proficiency</PE_BestowProficiency>
+  <PE_BestowProficiencyDesc>Select a colonist to receive the researched proficiency. They must be capable of Intellectual work.</PE_BestowProficiencyDesc>
+  <PE_Knowledge>Knowledge</PE_Knowledge>
+  <PE_StudentMustBeOneTierBelow>Student must be exactly one tier below {0}.</PE_StudentMustBeOneTierBelow>
+  <PE_TeacherMustHaveProficiency>Teacher must have at least {0} proficiency.</PE_TeacherMustHaveProficiency>
+  <PE_EnableKnowledgePanel>Enable knowledge panel? (Disable to show as standard traits)</PE_EnableKnowledgePanel>
+  <PE_BestowProficiencyToAll>Bestow proficiency onto all current population once researched?</PE_BestowProficiencyToAll>
+  <PE_EnableWeaponProficiency>Enable weapon proficiency</PE_EnableWeaponProficiency>
+  <PE_EnableVehicleProficiency>Enable vehicle proficiency</PE_EnableVehicleProficiency>
+  <PE_EnableSpeechProficiency>Enable speech proficiency</PE_EnableSpeechProficiency>
+  <PE_Weapon_Firearm>weapon firearm</PE_Weapon_Firearm>
+  <PE_Weapon_HighTech>weapon high-tech</PE_Weapon_HighTech>
+  <PE_Vehicle_Automobiles>automobile driving</PE_Vehicle_Automobiles>
+  <PE_Vehicle_Aerial>aerial piloting</PE_Vehicle_Aerial>
+  <PE_Vehicle_Orbital>orbital piloting</PE_Vehicle_Orbital>
+  <PE_Speech_Basic>basic speech</PE_Speech_Basic>
+  <PE_Speech_Fluent>fluent</PE_Speech_Fluent>
+  <PE_GiddyUpNeedRiding>Colonist must be taught animal riding proficiency.</PE_GiddyUpNeedRiding>
+  <PE_VehicleProficiencyRequired>Requires {0} proficiency</PE_VehicleProficiencyRequired>
 </LanguageData>

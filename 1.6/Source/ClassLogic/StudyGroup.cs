@@ -441,7 +441,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         {
             CancelClass();
         }
-        
+
         EducationManager.Instance.Notify_ClassInvalidated(this);
     }
 

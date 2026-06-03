@@ -69,13 +69,7 @@ public static class TimeAssignmentUtility
                                         .Contains(building.def))))
         {
             EducationLog.Message(
-                $"Pawn {
-                    pawn.LabelShort
-                } cannot use {
-                    building.Label
-                } during active class time in classroom {
-                    classroom.name
-                }.");
+                $"Pawn {pawn.LabelShort} cannot use {building.Label} during active class time in classroom {classroom.name}.");
             return false;
         }
 
@@ -166,9 +160,7 @@ public static class TimeAssignmentUtility
         EducationLog.Message(
             $"Found {dynamicDefsToRemove.ToStringSafeEnumerable()} dynamic defs to remove.");
         EducationLog.Message(
-            $"All defs present: {
-                DefDatabase<TimeAssignmentDef>.AllDefsListForReading.ToStringSafeEnumerable()
-            }");
+            $"All defs present: {DefDatabase<TimeAssignmentDef>.AllDefsListForReading.ToStringSafeEnumerable()}");
         foreach (var def in dynamicDefsToRemove)
         {
             DefDatabase<TimeAssignmentDef>.Remove(def);
@@ -203,13 +195,7 @@ public static class TimeAssignmentUtility
     {
         TryRepairTimetable(pawn);
         EducationLog.Message(
-            $"SetPawnSchedule called for pawn {
-                pawn.LabelShort
-            } in {
-                studyGroup.className
-            } to {
-                timeAssignment?.defName ?? "null"
-            }");
+            $"SetPawnSchedule called for pawn {pawn.LabelShort} in {studyGroup.className} to {timeAssignment?.defName ?? "null"}");
         for (var i = 0; i < studyGroup.Duration; ++i)
         {
             var hour = (studyGroup.startHour + i) % 24;
@@ -225,13 +211,7 @@ public static class TimeAssignmentUtility
                     RemoveTimeAssignment(studyGroup, pawn, hour);
                 pawn.timetable.SetAssignment(hour, assignmentRemember);
                 EducationLog.Message(
-                    $"Restored timetable for pawn {
-                        pawn.LabelShort
-                    } at hour {
-                        hour
-                    } to {
-                        assignmentRemember.defName
-                    }");
+                    $"Restored timetable for pawn {pawn.LabelShort} at hour {hour} to {assignmentRemember.defName}");
             }
             else
             {
@@ -239,13 +219,7 @@ public static class TimeAssignmentUtility
                     assignmentRemember);
                 pawn.timetable.SetAssignment(hour, timeAssignment);
                 EducationLog.Message(
-                    $"Set timetable for pawn {
-                        pawn.LabelShort
-                    } at hour {
-                        hour
-                    } to {
-                        timeAssignment.defName
-                    }");
+                    $"Set timetable for pawn {pawn.LabelShort} at hour {hour} to {timeAssignment.defName}");
             }
         }
     }
@@ -290,11 +264,7 @@ public static class TimeAssignmentUtility
                 while (pawn.timetable.times.Count < 24)
                 {
                     EducationLog.Warning(
-                        $"Timetable for {
-                            pawn.LabelShort
-                        } is incomplete. Appending hour {
-                            pawn.timetable.times.Count
-                        }.");
+                        $"Timetable for {pawn.LabelShort} is incomplete. Appending hour {pawn.timetable.times.Count}.");
                     var hour = pawn.timetable.times.Count;
                     var defaultAssignment = hour is > 5 and <= 21
                         ? TimeAssignmentDefOf.Anything

@@ -59,12 +59,7 @@ public class JobDriver_Teach : JobDriver_LessonBase
             return;
         }
 
-        if (proficiencyLogic.ProficiencyFocus switch
-            {
-                ProficiencyLevel.Firearm => DefsOf.PE_Gun_AssaultRifleTraining,
-                ProficiencyLevel.HighTech => DefsOf.PE_Gun_SpacerTraining,
-                _ => null,
-            } is ThingDef weaponDef)
+        if (proficiencyLogic.targetTier?.trainingWeaponDef is ThingDef weaponDef)
         {
             weapon = ThingMaker.MakeThing(weaponDef,
                 GenStuff.DefaultStuffFor(weaponDef));

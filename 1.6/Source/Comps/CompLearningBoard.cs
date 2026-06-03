@@ -56,21 +56,13 @@ public class CompLearningBoard : ThingComp
         {
             classroom = otherBoard.classroom;
             EducationLog.Message(
-                $"Learning board '{
-                    parent.Label
-                }' spawned in room with existing classroom. Linking to '{
-                    classroom.name
-                }'.");
+                $"Learning board '{parent.Label}' spawned in room with existing classroom. Linking to '{classroom.name}'.");
         }
         else
         {
             classroom = new Classroom(parent);
             EducationLog.Message(
-                $"Learning board '{
-                    parent.Label
-                }' spawned in a new room. Creating new classroom: '{
-                    classroom.name
-                }'.");
+                $"Learning board '{parent.Label}' spawned in a new room. Creating new classroom: '{classroom.name}'.");
             Find.WindowStack.Add(new Dialog_RenameClassroom(classroom,
                 true));
         }
@@ -91,23 +83,13 @@ public class CompLearningBoard : ThingComp
         if (otherBoard != null)
         {
             EducationLog.Message(
-                $"Learning board '{
-                    parent.Label
-                }' despawned. Transferring classroom '{
-                    classroom.name
-                }' to '{
-                    otherBoard.parent
-                }'.");
+                $"Learning board '{parent.Label}' despawned. Transferring classroom '{classroom.name}' to '{otherBoard.parent}'.");
             otherBoard.classroom = classroom;
         }
         else
         {
             EducationLog.Message(
-                $"Learning board '{
-                    parent.Label
-                }' despawned. Last board in room. Removing classroom '{
-                    classroom.name
-                }'.");
+                $"Learning board '{parent.Label}' despawned. Last board in room. Removing classroom '{classroom.name}'.");
             EducationManager.Instance.RemoveClassroom(classroom);
         }
 

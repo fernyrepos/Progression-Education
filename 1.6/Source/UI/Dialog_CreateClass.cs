@@ -71,8 +71,8 @@ public class Dialog_CreateClass : Window, IClassDialog
     public override void DoWindowContents(Rect inRect)
     {
         var enter = Event.current.type == EventType.KeyDown
-                    && (Event.current.keyCode == KeyCode.Return
-                        || Event.current.keyCode == KeyCode.KeypadEnter);
+                      && (Event.current.keyCode == KeyCode.Return
+                          || Event.current.keyCode == KeyCode.KeypadEnter);
         Text.Font = GameFont.Medium;
         Widgets.Label(new Rect(inRect.x, inRect.y, inRect.width, 35f),
             "PE_CreateClass".Translate());
@@ -86,7 +86,8 @@ public class Dialog_CreateClass : Window, IClassDialog
             contentRect.width * 0.5f - 5f,
             contentRect.height);
         var rightRect = new Rect(contentRect.x + contentRect.width * 0.5f + 5f, contentRect.y,
-            contentRect.width * 0.5f - 5f, contentRect.height);
+            contentRect.width * 0.5f - 5f,
+            contentRect.height);
         participantsDrawer.DrawPawnList(leftRect);
         DrawCustomFields(rightRect);
         var buttonY = inRect.height - 35f;
@@ -122,26 +123,32 @@ public class Dialog_CreateClass : Window, IClassDialog
                 studyGroup.subjectLogic.LabelCap))
         {
             var options = new List<FloatMenuOption>
-            {
-                new(skillClassLogic.LabelCap, () =>
                 {
-                    studyGroup.subjectLogic = skillClassLogic;
-                    studyGroup.semesterGoal = 10000;
-                    studyGroup.subjectLogic.UnassignParticipants(this);
-                }),
-            };
-            if (EducationSettings.Instance.enableProficiencySystem)
-            {
-                options.Add(new FloatMenuOption(proficiencyClassLogic.LabelCap, () =>
-                {
-                    studyGroup.subjectLogic = proficiencyClassLogic;
-                    studyGroup.semesterGoal = proficiencyClassLogic.ProficiencyFocus switch
+                    new(skillClassLogic.LabelCap, () =>
                     {
-                        ProficiencyLevel.Firearm => ProficiencyClassLogic.FirearmTeachingDuration,
-                        _ => ProficiencyClassLogic.HighTechTeachingDuration,
-                    };
-                    studyGroup.subjectLogic.UnassignParticipants(this);
-                }));
+                        studyGroup.subjectLogic = skillClassLogic;
+                        studyGroup.semesterGoal = 10000;
+                        studyGroup.subjectLogic.UnassignParticipants(this);
+                    }),
+                };
+            if (EducationMod.settings.enableProficiencySystem)
+            {
+                foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
+                {
+                    if (!ProficiencyUtility.IsTrackEnabled(track)) continue;
+                    for (int i = 1; i < track.tiers.Count; i++)
+                    {
+                        var tier = track.tiers[i];
+                        options.Add(new FloatMenuOption(ProficiencyClassLogic.GetLabel(tier).CapitalizeFirst(), () =>
+                        {
+                            proficiencyClassLogic.proficiencyTrack = track;
+                            proficiencyClassLogic.targetTier = tier;
+                            studyGroup.subjectLogic = proficiencyClassLogic;
+                            studyGroup.semesterGoal = tier.semesterGoal;
+                            studyGroup.subjectLogic.UnassignParticipants(this);
+                        }));
+                    }
+                }
             }
 
             options.Add(new FloatMenuOption(daycareClassLogic.LabelCap, () =>
@@ -166,10 +173,10 @@ public class Dialog_CreateClass : Window, IClassDialog
             var options = EducationManager.Instance.Classrooms
                 .OrderBy(c => c.name)
                 .Select(c => new FloatMenuOption(c.name, () =>
-                {
-                    studyGroup.classroom = c;
-                    ValidateAndRemovePawns();
-                }))
+            {
+                studyGroup.classroom = c;
+                ValidateAndRemovePawns();
+            }))
                 .ToList();
 
             if (options.Count > 0)
@@ -231,11 +238,7 @@ public class Dialog_CreateClass : Window, IClassDialog
                         .ThreatColor);
             }
 
-            requirements.AppendLineTagged($"1x {
-                "PE_LearningBoard".Translate()
-            }{
-                learningBoardPresentText
-            }");
+            requirements.AppendLineTagged($"1x {"PE_LearningBoard".Translate()}{learningBoardPresentText}");
         }
 
         if (!EducationUtility.HasBellOnMap(map, false))
@@ -282,11 +285,7 @@ public class Dialog_CreateClass : Window, IClassDialog
 
         if (studyGroup.className.NullOrEmpty())
         {
-            studyGroup.className = $"{
-                studyGroup.teacher.LabelShortCap
-            } ({
-                studyGroup.subjectLogic.LabelFocus
-            })";
+            studyGroup.className = $"{studyGroup.teacher.LabelShortCap} ({studyGroup.subjectLogic.LabelFocus})";
         }
 
         if (studyGroup.subjectLogic is SkillClassLogic classLogic
@@ -373,7 +372,6 @@ public class Dialog_CreateClass : Window, IClassDialog
             AssignmentsManager.Unassign(student, StudentRole);
         }
     }
-
 
     public override void WindowUpdate()
     {

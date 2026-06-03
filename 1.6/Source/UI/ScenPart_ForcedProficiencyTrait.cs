@@ -47,7 +47,7 @@ public class ScenPart_ForcedProficiencyTrait : ScenPart_PawnModifier
             return;
         }
 
-        if (!EducationSettings.Instance.enableProficiencySystem)
+        if (!EducationMod.settings.enableProficiencySystem)
         {
             return;
         }

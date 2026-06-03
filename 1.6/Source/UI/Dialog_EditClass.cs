@@ -192,11 +192,7 @@ public class Dialog_EditClass : Window, IClassDialog
                         .ThreatColor);
             }
 
-            requirements.AppendLineTagged($"1x {
-                "PE_LearningBoard".Translate()
-            }{
-                learningBoardPresentText
-            }");
+            requirements.AppendLineTagged($"1x {"PE_LearningBoard".Translate()}{learningBoardPresentText}");
         }
 
         if (!EducationUtility.HasBellOnMap(map, false))
@@ -243,11 +239,7 @@ public class Dialog_EditClass : Window, IClassDialog
 
         if (studyGroup.className.NullOrEmpty())
         {
-            studyGroup.className = $"{
-                studyGroup.teacher.LabelShortCap
-            } ({
-                studyGroup.subjectLogic.LabelFocus
-            })";
+            studyGroup.className = $"{studyGroup.teacher.LabelShortCap} ({studyGroup.subjectLogic.LabelFocus})";
         }
 
         if (studyGroup.subjectLogic is SkillClassLogic classLogic

@@ -247,11 +247,7 @@ public abstract class ClassSubjectLogic : IExposable
             if (globalLearningFactor > 0)
             {
                 text.AppendLine(
-                    $" - {
-                        StatDefOf.GlobalLearningFactor.LabelCap
-                    }: x{
-                        globalLearningFactor.ToStringPercent()
-                    }");
+                    $" - {StatDefOf.GlobalLearningFactor.LabelCap}: x{globalLearningFactor.ToStringPercent()}");
             }
         }
 

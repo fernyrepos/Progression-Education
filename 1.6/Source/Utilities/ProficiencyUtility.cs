@@ -2,76 +2,94 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
+using UnityEngine;
+using HarmonyLib;
 
 namespace ProgressionEducation;
 
-public enum ProficiencyLevel
-{
-    LowTech,
-    Firearm,
-    HighTech,
-}
-
 [HotSwappable]
+[StaticConstructorOnStartup]
 public static class ProficiencyUtility
 {
     private static readonly Dictionary<ThingDef, TechLevel> cachedTechLevelValues = new();
 
+    private static readonly Texture2D CircleBrightTex = ContentFinder<Texture2D>.Get("UI/CircleBright");
+    private static readonly Texture2D CircleDarkTex = ContentFinder<Texture2D>.Get("UI/CircleDark");
+
+    static ProficiencyUtility()
+    {
+        CharacterCardUtility.BasePawnCardSize = new Vector2(540f, 520f);
+    }
+
+    public static bool AreVehicleModsActive => ModsConfig.OdysseyActive || ModsConfig.IsActive("MemeGoddess.GiddyUp") || ModsConfig.IsActive("SmashPhil.VehicleFramework");
+
+    public static bool CanHaveProficiencies(this Pawn pawn)
+    {
+        if (EducationMod.settings.enableProficiencySystem is false) return false;
+        if (pawn?.story?.traits == null || pawn.DevelopmentalStage == DevelopmentalStage.Newborn)
+        {
+            return false;
+        }
+        return pawn.RaceProps.Humanlike;
+    }
+
     public static void ApplyProficiencyTraitToPawn(Pawn pawn)
     {
-        if (pawn?.story?.traits == null
-            || pawn.DevelopmentalStage == DevelopmentalStage.Newborn)
+        if (pawn.CanHaveProficiencies() is false)
         {
             return;
         }
 
-        if (!EducationSettings.Instance.enableProficiencySystem)
-        {
-            return;
-        }
+        var techLevel = pawn.Faction?.def?.techLevel ?? TechLevel.Undefined;
 
-        var hasProficiencyTrait = false;
-        foreach (var trait in pawn.story.traits.allTraits)
+        foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
         {
-            if (trait.def == DefsOf.PE_LowTechProficiency
-                || trait.def == DefsOf.PE_FirearmProficiency
-                || trait.def == DefsOf.PE_HighTechProficiency)
+            if (!IsTrackEnabled(track)) continue;
+
+            if (GetCurrentTier(pawn, track) == null)
             {
-                hasProficiencyTrait = true;
-                break;
-            }
-        }
+                var bestTier = track.tiers[0];
+                foreach (var tier in track.tiers)
+                {
+                    if (tier.generationTechLevel != TechLevel.Undefined && techLevel >= tier.generationTechLevel)
+                        bestTier = tier;
+                    if (pawn.DevelopmentalStage == DevelopmentalStage.Adult && tier.isDefaultAdult)
+                        bestTier = tier;
+                    if (pawn.DevelopmentalStage == DevelopmentalStage.Child && tier.isDefaultChild)
+                        bestTier = tier;
+                }
 
-        if (!hasProficiencyTrait)
-        {
-            var techLevel = pawn.Faction != null ? pawn.Faction.def.techLevel : TechLevel.Undefined;
-            var traitToAdd = GetProficiencyForTechLevel(techLevel);
-            GrantProficiencyTrait(pawn, traitToAdd);
-            EducationLog.Message($"Added trait '{traitToAdd.label}' to pawn {pawn.LabelShort}.");
+                GrantTier(pawn, track, bestTier);
+            }
         }
     }
 
     public static bool CanEquipItem(this Pawn pawn, Thing equipment)
     {
-        if (!EducationSettings.Instance.enableProficiencySystem
+        if (pawn.CanHaveProficiencies() is false
             || pawn.Faction != Faction.OfPlayerSilentFail
-            || PawnGenerator.IsBeingGenerated(pawn)
-            || pawn.story?.traits == null
-            || !pawn.story.traits.allTraits.Any(x =>
-                x.def == DefsOf.PE_LowTechProficiency
-                || x.def == DefsOf.PE_FirearmProficiency
-                || x.def == DefsOf.PE_HighTechProficiency))
+            || PawnGenerator.IsBeingGenerated(pawn))
         {
             return true;
         }
 
         var proficiencyRequirement = equipment.def.GetModExtension<ItemProficiencyRequirement>();
         TraitDef requiredProficiency = null;
-        if (proficiencyRequirement == null
-            || proficiencyRequirement.requiredProficiency == null)
+        if (proficiencyRequirement == null || proficiencyRequirement.requiredProficiency == null)
         {
             var techLevel = GetTechLevelFor(equipment.def);
-            requiredProficiency = GetProficiencyForTechLevel(techLevel);
+            foreach (var tier in DefsOf.PE_WeaponTrack.tiers)
+            {
+                if (tier.generationTechLevel != TechLevel.Undefined && techLevel <= tier.generationTechLevel)
+                {
+                    requiredProficiency = tier.traitDef;
+                    break;
+                }
+            }
+            if (requiredProficiency == null)
+            {
+                requiredProficiency = DefsOf.PE_WeaponTrack.tiers.Last().traitDef;
+            }
         }
         else
         {
@@ -80,56 +98,43 @@ public static class ProficiencyUtility
 
         if (requiredProficiency != null)
         {
-            if (equipment is Apparel
-                && requiredProficiency == DefsOf.PE_FirearmProficiency)
+            if (equipment is Apparel && DefsOf.PE_WeaponTrack.tiers.Any(t => t.traitDef == requiredProficiency))
             {
                 return true;
             }
 
-            var canEquip = false;
-            if (requiredProficiency == DefsOf.PE_HighTechProficiency)
+            ProficiencyTierDef requiredTier = null;
+            ProficiencyDef requiredTrack = null;
+            foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
             {
-                canEquip = pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency);
+                if (!IsTrackEnabled(track)) continue;
+                requiredTier = track.tiers.FirstOrDefault(t => t.traitDef == requiredProficiency);
+                if (requiredTier != null)
+                {
+                    requiredTrack = track;
+                    break;
+                }
             }
-            else if (requiredProficiency == DefsOf.PE_FirearmProficiency)
+            if (requiredTrack != null)
             {
-                canEquip = pawn.story.traits.HasTrait(DefsOf.PE_FirearmProficiency)
-                           || pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency);
+                return MeetsOrExceedsTier(pawn, requiredTrack, requiredTier);
             }
-            else if (requiredProficiency == DefsOf.PE_LowTechProficiency)
-            {
-                canEquip = pawn.story.traits.HasTrait(DefsOf.PE_LowTechProficiency)
-                           || pawn.story.traits.HasTrait(DefsOf.PE_FirearmProficiency)
-                           || pawn.story.traits.HasTrait(DefsOf.PE_HighTechProficiency);
-            }
-
-            return canEquip;
         }
 
         return true;
     }
 
-    public static TraitDef GetProficiencyForTechLevel(TechLevel techLevel)
-    {
-        return techLevel switch
-        {
-            TechLevel.Undefined
-                or TechLevel.Animal
-                or TechLevel.Neolithic
-                or TechLevel.Medieval => DefsOf
-                    .PE_LowTechProficiency,
-            TechLevel.Industrial => DefsOf.PE_FirearmProficiency,
-            TechLevel.Spacer or TechLevel.Ultra or TechLevel.Archotech => DefsOf
-                .PE_HighTechProficiency,
-            _ => DefsOf.PE_LowTechProficiency,
-        };
-    }
-
     public static string GetProficiencyLevelString(ThingDef thingDef)
     {
         var techLevel = GetTechLevelFor(thingDef);
-        var proficiency = GetProficiencyForTechLevel(techLevel);
-        return TraitDefToProficiencyLevel(proficiency).ToStringHuman().ToLower();
+        foreach (var tier in DefsOf.PE_WeaponTrack.tiers)
+        {
+            if (tier.generationTechLevel != TechLevel.Undefined && techLevel <= tier.generationTechLevel)
+            {
+                return tier.label;
+            }
+        }
+        return DefsOf.PE_WeaponTrack.tiers.Last().label;
     }
 
     public static TechLevel GetTechLevelFor(ThingDef thingDef)
@@ -147,12 +152,6 @@ public static class ProficiencyUtility
         var techLevelSources = new List<TechLevel>();
         if (thingDef.GetCompProperties<CompProperties_Techprint>() != null)
         {
-            EducationLog.Message("1 Result: "
-                                 + thingDef.GetCompProperties<CompProperties_Techprint>()
-                                     .project
-                                     .techLevel
-                                 + " - "
-                                 + thingDef);
             techLevelSources.Add(thingDef.GetCompProperties<CompProperties_Techprint>()
                 .project
                 .techLevel);
@@ -165,7 +164,6 @@ public static class ProficiencyUtility
                 var techLevel = thingDef.recipeMaker.researchPrerequisite.techLevel;
                 if (techLevel != TechLevel.Undefined)
                 {
-                    EducationLog.Message("2 Result: " + techLevel + " - " + thingDef);
                     techLevelSources.Add(techLevel);
                 }
             }
@@ -177,7 +175,6 @@ public static class ProficiencyUtility
                 var techLevel = num;
                 if (techLevel != TechLevel.Undefined)
                 {
-                    EducationLog.Message("3 Result: " + techLevel + " - " + thingDef);
                     techLevelSources.Add(techLevel);
                 }
             }
@@ -189,81 +186,178 @@ public static class ProficiencyUtility
             var techLevel = num;
             if (techLevel != TechLevel.Undefined)
             {
-                EducationLog.Message("4 Result: " + techLevel + " - " + thingDef);
                 techLevelSources.Add(techLevel);
             }
         }
 
-        EducationLog.Message("5 Result: " + thingDef.techLevel + " - " + thingDef);
         techLevelSources.Add(thingDef.techLevel);
-        EducationLog.Message(thingDef + " - FINAL: " + techLevelSources.MaxBy(x => (int)x));
         return techLevelSources.MaxBy(x => (int)x);
     }
 
-    public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd,
-        bool preventDowngrade = false)
+    public static void DrawKnowledgePanel(Rect rect, Pawn pawn)
     {
-        if (pawn.story?.traits == null
-            || pawn.DevelopmentalStage == DevelopmentalStage.Newborn)
+        Rect inner = rect;
+        float curY = inner.y;
+        Text.Font = GameFont.Small;
+        Widgets.Label(new Rect(inner.x, curY, inner.width, 24f), "PE_Knowledge".Translate().AsTipTitle());
+        curY += 22f;
+
+        foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
         {
-            return;
+            if (!IsTrackEnabled(track)) continue;
+            DrawProficiencyRow(new Rect(inner.x, curY, inner.width, 22f), track.LabelCap, GetCurrentTier(pawn, track), track);
+            curY += 24f;
         }
+    }
 
-        var existingTraits = pawn.story.traits.allTraits.Where(t =>
-                t.def == DefsOf.PE_LowTechProficiency
-                || t.def == DefsOf.PE_FirearmProficiency
-                || t.def == DefsOf.PE_HighTechProficiency)
-            .ToList();
+    private static void DrawProficiencyRow(Rect rect, string label, ProficiencyTierDef currentTier, ProficiencyDef track)
+    {
+        int currentIndex = currentTier != null ? track.tiers.IndexOf(currentTier) : -1;
+        var activeIconRect = new Rect(rect.x, rect.y + 4f, 14f, 14f);
+        if (currentTier != null && currentTier.icon != null)
+            GUI.DrawTexture(activeIconRect, currentTier.icon);
 
-        if (preventDowngrade)
+        var spacing = 22f;
+        var rightMargin = 70f;
+        var numDots = track.tiers.Count;
+        var curX = rect.xMax - 18f - rightMargin - (numDots - 1) * spacing;
+        var labelX = rect.x + 18f;
+        var availableTextWidth = curX - labelX - 6f;
+        Widgets.Label(new Rect(labelX, rect.y, availableTextWidth, rect.height), label);
+
+        for (int i = 0; i < track.tiers.Count; i++)
         {
-            var newProficiencyLevel = TraitDefToProficiencyLevel(traitToAdd);
-            if (existingTraits.Any())
+            var tier = track.tiers[i];
+            var dotRect = new Rect(curX, rect.y + 2f, 18f, 18f);
+            var bgTex = i <= currentIndex ? CircleBrightTex : CircleDarkTex;
+            GUI.DrawTexture(dotRect, bgTex);
+            if (tier.icon != null)
+                GUI.DrawTexture(dotRect.ExpandedBy(-3), tier.icon);
+            var dotData = tier.traitDef.degreeDatas[0];
+            TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}"));
+            curX += spacing;
+        }
+        GUI.color = Color.white;
+    }
+
+    public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd)
+    {
+        foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
+        {
+            foreach (var tier in track.tiers)
             {
-                var maxExistingLevel = existingTraits.Max(t => TraitDefToProficiencyLevel(t.def));
-                if (newProficiencyLevel <= maxExistingLevel)
+                if (tier.traitDef == traitToAdd)
                 {
+                    GrantTier(pawn, track, tier);
                     return;
                 }
             }
         }
+    }
 
-        foreach (var oldTrait in existingTraits)
+    public static ProficiencyTierDef GetCurrentTier(Pawn pawn, ProficiencyDef track)
+    {
+        if (pawn.CanHaveProficiencies() is false)
         {
-            pawn.story.traits.allTraits.Remove(oldTrait);
+            return null;
         }
+        for (var i = track.tiers.Count; i > 0; i--)
+        {
+            if (pawn.story.traits.HasTrait(track.tiers[i - 1].traitDef)) return track.tiers[i - 1];
+        }
+        return null;
+    }
 
-        var trait = new Trait(traitToAdd);
+    public static bool IsProficiencyTrait(TraitDef def)
+    {
+        return DefDatabase<ProficiencyDef>.AllDefsListForReading.Any(track => track.tiers.Any(t => t.traitDef == def));
+    }
+
+    public static bool IsTrackEnabled(ProficiencyDef track)
+    {
+        if (track == DefsOf.PE_WeaponTrack)
+        {
+            return EducationMod.settings.enableWeaponProficiency;
+        }
+        if (track == DefsOf.PE_VehicleTrack)
+        {
+            return AreVehicleModsActive && EducationMod.settings.enableVehicleProficiency && track.tiers.Count > 0;
+        }
+        if (track == DefsOf.PE_SpeechTrack)
+        {
+            return EducationMod.settings.enableSpeechProficiency && track.tiers.Count > 0;
+        }
+        return track.tiers.Count > 0;
+    }
+
+    public static bool MeetsOrExceedsTier(Pawn pawn, ProficiencyDef track, ProficiencyTierDef tier)
+    {
+        if (pawn.CanHaveProficiencies() is false)
+        {
+            return false;
+        }
+        if (GetCurrentTier(pawn, track) == null)
+        {
+            ApplyProficiencyTraitToPawn(pawn);
+        }
+        var targetIdx = track.tiers.IndexOf(tier);
+        for (var i = targetIdx; i < track.tiers.Count; i++)
+        {
+            if (pawn.story.traits.HasTrait(track.tiers[i].traitDef))
+                return true;
+        }
+        return false;
+    }
+
+    public static bool IsOneTierBelow(Pawn pawn, ProficiencyDef track, ProficiencyTierDef tier)
+    {
+        if (pawn.CanHaveProficiencies() is false)
+        {
+            return false;
+        }
+        if (GetCurrentTier(pawn, track) == null)
+        {
+            ApplyProficiencyTraitToPawn(pawn);
+        }
+        var targetIdx = track.tiers.IndexOf(tier);
+        return targetIdx > 0 && pawn.story.traits.HasTrait(track.tiers[targetIdx - 1].traitDef);
+    }
+
+    public static void GrantTier(Pawn pawn, ProficiencyDef track, ProficiencyTierDef tier)
+    {
+        if (pawn.CanHaveProficiencies() is false)
+        {
+            return;
+        }
+        pawn.story.traits.allTraits.RemoveAll(t => track.tiers.Any(x => x.traitDef == t.def));
+        var trait = new Trait(tier.traitDef);
         pawn.story.traits.GainTrait(trait);
         pawn.story.traits.allTraits.Remove(trait);
         pawn.story.traits.allTraits.Insert(0, trait);
     }
 
-    public static string ToStringHuman(this ProficiencyLevel proficiency)
+    public static (bool canOperate, string failureReason) CheckVehicleOperation(Pawn pawn, object handler)
     {
-        return proficiency switch
-        {
-            ProficiencyLevel.LowTech => "PE_ProficiencyLowTech".Translate(),
-            ProficiencyLevel.Firearm => "PE_ProficiencyFirearm".Translate(),
-            ProficiencyLevel.HighTech => "PE_ProficiencyHighTech".Translate(),
-            _ => "Unknown",
-        };
-    }
+        if (!EducationMod.settings.enableProficiencySystem || !EducationMod.settings.enableVehicleProficiency)
+            return (true, null);
 
-    public static ProficiencyLevel TraitDefToProficiencyLevel(TraitDef traitDef)
-    {
-        if (traitDef == DefsOf.PE_LowTechProficiency)
-        {
-            return ProficiencyLevel.LowTech;
-        }
+        var roleField = AccessTools.Field(handler.GetType(), "role");
+        var role = roleField.GetValue(handler);
+        var handlingTypesField = AccessTools.Field(role.GetType(), "handlingTypes");
+        var handlingTypes = (int)handlingTypesField.GetValue(role);
+        if ((handlingTypes & 1) != 1)
+            return (true, null);
 
-        if (traitDef == DefsOf.PE_FirearmProficiency)
-        {
-            return ProficiencyLevel.Firearm;
-        }
+        var vehicleField = AccessTools.Field(handler.GetType(), "vehicle");
+        var vehicle = vehicleField.GetValue(handler) as Pawn;
+        var vehicleDefType = AccessTools.TypeByName("Vehicles.VehicleDef");
+        var typeField = AccessTools.Field(vehicleDefType, "type");
+        var typeStr = typeField.GetValue(vehicle.def).ToString();
+        var reqTier = typeStr == "Air" ? DefsOf.PE_AerialPilotingTier : DefsOf.PE_AutomobileDrivingTier;
 
-        return traitDef == DefsOf.PE_HighTechProficiency
-            ? ProficiencyLevel.HighTech
-            : ProficiencyLevel.LowTech;
+        if (!MeetsOrExceedsTier(pawn, DefsOf.PE_VehicleTrack, reqTier))
+            return (false, "PE_VehicleProficiencyRequired".Translate(reqTier.label));
+
+        return (true, null);
     }
 }

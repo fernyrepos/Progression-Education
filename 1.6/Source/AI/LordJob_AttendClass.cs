@@ -192,9 +192,7 @@ public class LordJob_AttendClass : LordJob
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
         {
             EducationLog.Message(
-                $"LordJob_AttendClass.LordJobTick Class '{
-                    studyGroup.className
-                }' is being cancelled: teacher is unavailable.");
+                $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: teacher is unavailable.");
             lord.ReceiveMemo(MemoClassCancelledTeacherIncapacitated);
             studyGroup.Notify_TeacherUnavailable();
 
@@ -204,9 +202,7 @@ public class LordJob_AttendClass : LordJob
         if (studyGroup.teacher.GetLord() != lord)
         {
             EducationLog.Message(
-                $"LordJob_AttendClass.LordJobTick Class '{
-                    studyGroup.className
-                }' is being cancelled: teacher is no longer in the class.");
+                $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: teacher is no longer in the class.");
             studyGroup.Notify_TeacherUnavailable();
             return;
         }
@@ -216,20 +212,14 @@ public class LordJob_AttendClass : LordJob
         {
             lord.ReceiveMemo(MemoClassTimeFinished);
             EducationLog.Message(
-                $"LordJob_AttendClass.LordJobTick Class '{
-                    studyGroup.className
-                }' is finished: teacher is no longer scheduled for class.");
+                $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is finished: teacher is no longer scheduled for class.");
             return;
         }
 
         if (studyGroup.ValidateClassStatus() is { Accepted: false } validationReport)
         {
             EducationLog.Message(
-                $"LordJob_AttendClass.LordJobTick Class '{
-                    studyGroup.className
-                }' is being cancelled: {
-                    validationReport.Reason
-                }");
+                $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: {validationReport.Reason}");
         }
     }
 
@@ -254,11 +244,7 @@ public class LordJob_AttendClass : LordJob
 
                 lord.AddPawn(student);
                 EducationLog.Message(
-                    $"LordJob_AttendClass.TransitionAction_AddStudentsToLord Added student {
-                        student.LabelShort
-                    } to lord for class '{
-                        studyGroup.className
-                    }'");
+                    $"LordJob_AttendClass.TransitionAction_AddStudentsToLord Added student {student.LabelShort} to lord for class '{studyGroup.className}'");
             }
         }
     }

@@ -13,7 +13,7 @@ public static class EducationLog
 
     public static void Message(string text)
     {
-        if (EducationSettings.Instance.debugMode)
+        if (EducationMod.settings.debugMode)
         {
             Log.Message(Prefix + text);
             Log.ResetMessageCount();
@@ -22,7 +22,7 @@ public static class EducationLog
 
     public static void Warning(string text)
     {
-        if (EducationSettings.Instance.debugMode)
+        if (EducationMod.settings.debugMode)
         {
             Log.Warning(Prefix + text);
         }
