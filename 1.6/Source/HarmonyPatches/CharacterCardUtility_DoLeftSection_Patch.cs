@@ -15,7 +15,7 @@ namespace ProgressionEducation;
 [HarmonyPatch(typeof(CharacterCardUtility), "DoLeftSection")]
 public static class CharacterCardUtility_DoLeftSection_Patch
 {
-    public static Type sectionType = AccessTools.TypeByName("CharacterCardUtility+LeftRectSection");
+    public static Type sectionType = AccessTools.TypeByName("RimWorld.CharacterCardUtility+LeftRectSection");
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var getCountMethod = AccessTools.Method(typeof(List<>).MakeGenericType(sectionType), "get_Count");
