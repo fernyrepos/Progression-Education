@@ -60,7 +60,7 @@
     <iconPath>UI/ProficiencyIcons/Weapon/HighTech</iconPath>
     <trainingWeaponDef>PE_Gun_SpacerTraining</trainingWeaponDef>
     <semesterGoal>60000</semesterGoal>
-    <generationTechLevel>Spacer</generationTechLevel>
+    <generationTechLevel>Archotech</generationTechLevel>
     <legacyNames>
       <li>HighTech</li>
     </legacyNames>
