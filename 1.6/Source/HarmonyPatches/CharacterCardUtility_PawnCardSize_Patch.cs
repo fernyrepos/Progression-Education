@@ -14,7 +14,7 @@ public static class CharacterCardUtility_PawnCardSize_Patch
         if (!EducationMod.settings.enableKnowledgePanel) return;
         if (pawn.CanHaveProficiencies() is false) return;
 
-        float extraHeight = 24f;
+        float extraHeight = 0;
         var hasAbilities = pawn.abilities != null && pawn.abilities.AllAbilitiesForReading.Any(a => a.def.showOnCharacterCard);
         if (hasAbilities) extraHeight += 15f;
         int activeRows = 0;

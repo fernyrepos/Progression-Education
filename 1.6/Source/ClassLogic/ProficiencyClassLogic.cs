@@ -195,12 +195,17 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             {
                 foreach (var tier in track.tiers)
                 {
-                    if (tier.legacyNames.Contains(rawFocus))
+                    if (tier.legacyNames != null && tier.legacyNames.Contains(rawFocus))
                     {
                         proficiencyTrack = track;
                         targetTier = tier;
                         break;
                     }
+                }
+                if (Scribe.mode == LoadSaveMode.PostLoadInit)
+                {
+                    proficiencyTrack ??= DefsOf.PE_WeaponTrack;
+                    targetTier ??= DefsOf.PE_FirearmTier;
                 }
             }
         }
