@@ -17,6 +17,8 @@ namespace ProgressionEducation
         public static ProficiencyDef PE_VehicleTrack;
         public static ProficiencyDef PE_SpeechTrack;
 
+        public static ProficiencyTierDef PE_BasicSpeechTier;
+        public static ProficiencyTierDef PE_FluentSpeechTier;
         [MayRequire("MemeGoddess.GiddyUp")]
         public static ProficiencyTierDef PE_AnimalRidingTier;
         [MayRequire("SmashPhil.VehicleFramework")]

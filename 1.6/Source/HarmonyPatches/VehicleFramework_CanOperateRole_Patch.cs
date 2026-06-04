@@ -3,6 +3,7 @@ using HarmonyLib;
 using Verse;
 
 namespace ProgressionEducation;
+
 [HotSwappable]
 [HarmonyPatch]
 public static class VehicleFramework_CanOperateRole_Patch

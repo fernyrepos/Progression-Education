@@ -15,6 +15,11 @@ public static class TraitSet_TraitsSorted_Patch
 
         __result = __result.Where(t =>
         {
+            if (!EducationMod.settings.enableProficiencySystem && ProficiencyUtility.IsProficiencyTrait(t.def))
+            {
+                return false;
+            }
+
             if (EducationMod.settings.enableKnowledgePanel && ProficiencyUtility.IsProficiencyTrait(t.def))
             {
                 return false;

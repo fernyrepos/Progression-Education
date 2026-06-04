@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
+using Verse.AI;
 
 namespace ProgressionEducation;
 
@@ -210,6 +211,14 @@ public static class TimeAssignmentUtility
                 assignmentRemember =
                     RemoveTimeAssignment(studyGroup, pawn, hour);
                 pawn.timetable.SetAssignment(hour, assignmentRemember);
+                if (pawn.Spawned)
+                {
+                    var curJobDef = pawn.CurJob?.def;
+                    if (curJobDef is JobDef jobDef && (jobDef == DefsOf.PE_AttendClass || jobDef == DefsOf.PE_Teach || jobDef == DefsOf.PE_RingBell || jobDef == DefsOf.PE_AttendMeleeClass || jobDef == DefsOf.PE_AttendShootingClass))
+                    {
+                        pawn.jobs?.EndCurrentJob(JobCondition.InterruptForced);
+                    }
+                }
                 EducationLog.Message(
                     $"Restored timetable for pawn {pawn.LabelShort} at hour {hour} to {assignmentRemember.defName}");
             }
@@ -238,6 +247,12 @@ public static class TimeAssignmentUtility
         var currentAssignment = pawn.timetable?.CurrentAssignment;
         if (currentAssignment == null
             || !currentAssignment.IsStudyGroupAssignment())
+        {
+            return false;
+        }
+
+        var studyGroup = EducationManager.Instance.StudyGroups.FirstOrDefault(sg => sg.timeAssignmentDefName == currentAssignment.defName);
+        if (studyGroup != null && (studyGroup.suspended || studyGroup.cancelledUntilTick > Find.TickManager.TicksGame))
         {
             return false;
         }

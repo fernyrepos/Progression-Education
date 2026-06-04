@@ -19,6 +19,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         GenTypes.GetTypeInAnyAssembly("VehicleMapFramework.MapParent_Vehicle",
             "VehicleMapFramework");
 
+    public int cancelledUntilTick = -1;
     public string className;
     public Classroom classroom;
     public float currentProgress;
@@ -32,7 +33,6 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
     public bool suspended;
     public Pawn teacher;
     public string timeAssignmentDefName;
-
 
     public StudyGroup(StudyGroup other)
         : this()
@@ -142,6 +142,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         {
             priorTime = [];
         }
+        Scribe_Values.Look(ref cancelledUntilTick, "cancelledUntilTick", -1);
     }
 
     public string GetUniqueLoadID()
@@ -545,4 +546,5 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
             return map;
         }
     }
+
 }

@@ -13,7 +13,6 @@ public class EducationManager(World world) : WorldComponent(world)
 {
     private static EducationManager _instance;
 
-    private HashSet<StudyGroup> checkedStudyGroups = [];
     private List<Classroom> classrooms = [];
     private int nextClassroomId;
     private int nextStudyGroupId;
@@ -159,7 +158,7 @@ public class EducationManager(World world) : WorldComponent(world)
 
     public void Notify_ClassInvalidated(StudyGroup studyGroup)
     {
-        checkedStudyGroups.Remove(studyGroup);
+        studyGroup.cancelledUntilTick = -1;
     }
 
     public void RemoveClassroom(Classroom classroom)
@@ -195,12 +194,16 @@ public class EducationManager(World world) : WorldComponent(world)
     public void TryInitiateClassForStudyGroup(StudyGroup studyGroup)
     {
         EducationLog.Message("EducationManager.TryInitiateClassForStudyGroup");
-        checkedStudyGroups ??= [];
+
+        if (studyGroup.cancelledUntilTick > Find.TickManager.TicksGame)
+        {
+            return;
+        }
+
         var currentAssignment = studyGroup.teacher.timetable.CurrentAssignment;
         if (!currentAssignment.IsStudyGroupAssignment()
             || currentAssignment.defName != studyGroup.timeAssignmentDefName)
         {
-            checkedStudyGroups.Remove(studyGroup);
             return;
         }
 
@@ -214,20 +217,14 @@ public class EducationManager(World world) : WorldComponent(world)
         {
             EducationLog.Message(
                 $"-> Class '{studyGroup.className}' cancelled due to validation failure: {validationReport.Reason}");
-            if (!checkedStudyGroups.Contains(studyGroup))
+            if (studyGroup.cancelledUntilTick < Find.TickManager.TicksGame)
             {
                 Messages.Message(
                     $"{"PE_ClassCancelledToday".Translate(studyGroup.className)} {validationReport.Reason}",
                     MessageTypeDefOf.NegativeEvent);
-                studyGroup.Suspend(true);
-                checkedStudyGroups.Add(studyGroup);
+                studyGroup.cancelledUntilTick = Find.TickManager.TicksGame + (studyGroup.Duration * GenDate.TicksPerHour);
             }
 
-            return;
-        }
-
-        if (checkedStudyGroups.Contains(studyGroup))
-        {
             return;
         }
 

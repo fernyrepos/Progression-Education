@@ -14,6 +14,7 @@ public static class EducationUtility
             Spawned: true,
             DeadOrDowned: false,
             InMentalState: false,
+            Drafted: false,
             Deathresting: false,
             DevelopmentalStage: >= DevelopmentalStage.Child,
         };

@@ -16,17 +16,12 @@ public static class ProficiencyUtility
     private static readonly Texture2D CircleBrightTex = ContentFinder<Texture2D>.Get("UI/CircleBright");
     private static readonly Texture2D CircleDarkTex = ContentFinder<Texture2D>.Get("UI/CircleDark");
 
-    static ProficiencyUtility()
-    {
-        CharacterCardUtility.BasePawnCardSize = new Vector2(540f, 520f);
-    }
-
     public static bool AreVehicleModsActive => ModsConfig.OdysseyActive || ModsConfig.IsActive("MemeGoddess.GiddyUp") || ModsConfig.IsActive("SmashPhil.VehicleFramework");
 
     public static bool CanHaveProficiencies(this Pawn pawn)
     {
         if (EducationMod.settings.enableProficiencySystem is false) return false;
-        if (pawn?.story?.traits == null || pawn.DevelopmentalStage == DevelopmentalStage.Newborn)
+        if (pawn?.story?.traits == null)
         {
             return false;
         }
@@ -48,20 +43,81 @@ public static class ProficiencyUtility
 
             if (GetCurrentTier(pawn, track) == null)
             {
-                var bestTier = track.tiers[0];
-                foreach (var tier in track.tiers)
-                {
-                    if (tier.generationTechLevel != TechLevel.Undefined && techLevel >= tier.generationTechLevel)
-                        bestTier = tier;
-                    if (pawn.DevelopmentalStage == DevelopmentalStage.Adult && tier.isDefaultAdult)
-                        bestTier = tier;
-                    if (pawn.DevelopmentalStage == DevelopmentalStage.Child && tier.isDefaultChild)
-                        bestTier = tier;
-                }
+                var bestTier = DetermineTierForPawn(pawn, track, techLevel);
 
-                GrantTier(pawn, track, bestTier);
+                if (bestTier != null)
+                {
+                    GrantTier(pawn, track, bestTier);
+                }
             }
         }
+    }
+
+    private static ProficiencyTierDef DetermineTierForPawn(Pawn pawn, ProficiencyDef track, TechLevel techLevel)
+    {
+        if (pawn.DevelopmentalStage == DevelopmentalStage.Newborn || pawn.DevelopmentalStage == DevelopmentalStage.Baby)
+        {
+            return track.tiers.Count > 0 ? track.tiers[0] : null;
+        }
+
+        if (track == DefsOf.PE_VehicleTrack)
+        {
+            var roll = Rand.Value;
+            if (techLevel == TechLevel.Archotech)
+            {
+                return DefsOf.PE_OrbitalPilotingTier ?? DefsOf.PE_AerialPilotingTier ?? DefsOf.PE_AutomobileDrivingTier ?? DefsOf.PE_AnimalRidingTier;
+            }
+            if (techLevel == TechLevel.Ultra)
+            {
+                var best = roll < 0.9f ? DefsOf.PE_OrbitalPilotingTier : DefsOf.PE_AerialPilotingTier;
+                return best ?? DefsOf.PE_OrbitalPilotingTier ?? DefsOf.PE_AerialPilotingTier ?? DefsOf.PE_AutomobileDrivingTier ?? DefsOf.PE_AnimalRidingTier;
+            }
+            if (techLevel == TechLevel.Spacer)
+            {
+                ProficiencyTierDef best;
+                if (roll < 0.7f) best = DefsOf.PE_OrbitalPilotingTier;
+                else if (roll < 0.9f) best = DefsOf.PE_AerialPilotingTier;
+                else best = DefsOf.PE_AutomobileDrivingTier;
+                return best ?? DefsOf.PE_OrbitalPilotingTier ?? DefsOf.PE_AerialPilotingTier ?? DefsOf.PE_AutomobileDrivingTier ?? DefsOf.PE_AnimalRidingTier;
+            }
+            if (techLevel == TechLevel.Industrial)
+            {
+                var best = roll < 0.5f ? DefsOf.PE_AutomobileDrivingTier : DefsOf.PE_AerialPilotingTier;
+                return best ?? DefsOf.PE_AerialPilotingTier ?? DefsOf.PE_AutomobileDrivingTier ?? DefsOf.PE_AnimalRidingTier;
+            }
+            return DefsOf.PE_AnimalRidingTier;
+        }
+
+        if (track == DefsOf.PE_SpeechTrack)
+        {
+            var roll = Rand.Value;
+            if (techLevel >= TechLevel.Industrial) return DefsOf.PE_FluentSpeechTier;
+            if (techLevel == TechLevel.Medieval)
+            {
+                if (roll < 0.1f) return DefsOf.PE_MuteTier;
+                if (roll < 0.4f) return DefsOf.PE_BasicSpeechTier;
+                return DefsOf.PE_FluentSpeechTier;
+            }
+            if (techLevel == TechLevel.Neolithic)
+            {
+                if (roll < 0.2f) return DefsOf.PE_MuteTier;
+                if (roll < 0.6f) return DefsOf.PE_BasicSpeechTier;
+                return DefsOf.PE_FluentSpeechTier;
+            }
+            return DefsOf.PE_MuteTier;
+        }
+
+        var bestTier = track.tiers.Count > 0 ? track.tiers[0] : null;
+        foreach (var tier in track.tiers)
+        {
+            if (tier.generationTechLevel != TechLevel.Undefined && techLevel >= tier.generationTechLevel)
+                bestTier = tier;
+            if (pawn.DevelopmentalStage == DevelopmentalStage.Adult && tier.isDefaultAdult)
+                bestTier = tier;
+            if (pawn.DevelopmentalStage == DevelopmentalStage.Child && tier.isDefaultChild)
+                bestTier = tier;
+        }
+        return bestTier;
     }
 
     public static bool CanEquipItem(this Pawn pawn, Thing equipment)
@@ -224,12 +280,19 @@ public static class ProficiencyUtility
         if (currentTier == null) currentTier = track.tiers[0];
         int currentIndex = track.tiers.IndexOf(currentTier);
 
-        var activeIconRect = new Rect(rect.x, rect.y + 2f, 18f, 18f);
+        float dotAreaStartX = rect.x + 130f;
+        var bubbleRect = new Rect(rect.x, rect.y, dotAreaStartX - rect.x - 6f, rect.height);
+        Widgets.DrawHighlightIfMouseover(bubbleRect);
+
+        var activeIconRect = new Rect(rect.x + 4f, rect.y + 2f, 18f, 18f);
         GUI.DrawTexture(activeIconRect, currentTier.icon);
 
-        float dotAreaStartX = rect.x + 140f;
-        var labelRect = new Rect(rect.x + 22f, rect.y, dotAreaStartX - rect.x - 24f, rect.height);
+        var labelRect = new Rect(rect.x + 26f, rect.y, dotAreaStartX - rect.x - 32f, rect.height);
         Widgets.Label(labelRect, currentTier.label.CapitalizeFirst());
+
+        var title = currentTier.traitDef.degreeDatas.Count > 0 ? currentTier.traitDef.degreeDatas[0].label : currentTier.label;
+        var desc = currentTier.traitDef.degreeDatas.Count > 0 ? currentTier.traitDef.degreeDatas[0].description : currentTier.traitDef.description;
+        TooltipHandler.TipRegion(bubbleRect, new TipSignal($"{title.CapitalizeFirst()}\n\n{desc}"));
 
         var spacing = 22f;
 
@@ -240,7 +303,7 @@ public static class ProficiencyUtility
             var dotRect = new Rect(curX, rect.y + 2f, 18f, 18f);
             var bgTex = i == currentIndex ? CircleBrightTex : CircleDarkTex;
             GUI.DrawTexture(dotRect, bgTex);
-            GUI.color = new Color(0.4f, 0.4f, 0.4f, 1f);
+            GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
             GUI.DrawTexture(dotRect.ExpandedBy(-3), tier.icon);
             GUI.color = Color.white;
             var dotData = tier.traitDef.degreeDatas[0];

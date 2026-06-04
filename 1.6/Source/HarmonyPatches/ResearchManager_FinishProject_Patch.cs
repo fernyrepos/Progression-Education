@@ -33,7 +33,7 @@ public static class ResearchManager_FinishProject_Patch
             else
             {
                 if (PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction
-                    .Any(p => p.IsFreeColonist && p.skills != null && !p.skills.GetSkill(SkillDefOf.Intellectual).TotallyDisabled))
+                    .Any(p => p.IsFreeColonist && !p.WorkTypeIsDisabled(WorkTypeDefOf.Research)))
                 {
                     Find.WindowStack.Add(new Dialog_BestowProficiency(extension));
                 }

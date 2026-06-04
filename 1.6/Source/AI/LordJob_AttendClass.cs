@@ -37,14 +37,10 @@ public class LordJob_AttendClass : LordJob
                                  && m.CurJob?.def != DefsOf.PE_RingBell
                                  && (studyGroup.classroom.interruptJobs
                                      || CanInterruptJob(m)))
-                )
+                    )
         {
+            if (member.Drafted) continue;
             member.jobs?.StopAll();
-            if (member.drafter != null)
-            {
-                member.drafter.Drafted = true;
-                member.drafter.Drafted = false;
-            }
         }
     }
 
@@ -220,6 +216,11 @@ public class LordJob_AttendClass : LordJob
         {
             EducationLog.Message(
                 $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: {validationReport.Reason}");
+            Messages.Message(
+                "PE_ClassCancelledToday".Translate(studyGroup.className) + " " + validationReport.Reason,
+                MessageTypeDefOf.NegativeEvent);
+            studyGroup.cancelledUntilTick = Find.TickManager.TicksGame + (studyGroup.Duration * GenDate.TicksPerHour);
+            lord.ReceiveMemo(MemoClassCancelled);
         }
     }
 

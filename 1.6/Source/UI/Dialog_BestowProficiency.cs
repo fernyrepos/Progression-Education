@@ -21,7 +21,7 @@ public class Dialog_BestowProficiency : Window
         closeOnClickedOutside = false;
 
         var pawnsCount = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction
-            .Count(p => p.IsFreeColonist && p.skills != null && !p.skills.GetSkill(SkillDefOf.Intellectual).TotallyDisabled);
+            .Count(p => p.IsFreeColonist && !p.WorkTypeIsDisabled(WorkTypeDefOf.Research));
 
         canClose = pawnsCount == 0;
         closeOnCancel = canClose;
@@ -36,7 +36,7 @@ public class Dialog_BestowProficiency : Window
         Widgets.Label(new Rect(0, 35, inRect.width, 40), "PE_BestowProficiencyDesc".Translate());
 
         var pawns = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction
-            .Where(p => p.IsFreeColonist && p.skills != null && !p.skills.GetSkill(SkillDefOf.Intellectual).TotallyDisabled).ToList();
+            .Where(p => p.IsFreeColonist && !p.WorkTypeIsDisabled(WorkTypeDefOf.Research)).ToList();
 
         var listRect = new Rect(0, 80, inRect.width, inRect.height - 130);
         var viewRect = new Rect(0, 0, listRect.width - 16, pawns.Count * 30);

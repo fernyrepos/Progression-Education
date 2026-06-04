@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -9,11 +10,12 @@ using UnityEngine;
 using Verse;
 
 namespace ProgressionEducation;
+
 [HotSwappable]
 [HarmonyPatch(typeof(CharacterCardUtility), "DoLeftSection")]
 public static class CharacterCardUtility_DoLeftSection_Patch
 {
-    public static Type sectionType = AccessTools.TypeByName("RimWorld.CharacterCardUtility+LeftRectSection");
+    public static Type sectionType = AccessTools.TypeByName("CharacterCardUtility+LeftRectSection");
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var getCountMethod = AccessTools.Method(typeof(List<>).MakeGenericType(sectionType), "get_Count");
@@ -35,9 +37,10 @@ public static class CharacterCardUtility_DoLeftSection_Patch
 
     public static void AddProficienciesSection(object listObj, Pawn pawn, Rect leftRect)
     {
+        if (!EducationMod.settings.enableKnowledgePanel) return;
         if (pawn.CanHaveProficiencies() is false) return;
         var list = (IList)listObj;
-        var hasAbilities = pawn.abilities.AllAbilitiesForReading.Any(a => a.def.showOnCharacterCard);
+        var hasAbilities = pawn.abilities != null && pawn.abilities.AllAbilitiesForReading.Any(a => a.def.showOnCharacterCard);
         var topGap = hasAbilities ? 15f : 0f;
         float height = 24f + topGap;
         int activeRows = 0;
@@ -55,21 +58,5 @@ public static class CharacterCardUtility_DoLeftSection_Patch
         }));
 
         list.Add(section);
-    }
-}
-
-[HarmonyPatch(typeof(CharacterCardUtility), nameof(CharacterCardUtility.DrawCharacterCard))]
-public static class CharacterCardUtility_DrawCharacterCard_Patch
-{
-    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-    {
-        foreach (var inst in instructions)
-        {
-            if (inst.opcode == OpCodes.Ldc_R4 && (float)inst.operand == 250f)
-            {
-                inst.operand = 310f;
-            }
-            yield return inst;
-        }
     }
 }

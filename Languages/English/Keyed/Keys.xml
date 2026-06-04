@@ -150,13 +150,9 @@
   <PE_EnableWeaponProficiency>Enable weapon proficiency</PE_EnableWeaponProficiency>
   <PE_EnableVehicleProficiency>Enable vehicle proficiency</PE_EnableVehicleProficiency>
   <PE_EnableSpeechProficiency>Enable speech proficiency</PE_EnableSpeechProficiency>
-  <PE_Weapon_Firearm>weapon firearm</PE_Weapon_Firearm>
-  <PE_Weapon_HighTech>weapon high-tech</PE_Weapon_HighTech>
-  <PE_Vehicle_Automobiles>automobile driving</PE_Vehicle_Automobiles>
-  <PE_Vehicle_Aerial>aerial piloting</PE_Vehicle_Aerial>
-  <PE_Vehicle_Orbital>orbital piloting</PE_Vehicle_Orbital>
-  <PE_Speech_Basic>basic speech</PE_Speech_Basic>
-  <PE_Speech_Fluent>fluent</PE_Speech_Fluent>
   <PE_GiddyUpNeedRiding>Colonist must be taught animal riding proficiency.</PE_GiddyUpNeedRiding>
   <PE_VehicleProficiencyRequired>Requires {0} proficiency</PE_VehicleProficiencyRequired>
+  <PE_RequiredProficiencyStat>Required proficiency</PE_RequiredProficiencyStat>
+  <PE_RequiredProficiencyStatDesc>The proficiency level required to effectively use this weapon.</PE_RequiredProficiencyStatDesc>
+  <PE_RequiredProficiencyStatVehicleDesc>The proficiency level required to effectively use this vehicle.</PE_RequiredProficiencyStatVehicleDesc>
 </LanguageData>

@@ -7,8 +7,29 @@ namespace ProgressionEducation;
     typeof(PawnGenerationRequest))]
 public static class PawnGenerator_GeneratePawn_Patch
 {
-    public static void Postfix(Pawn __result)
+    public static void Postfix(Pawn __result, PawnGenerationRequest request)
     {
-        ProficiencyUtility.ApplyProficiencyTraitToPawn(__result);
+        if (__result != null)
+        {
+            var extension = __result.kindDef.GetModExtension<PawnKindProficiencyRequirement>();
+            if (extension?.forcedProficiencies != null)
+            {
+                foreach (var tier in extension.forcedProficiencies)
+                {
+                    foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
+                    {
+                        if (track.tiers.Contains(tier))
+                        {
+                            ProficiencyUtility.GrantTier(__result, track, tier);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ProficiencyUtility.ApplyProficiencyTraitToPawn(__result);
+            }
+        }
     }
 }

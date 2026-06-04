@@ -15,18 +15,14 @@ public class ScenPart_ForcedProficiencyTrait : ScenPart_PawnModifier
                 trait?.LabelCap ?? "PE_SelectTrait".Translate()))
         {
             var list = new List<FloatMenuOption>();
-            var proficiencyTraits = new List<TraitDef>
+            foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
             {
-                DefsOf.PE_LowTechProficiency,
-                DefsOf.PE_FirearmProficiency,
-                DefsOf.PE_HighTechProficiency,
-            };
-
-            foreach (var proficiencyTrait in proficiencyTraits)
-            {
-                var localTrait = proficiencyTrait;
-                list.Add(new FloatMenuOption(localTrait.LabelCap,
-                    () => trait = localTrait));
+                foreach (var tier in track.tiers)
+                {
+                    var localTrait = tier.traitDef;
+                    list.Add(new FloatMenuOption($"{track.label.CapitalizeFirst()} - {tier.label.CapitalizeFirst()}",
+                        () => trait = localTrait));
+                }
             }
 
             Find.WindowStack.Add(new FloatMenu(list));
