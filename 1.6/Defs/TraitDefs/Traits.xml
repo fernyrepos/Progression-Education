@@ -98,6 +98,7 @@
     <degreeDatas>
       <li>
         <label>mute</label>
+        <description>This person has no understanding of language.</description>
         <statFactors>
           <SocialImpact>0</SocialImpact>
           <NegotiationAbility>0</NegotiationAbility>
@@ -114,6 +115,7 @@
     <degreeDatas>
       <li>
         <label>basic speech</label>
+        <description>This person has a basic understanding of language and can speak it with half effectiveness.</description>
         <statFactors>
           <SocialImpact>0.75</SocialImpact>
           <NegotiationAbility>0.75</NegotiationAbility>
@@ -129,7 +131,8 @@
     <label>fluent speech</label>
     <degreeDatas>
       <li>
-        <label>fluent</label>
+        <label>fluent speech</label>
+        <description>This person has a complete understanding of language and can speak it with full effectiveness.</description>
       </li>
     </degreeDatas>
   </TraitDef>
