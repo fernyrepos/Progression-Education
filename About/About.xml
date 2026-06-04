@@ -42,7 +42,7 @@
         <li>brrainz.harmony</li>
         <li>OskarPotocki.VanillaFactionsExpanded.Core</li>
         <li>oskarpotocki.vanillavehiclesexpanded</li>
-        
+
         <!-- MULTIPLE PATCHES -->
         <li>oskarpotocki.vfe.pirates</li>
 
@@ -80,6 +80,7 @@
         <!-- SCENARIO PATCHES -->
         <li>ferny.progressionscenarios</li>
         <li>tug.minotaur.expanded</li>
+        <li>rer.gravshiploanscenario</li>
 
     </loadAfter>
 </ModMetaData>
