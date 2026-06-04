@@ -37,7 +37,7 @@
     <label>low-tech</label>
     <traitDef>PE_LowTechProficiency</traitDef>
     <iconPath>UI/ProficiencyIcons/Weapon/LowTech</iconPath>
-    <generationTechLevel>Neolithic</generationTechLevel>
+    <generationTechLevel>Medieval</generationTechLevel>
   </ProgressionEducation.ProficiencyTierDef>
 
   <ProgressionEducation.ProficiencyTierDef>
