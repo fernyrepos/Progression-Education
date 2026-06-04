@@ -251,12 +251,6 @@ public static class TimeAssignmentUtility
             return false;
         }
 
-        var studyGroup = EducationManager.Instance.StudyGroups.FirstOrDefault(sg => sg.timeAssignmentDefName == currentAssignment.defName);
-        if (studyGroup != null && (studyGroup.suspended || studyGroup.cancelledUntilTick > Find.TickManager.TicksGame))
-        {
-            return false;
-        }
-
         result = 0f;
         return true;
     }

@@ -222,6 +222,7 @@ public class EducationManager(World world) : WorldComponent(world)
                 Messages.Message(
                     $"{"PE_ClassCancelledToday".Translate(studyGroup.className)} {validationReport.Reason}",
                     MessageTypeDefOf.NegativeEvent);
+                TimeAssignmentUtility.ClearScheduleFromPawns(studyGroup, studyGroup.AllParticipants);
                 studyGroup.cancelledUntilTick = Find.TickManager.TicksGame + (studyGroup.Duration * GenDate.TicksPerHour);
             }
 
@@ -295,6 +296,11 @@ public class EducationManager(World world) : WorldComponent(world)
         foreach (var studyGroup in StudyGroups)
         {
             studyGroup.subjectLogic.HandleStudentLifecycleEvents();
+            if (studyGroup.cancelledUntilTick != -1 && Find.TickManager.TicksGame >= studyGroup.cancelledUntilTick)
+            {
+                studyGroup.cancelledUntilTick = -1;
+                TimeAssignmentUtility.ApplyScheduleToPawns(studyGroup, studyGroup.AllParticipants);
+            }
             TryInitiateClassForStudyGroup(studyGroup);
         }
 

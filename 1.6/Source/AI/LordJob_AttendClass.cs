@@ -219,6 +219,7 @@ public class LordJob_AttendClass : LordJob
             Messages.Message(
                 "PE_ClassCancelledToday".Translate(studyGroup.className) + " " + validationReport.Reason,
                 MessageTypeDefOf.NegativeEvent);
+            TimeAssignmentUtility.ClearScheduleFromPawns(studyGroup, studyGroup.AllParticipants);
             studyGroup.cancelledUntilTick = Find.TickManager.TicksGame + (studyGroup.Duration * GenDate.TicksPerHour);
             lord.ReceiveMemo(MemoClassCancelled);
         }
