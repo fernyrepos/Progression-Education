@@ -201,38 +201,48 @@ public static class ProficiencyUtility
         Text.Font = GameFont.Small;
         Widgets.Label(new Rect(inner.x, curY, inner.width, 24f), "PE_Knowledge".Translate().AsTipTitle());
         curY += 22f;
-
+        Widgets.DrawBoxSolid(new Rect(inner.x, inner.y + 22, inner.width, inner.height - 22), new ColorInt(46, 48, 52).ToColor);
+        curY += 2f;
+        inner.x += 5;
+        inner.width -= 5f;
         foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
         {
             if (!IsTrackEnabled(track)) continue;
-            DrawProficiencyRow(new Rect(inner.x, curY, inner.width, 22f), track.LabelCap, GetCurrentTier(pawn, track), track);
+            var currentTier = GetCurrentTier(pawn, track);
+            if (currentTier == null)
+            {
+                ApplyProficiencyTraitToPawn(pawn);
+                currentTier = GetCurrentTier(pawn, track);
+            }
+            DrawProficiencyRow(new Rect(inner.x, curY, inner.width, 22f), track, currentTier);
             curY += 24f;
         }
     }
 
-    private static void DrawProficiencyRow(Rect rect, string label, ProficiencyTierDef currentTier, ProficiencyDef track)
+    private static void DrawProficiencyRow(Rect rect, ProficiencyDef track, ProficiencyTierDef currentTier)
     {
-        int currentIndex = currentTier != null ? track.tiers.IndexOf(currentTier) : -1;
-        var activeIconRect = new Rect(rect.x, rect.y + 4f, 14f, 14f);
-        if (currentTier != null && currentTier.icon != null)
-            GUI.DrawTexture(activeIconRect, currentTier.icon);
+        if (currentTier == null) currentTier = track.tiers[0];
+        int currentIndex = track.tiers.IndexOf(currentTier);
+
+        var activeIconRect = new Rect(rect.x, rect.y + 2f, 18f, 18f);
+        GUI.DrawTexture(activeIconRect, currentTier.icon);
+
+        float dotAreaStartX = rect.x + 140f;
+        var labelRect = new Rect(rect.x + 22f, rect.y, dotAreaStartX - rect.x - 24f, rect.height);
+        Widgets.Label(labelRect, currentTier.label.CapitalizeFirst());
 
         var spacing = 22f;
-        var rightMargin = 70f;
-        var numDots = track.tiers.Count;
-        var curX = rect.xMax - 18f - rightMargin - (numDots - 1) * spacing;
-        var labelX = rect.x + 18f;
-        var availableTextWidth = curX - labelX - 6f;
-        Widgets.Label(new Rect(labelX, rect.y, availableTextWidth, rect.height), label);
 
+        float curX = dotAreaStartX;
         for (int i = 0; i < track.tiers.Count; i++)
         {
             var tier = track.tiers[i];
             var dotRect = new Rect(curX, rect.y + 2f, 18f, 18f);
-            var bgTex = i <= currentIndex ? CircleBrightTex : CircleDarkTex;
+            var bgTex = i == currentIndex ? CircleBrightTex : CircleDarkTex;
             GUI.DrawTexture(dotRect, bgTex);
-            if (tier.icon != null)
-                GUI.DrawTexture(dotRect.ExpandedBy(-3), tier.icon);
+            GUI.color = new Color(0.4f, 0.4f, 0.4f, 1f);
+            GUI.DrawTexture(dotRect.ExpandedBy(-3), tier.icon);
+            GUI.color = Color.white;
             var dotData = tier.traitDef.degreeDatas[0];
             TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}"));
             curX += spacing;
@@ -315,12 +325,15 @@ public static class ProficiencyUtility
         {
             return false;
         }
-        if (GetCurrentTier(pawn, track) == null)
+        var currentTier = GetCurrentTier(pawn, track);
+        if (currentTier == null)
         {
             ApplyProficiencyTraitToPawn(pawn);
+            currentTier = GetCurrentTier(pawn, track);
         }
         var targetIdx = track.tiers.IndexOf(tier);
-        return targetIdx > 0 && pawn.story.traits.HasTrait(track.tiers[targetIdx - 1].traitDef);
+        var currentIdx = track.tiers.IndexOf(currentTier);
+        return currentIdx == targetIdx - 1;
     }
 
     public static void GrantTier(Pawn pawn, ProficiencyDef track, ProficiencyTierDef tier)

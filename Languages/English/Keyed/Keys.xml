@@ -143,7 +143,7 @@
   <PE_BestowProficiency>Bestow Proficiency</PE_BestowProficiency>
   <PE_BestowProficiencyDesc>Select a colonist to receive the researched proficiency. They must be capable of Intellectual work.</PE_BestowProficiencyDesc>
   <PE_Knowledge>Knowledge</PE_Knowledge>
-  <PE_StudentMustBeOneTierBelow>Student must be exactly one tier below {0}.</PE_StudentMustBeOneTierBelow>
+  <PE_StudentMustBeOneTierBelow>All students must be {0}.</PE_StudentMustBeOneTierBelow>
   <PE_TeacherMustHaveProficiency>Teacher must have at least {0} proficiency.</PE_TeacherMustHaveProficiency>
   <PE_EnableKnowledgePanel>Enable knowledge panel? (Disable to show as standard traits)</PE_EnableKnowledgePanel>
   <PE_BestowProficiencyToAll>Bestow proficiency onto all current population once researched?</PE_BestowProficiencyToAll>

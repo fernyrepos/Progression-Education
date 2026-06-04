@@ -131,24 +131,15 @@ public class Dialog_CreateClass : Window, IClassDialog
                         studyGroup.subjectLogic.UnassignParticipants(this);
                     }),
                 };
+
             if (EducationMod.settings.enableProficiencySystem)
             {
-                foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
+                options.Add(new FloatMenuOption(proficiencyClassLogic.LabelCap, () =>
                 {
-                    if (!ProficiencyUtility.IsTrackEnabled(track)) continue;
-                    for (int i = 1; i < track.tiers.Count; i++)
-                    {
-                        var tier = track.tiers[i];
-                        options.Add(new FloatMenuOption(ProficiencyClassLogic.GetLabel(tier).CapitalizeFirst(), () =>
-                        {
-                            proficiencyClassLogic.proficiencyTrack = track;
-                            proficiencyClassLogic.targetTier = tier;
-                            studyGroup.subjectLogic = proficiencyClassLogic;
-                            studyGroup.semesterGoal = tier.semesterGoal;
-                            studyGroup.subjectLogic.UnassignParticipants(this);
-                        }));
-                    }
-                }
+                    studyGroup.subjectLogic = proficiencyClassLogic;
+                    studyGroup.semesterGoal = proficiencyClassLogic.targetTier.semesterGoal;
+                    studyGroup.subjectLogic.UnassignParticipants(this);
+                }));
             }
 
             options.Add(new FloatMenuOption(daycareClassLogic.LabelCap, () =>

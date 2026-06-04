@@ -239,9 +239,12 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return new AcceptanceReport("PE_CannotAddOngoing".Translate());
         }
 
-        if (!ProficiencyUtility.IsOneTierBelow(student, proficiencyTrack, targetTier))
+        var targetIdx = proficiencyTrack.tiers.IndexOf(targetTier);
+        var tierBelow = targetIdx > 0 ? proficiencyTrack.tiers[targetIdx - 1] : null;
+
+        if (tierBelow != null && !ProficiencyUtility.IsOneTierBelow(student, proficiencyTrack, targetTier))
         {
-            return new AcceptanceReport("PE_StudentMustBeOneTierBelow".Translate(GetLabel(targetTier)));
+            return new AcceptanceReport("PE_StudentMustBeOneTierBelow".Translate(GetLabel(tierBelow)));
         }
 
         return AcceptanceReport.WasAccepted;

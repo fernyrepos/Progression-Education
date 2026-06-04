@@ -9,7 +9,7 @@ using UnityEngine;
 using Verse;
 
 namespace ProgressionEducation;
-
+[HotSwappable]
 [HarmonyPatch(typeof(CharacterCardUtility), "DoLeftSection")]
 public static class CharacterCardUtility_DoLeftSection_Patch
 {
@@ -50,7 +50,7 @@ public static class CharacterCardUtility_DoLeftSection_Patch
         AccessTools.Field(sectionType, "rect").SetValue(section, new Rect(0f, 0f, leftRect.width, height));
         AccessTools.Field(sectionType, "drawer").SetValue(section, (Action<Rect>)((Rect r) =>
         {
-            var drawingRect = new Rect(r.x, r.y + topGap, r.width, r.height - topGap);
+            var drawingRect = new Rect(r.x, r.y + topGap, r.width - 20, r.height - topGap);
             ProficiencyUtility.DrawKnowledgePanel(drawingRect, pawn);
         }));
 
