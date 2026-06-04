@@ -17,6 +17,11 @@ public static class VehicleFramework_VehicleTabHelper_Passenger_Patch
     }
     public static bool Prefix()
     {
+        if (!EducationMod.settings.enableProficiencySystem || !EducationMod.settings.enableVehicleProficiency)
+        {
+            return true;
+        }
+
         var helperType = AccessTools.TypeByName("Vehicles.VehicleTabHelper_Passenger");
         var draggedPawnField = AccessTools.Field(helperType, "draggedPawn");
         var transferToHolderField = AccessTools.Field(helperType, "transferToHolder");

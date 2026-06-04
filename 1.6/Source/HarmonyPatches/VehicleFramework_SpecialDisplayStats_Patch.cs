@@ -22,6 +22,11 @@ public static class VehicleFramework_SpecialDisplayStats_Patch
 
     public static object Postfix(object __result, object __instance)
     {
+        if (!EducationMod.settings.enableProficiencySystem || !EducationMod.settings.enableVehicleProficiency)
+        {
+            return __result;
+        }
+
         var statDrawEntryType = AccessTools.TypeByName("Vehicles.VehicleStatDrawEntry");
         var listType = typeof(List<>).MakeGenericType(statDrawEntryType);
         var list = Activator.CreateInstance(listType);
@@ -33,11 +38,6 @@ public static class VehicleFramework_SpecialDisplayStats_Patch
                 addMethod.Invoke(list, new[] { item });
             }
         }
-        if (!EducationMod.settings.enableProficiencySystem || !EducationMod.settings.enableVehicleProficiency)
-        {
-            return list;
-        }
-
         var vehicleDefType = __instance.GetType();
         var typeField = AccessTools.Field(vehicleDefType, "type");
         var typeValue = typeField.GetValue(__instance);

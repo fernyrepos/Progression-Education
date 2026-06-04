@@ -17,6 +17,11 @@ public static class VehicleFramework_GetFloatMenuOptions_Patch
     }
     public static void Postfix(object __instance, Pawn selPawn, ref IEnumerable<FloatMenuOption> __result)
     {
+        if (!EducationMod.settings.enableProficiencySystem || !EducationMod.settings.enableVehicleProficiency)
+        {
+            return;
+        }
+
         var list = new List<FloatMenuOption>(__result);
         var handlersField = AccessTools.Field(__instance.GetType(), "handlers");
         var handlers = handlersField.GetValue(__instance) as IEnumerable<object>;
