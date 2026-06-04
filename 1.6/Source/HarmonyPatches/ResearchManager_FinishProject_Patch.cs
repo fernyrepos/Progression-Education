@@ -18,14 +18,14 @@ public static class ResearchManager_FinishProject_Patch
         var extension = proj.GetModExtension<ResearchGrantsTrait>();
         if (extension != null)
         {
-            if (EducationMod.settings.bestowProficiencyToAll || Find.TickManager.TicksGame < 5000)
+            if (EducationMod.settings.bestowProficiencyToAll || Find.TickManager.TicksGame < 60)
             {
                 foreach (var pawn in PawnsFinder
                              .AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
                 {
                     ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait);
                 }
-                if (Find.TickManager.TicksGame >= 5000)
+                if (Find.TickManager.TicksGame >= 60)
                 {
                     Find.LetterStack.ReceiveLetter(extension.title, extension.desc, LetterDefOf.PositiveEvent);
                 }
@@ -36,13 +36,6 @@ public static class ResearchManager_FinishProject_Patch
                     .Any(p => p.IsFreeColonist && !p.WorkTypeIsDisabled(WorkTypeDefOf.Research)))
                 {
                     Find.WindowStack.Add(new Dialog_BestowProficiency(extension));
-                }
-                else
-                {
-                    foreach (var pawn in PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction)
-                    {
-                        ProficiencyUtility.GrantProficiencyTrait(pawn, extension.trait);
-                    }
                 }
             }
         }

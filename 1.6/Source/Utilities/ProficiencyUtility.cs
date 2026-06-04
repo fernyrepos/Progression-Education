@@ -82,7 +82,7 @@ public static class ProficiencyUtility
             }
             if (techLevel == TechLevel.Industrial)
             {
-                var best = roll < 0.5f ? DefsOf.PE_AutomobileDrivingTier : DefsOf.PE_AerialPilotingTier;
+                var best = roll < 0.9f ? DefsOf.PE_AutomobileDrivingTier : DefsOf.PE_AerialPilotingTier;
                 return best ?? DefsOf.PE_AerialPilotingTier ?? DefsOf.PE_AutomobileDrivingTier ?? DefsOf.PE_AnimalRidingTier;
             }
             return DefsOf.PE_AnimalRidingTier;
@@ -259,8 +259,6 @@ public static class ProficiencyUtility
         curY += 22f;
         Widgets.DrawBoxSolid(new Rect(inner.x, inner.y + 22, inner.width, inner.height - 22), new ColorInt(46, 48, 52).ToColor);
         curY += 2f;
-        inner.x += 5;
-        inner.width -= 5f;
         foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
         {
             if (!IsTrackEnabled(track)) continue;

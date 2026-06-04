@@ -155,4 +155,5 @@
   <PE_RequiredProficiencyStat>Required proficiency</PE_RequiredProficiencyStat>
   <PE_RequiredProficiencyStatDesc>The proficiency level required to effectively use this weapon.</PE_RequiredProficiencyStatDesc>
   <PE_RequiredProficiencyStatVehicleDesc>The proficiency level required to effectively use this vehicle.</PE_RequiredProficiencyStatVehicleDesc>
+  <PE_CannotTradeMute>Cannot trade: {0} is mute</PE_CannotTradeMute>
 </LanguageData>
