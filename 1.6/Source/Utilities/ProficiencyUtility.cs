@@ -35,7 +35,7 @@ public static class ProficiencyUtility
             return;
         }
 
-        var techLevel = pawn.Faction?.def?.techLevel ?? TechLevel.Undefined;
+        var techLevel = pawn.Faction?.def?.techLevel ?? TechLevel.Neolithic;
 
         foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
         {

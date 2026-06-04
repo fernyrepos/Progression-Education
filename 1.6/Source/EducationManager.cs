@@ -106,8 +106,12 @@ public class EducationManager(World world) : WorldComponent(world)
                 $"Generating TimeAssignmentDef for study group '{studyGroup.className}'");
             TimeAssignmentUtility.GenerateTimeAssignmentDef(studyGroup);
         }
+        foreach (var pawn in PawnsFinder.AllMapsAndWorld_Alive)
+        {
+            ProficiencyUtility.ApplyProficiencyTraitToPawn(pawn);
+        }
     }
-
+ 
     public int GetNextClassroomId()
     {
         return nextClassroomId++;
