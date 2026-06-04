@@ -13,4 +13,17 @@
     </value>
   </Operation>
 
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ResearchProjectDef[defName="BasicGravtech"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ResearchGrantsTrait">
+        <trait>PE_OrbitalPilotingProficiency</trait>
+        <title>Orbital piloting proficiency</title>
+        <desc>Your intellectual has been bestowed the understanding of how to operate orbital vehicles. Other colonists can now be taught this knowledge in proficiency classes.</desc>
+      </li>
+    </value>
+  </Operation>
+
+
 </Patch>

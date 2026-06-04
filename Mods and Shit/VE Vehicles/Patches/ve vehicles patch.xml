@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>          
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ResearchProjectDef[defName="VVE_BasicVehicles"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ResearchGrantsTrait">
+        <trait>PE_AutomobileDrivingProficiency</trait>
+        <title>Automobile driving proficiency</title>
+        <desc>Your intellectual has been bestowed the understanding of how to operate automobiles. Other colonists can now be taught this knowledge in proficiency classes.</desc>
+      </li>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ResearchProjectDef[defName="VVE_AerialVehicles"]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ResearchGrantsTrait">
+        <trait>PE_AerialPilotingProficiency</trait>
+        <title>Aerial vehicle proficiency</title>
+        <desc>Your intellectual has been bestowed the understanding of how to operate aerial vehicles. Other colonists can now be taught this knowledge in proficiency classes.</desc>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>

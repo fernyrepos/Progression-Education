@@ -7,7 +7,7 @@
       <li Class="ProgressionEducation.ResearchGrantsTrait">
         <trait>PE_FirearmProficiency</trait>
         <title>Learning to use guns</title>
-        <desc>Your current colony population has been bestowed the understanding of how to operate firearms. Future recruits can now be taught this knowledge in proficiency classes.</desc>
+        <desc>Your intellectual has been bestowed the understanding of how to operate firearms. Other colonists can now be taught this knowledge in proficiency classes.</desc>
       </li>
     </value>
   </Operation>
@@ -17,8 +17,8 @@
     <value>
       <li Class="ProgressionEducation.ResearchGrantsTrait">
         <trait>PE_HighTechProficiency</trait>
-        <title>High-tech proficiency</title>
-        <desc>Your current colony population has been bestowed the understanding of how to operate high-tech gear. Future recruits can now be taught this knowledge in proficiency classes.</desc>
+        <title>High-tech gear</title>
+        <desc>Your intellectual has been bestowed the understanding of how to operate high-tech gear. Other colonists can now be taught this knowledge in proficiency classes.</desc>
       </li>
     </value>
   </Operation>
