@@ -4,6 +4,7 @@ using RimWorld;
 using Verse;
 using UnityEngine;
 using HarmonyLib;
+using System.Reflection;
 
 namespace ProgressionEducation;
 
@@ -12,7 +13,11 @@ namespace ProgressionEducation;
 public static class ProficiencyUtility
 {
     private static readonly Dictionary<ThingDef, TechLevel> cachedTechLevelValues = new();
-
+    private static readonly Dictionary<object, ProficiencyTierDef> cachedVehicleTiers = new();
+    private static FieldInfo roleField;
+    private static FieldInfo handlerField;
+    private static FieldInfo vehicleField;
+    private static FieldInfo typeField;
     private static readonly Texture2D CircleBrightTex = ContentFinder<Texture2D>.Get("UI/CircleBright");
     private static readonly Texture2D CircleDarkTex = ContentFinder<Texture2D>.Get("UI/CircleDark");
 
@@ -415,14 +420,13 @@ public static class ProficiencyUtility
         if (!EducationMod.settings.enableProficiencySystem || !EducationMod.settings.enableVehicleProficiency)
             return (true, null);
 
-        var roleField = AccessTools.Field(handler.GetType(), "role");
+        roleField ??= AccessTools.Field(handler.GetType(), "role");
         var role = roleField.GetValue(handler);
-        var handlingTypesField = AccessTools.Field(role.GetType(), "handlingTypes");
-        var handlingTypes = (int)handlingTypesField.GetValue(role);
-        if ((handlingTypes & 1) != 1)
+        handlerField ??= AccessTools.Field(role.GetType(), "handlingTypes");
+        if (((int)handlerField.GetValue(role) & 1) != 1)
             return (true, null);
 
-        var vehicleField = AccessTools.Field(handler.GetType(), "vehicle");
+        vehicleField ??= AccessTools.Field(handler.GetType(), "vehicle");
         var vehicle = vehicleField.GetValue(handler) as Pawn;
         var reqTier = GetRequiredVehicleTierFromDef(vehicle?.def);
         if (reqTier == null)
@@ -436,11 +440,10 @@ public static class ProficiencyUtility
 
     public static ProficiencyTierDef GetRequiredVehicleTierFromDef(object vehicleDef)
     {
-        var vehicleDefType = AccessTools.TypeByName("Vehicles.VehicleDef");
-        var typeField = AccessTools.Field(vehicleDefType, "type");
+        if (cachedVehicleTiers.TryGetValue(vehicleDef, out var tier)) return tier;
+        typeField ??= AccessTools.Field(AccessTools.TypeByName("Vehicles.VehicleDef"), "type");
         var typeStr = typeField.GetValue(vehicleDef).ToString();
-        if (typeStr == "Sea")
-            return null;
-        return typeStr == "Air" ? DefsOf.PE_AerialPilotingTier : DefsOf.PE_AutomobileDrivingTier;
+        var resolvedTier = typeStr == "Sea" ? null : typeStr == "Air" ? DefsOf.PE_AerialPilotingTier : DefsOf.PE_AutomobileDrivingTier;
+        return cachedVehicleTiers[vehicleDef] = resolvedTier;
     }
 }
