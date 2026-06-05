@@ -39,5 +39,10 @@ public static class ThingDef_SpecialDisplayStats_Patch
             }
             yield return new StatDrawEntry(StatCategoryDefOf.Weapon, "PE_RequiredProficiencyStat".Translate(), label.CapitalizeFirst(), "PE_RequiredProficiencyStatDesc".Translate(), 5000);
         }
+
+        if (__instance.HasComp(typeof(CompShuttle)) && EducationMod.settings.enableVehicleProficiency)
+        {
+            yield return new StatDrawEntry(StatCategoryDefOf.Basics, "PE_RequiredProficiencyStat".Translate(), DefsOf.PE_OrbitalPilotingTier.label.CapitalizeFirst(), "PE_RequiredProficiencyStatVehicleDesc".Translate(), 5000);
+        }
     }
 }

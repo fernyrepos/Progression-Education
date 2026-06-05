@@ -424,14 +424,23 @@ public static class ProficiencyUtility
 
         var vehicleField = AccessTools.Field(handler.GetType(), "vehicle");
         var vehicle = vehicleField.GetValue(handler) as Pawn;
-        var vehicleDefType = AccessTools.TypeByName("Vehicles.VehicleDef");
-        var typeField = AccessTools.Field(vehicleDefType, "type");
-        var typeStr = typeField.GetValue(vehicle.def).ToString();
-        var reqTier = typeStr == "Air" ? DefsOf.PE_AerialPilotingTier : DefsOf.PE_AutomobileDrivingTier;
+        var reqTier = GetRequiredVehicleTierFromDef(vehicle?.def);
+        if (reqTier == null)
+            return (true, null);
 
         if (!MeetsOrExceedsTier(pawn, DefsOf.PE_VehicleTrack, reqTier))
             return (false, "PE_VehicleProficiencyRequired".Translate(reqTier.label));
 
         return (true, null);
+    }
+
+    public static ProficiencyTierDef GetRequiredVehicleTierFromDef(object vehicleDef)
+    {
+        var vehicleDefType = AccessTools.TypeByName("Vehicles.VehicleDef");
+        var typeField = AccessTools.Field(vehicleDefType, "type");
+        var typeStr = typeField.GetValue(vehicleDef).ToString();
+        if (typeStr == "Sea")
+            return null;
+        return typeStr == "Air" ? DefsOf.PE_AerialPilotingTier : DefsOf.PE_AutomobileDrivingTier;
     }
 }

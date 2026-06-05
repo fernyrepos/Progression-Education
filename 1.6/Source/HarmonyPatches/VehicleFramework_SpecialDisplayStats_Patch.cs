@@ -38,23 +38,21 @@ public static class VehicleFramework_SpecialDisplayStats_Patch
                 addMethod.Invoke(list, new[] { item });
             }
         }
-        var vehicleDefType = __instance.GetType();
-        var typeField = AccessTools.Field(vehicleDefType, "type");
-        var typeValue = typeField.GetValue(__instance);
-        string typeStr = typeValue.ToString();
-        var reqTier = typeStr == "Air" ? DefsOf.PE_AerialPilotingTier : DefsOf.PE_AutomobileDrivingTier;
-        var ctor = AccessTools.Constructor(statDrawEntryType, new[] {
-                    typeof(StatCategoryDef),
-                    typeof(string),
-                    typeof(string),
-                    typeof(string),
-                    typeof(int),
-                    typeof(string),
-                    typeof(IEnumerable<Dialog_InfoCard.Hyperlink>),
-                    typeof(bool)
-                });
+        var reqTier = ProficiencyUtility.GetRequiredVehicleTierFromDef(__instance);
+        if (reqTier != null)
+        {
+            var ctor = AccessTools.Constructor(statDrawEntryType, new[] {
+                        typeof(StatCategoryDef),
+                        typeof(string),
+                        typeof(string),
+                        typeof(string),
+                        typeof(int),
+                        typeof(string),
+                        typeof(IEnumerable<Dialog_InfoCard.Hyperlink>),
+                        typeof(bool)
+                    });
 
-        object newEntry = ctor.Invoke(new object[] {
+            object newEntry = ctor.Invoke(new object[] {
                         StatCategoryDefOf.Basics,
                         "PE_RequiredProficiencyStat".Translate().ToString(),
                         reqTier.label.CapitalizeFirst(),
@@ -65,7 +63,8 @@ public static class VehicleFramework_SpecialDisplayStats_Patch
                         false
                     });
 
-        addMethod.Invoke(list, new[] { newEntry });
+            addMethod.Invoke(list, new[] { newEntry });
+        }
         return list;
     }
 }

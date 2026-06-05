@@ -189,25 +189,25 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         }
         Scribe_Defs.Look(ref proficiencyTrack, "proficiencyTrack");
         Scribe_Defs.Look(ref targetTier, "targetTier");
-        if (Scribe.mode == LoadSaveMode.PostLoadInit && rawFocus != null)
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
-            foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
+            if (rawFocus != null)
             {
-                foreach (var tier in track.tiers)
+                foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
                 {
-                    if (tier.legacyNames != null && tier.legacyNames.Contains(rawFocus))
+                    foreach (var tier in track.tiers)
                     {
-                        proficiencyTrack = track;
-                        targetTier = tier;
-                        break;
+                        if (tier.legacyNames != null && tier.legacyNames.Contains(rawFocus))
+                        {
+                            proficiencyTrack = track;
+                            targetTier = tier;
+                            break;
+                        }
                     }
                 }
-                if (Scribe.mode == LoadSaveMode.PostLoadInit)
-                {
-                    proficiencyTrack ??= DefsOf.PE_WeaponTrack;
-                    targetTier ??= DefsOf.PE_FirearmTier;
-                }
             }
+            proficiencyTrack ??= DefsOf.PE_WeaponTrack;
+            targetTier ??= DefsOf.PE_FirearmTier;
         }
     }
 
