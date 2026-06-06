@@ -136,8 +136,11 @@ public static class ProficiencyUtility
 
         var proficiencyRequirement = equipment.def.GetModExtension<ItemProficiencyRequirement>();
         TraitDef requiredProficiency = null;
+        bool isDefaultFallback = false;
+
         if (proficiencyRequirement == null || proficiencyRequirement.requiredProficiency == null)
         {
+            isDefaultFallback = true;
             var techLevel = GetTechLevelFor(equipment.def);
             foreach (var tier in DefsOf.PE_WeaponTrack.tiers)
             {
@@ -159,9 +162,12 @@ public static class ProficiencyUtility
 
         if (requiredProficiency != null)
         {
-            if (equipment is Apparel && DefsOf.PE_WeaponTrack.tiers.Any(t => t.traitDef == requiredProficiency))
+            if (isDefaultFallback && equipment is Apparel)
             {
-                return true;
+                if (requiredProficiency != DefsOf.PE_HighTechProficiency)
+                {
+                    return true;
+                }
             }
 
             ProficiencyTierDef requiredTier = null;

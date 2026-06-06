@@ -18,26 +18,46 @@ public static class ThingDef_SpecialDisplayStats_Patch
 
         if (!EducationMod.settings.enableProficiencySystem) yield break;
 
-        if (__instance.IsWeapon && EducationMod.settings.enableWeaponProficiency)
+        if ((__instance.IsWeapon || __instance.IsApparel) && EducationMod.settings.enableWeaponProficiency)
         {
             var reqExt = __instance.GetModExtension<ItemProficiencyRequirement>();
             var requiredTrait = reqExt?.requiredProficiency;
+            bool isDefaultFallback = requiredTrait == null;
             var label = "";
-            if (requiredTrait == null)
+
+            if (isDefaultFallback)
             {
                 var techLevel = ProficiencyUtility.GetTechLevelFor(__instance);
                 foreach (var tier in DefsOf.PE_WeaponTrack.tiers.Where(tier => tier.generationTechLevel != TechLevel.Undefined && techLevel <= tier.generationTechLevel))
                 {
                     label = tier.label;
+                    requiredTrait = tier.traitDef;
                     break;
                 }
-                if (label.NullOrEmpty()) label = DefsOf.PE_WeaponTrack.tiers.Last().label;
+                if (label.NullOrEmpty())
+                {
+                    label = DefsOf.PE_WeaponTrack.tiers.Last().label;
+                    requiredTrait = DefsOf.PE_WeaponTrack.tiers.Last().traitDef;
+                }
             }
             else
             {
                 label = requiredTrait.degreeDatas[0].label;
             }
-            yield return new StatDrawEntry(StatCategoryDefOf.Weapon, "PE_RequiredProficiencyStat".Translate(), label.CapitalizeFirst(), "PE_RequiredProficiencyStatDesc".Translate(), 5000);
+
+            bool shouldShow = false;
+            if (__instance.IsWeapon) shouldShow = true;
+            else if (__instance.IsApparel)
+            {
+                if (!isDefaultFallback) shouldShow = true;
+                else if (requiredTrait == DefsOf.PE_HighTechProficiency) shouldShow = true;
+            }
+
+            if (shouldShow)
+            {
+                var category = __instance.IsWeapon ? StatCategoryDefOf.Weapon : StatCategoryDefOf.Apparel;
+                yield return new StatDrawEntry(category, "PE_RequiredProficiencyStat".Translate(), label.CapitalizeFirst(), "PE_RequiredProficiencyStatDesc".Translate(), 5000);
+            }
         }
 
         if (__instance.HasComp(typeof(CompShuttle)) && EducationMod.settings.enableVehicleProficiency)
