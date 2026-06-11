@@ -41,7 +41,7 @@ public static class CharacterCardUtility_DoLeftSection_Patch
         if (pawn.CanHaveProficiencies() is false) return;
         var list = (IList)listObj;
         var hasAbilities = pawn.abilities != null && pawn.abilities.AllAbilitiesForReading.Any(a => a.def.showOnCharacterCard);
-        var topGap = hasAbilities ? 15f : 0f;
+        var topGap = hasAbilities ? 6f : 0f;
         float height = 24f + topGap;
         int activeRows = 0;
         if (EducationMod.settings.enableWeaponProficiency) activeRows++;

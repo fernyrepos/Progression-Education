@@ -9,6 +9,8 @@ namespace ProgressionEducation;
 [HotSwappable]
 public class ProficiencyClassLogic : ClassSubjectLogic
 {
+    private const float ProgressSpeedMultiplier = 0.5f;
+
     public ProficiencyDef proficiencyTrack;
     public ProficiencyTierDef targetTier;
 
@@ -55,7 +57,8 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return Mathf.Max(0,
                 CalculateTeacherScore(studyGroup.teacher)
                 * studyGroup.classroom.ClassSpeed
-                * LearningSpeedModifier);
+                * LearningSpeedModifier
+                * ProgressSpeedMultiplier);
         }
     }
 
@@ -291,7 +294,8 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         AppendSkillLevel(SkillDefOf.Social, pawn, text);
         AppendSkillLevel(SkillDefOf.Intellectual, pawn, text);
         text.AppendLine();
-        var xpPerHour = CalculateTeacherScore(pawn) * GenDate.TicksPerHour;
+        var progressPerHour = CalculateTeacherScore(pawn) * studyGroup.classroom.ClassSpeed * LearningSpeedModifier * ProgressSpeedMultiplier;
+        var xpPerHour = progressPerHour * GenDate.TicksPerHour;
         if (xpPerHour > 0)
         {
             var percentPerHour = xpPerHour / studyGroup.semesterGoal;

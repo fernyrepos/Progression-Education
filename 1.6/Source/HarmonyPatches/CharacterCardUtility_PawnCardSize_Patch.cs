@@ -16,7 +16,7 @@ public static class CharacterCardUtility_PawnCardSize_Patch
 
         float extraHeight = 0;
         var hasAbilities = pawn.abilities != null && pawn.abilities.AllAbilitiesForReading.Any(a => a.def.showOnCharacterCard);
-        if (hasAbilities) extraHeight += 15f;
+        if (hasAbilities) extraHeight += 6f;
         int activeRows = 0;
         if (EducationMod.settings.enableWeaponProficiency) activeRows++;
         if (EducationMod.settings.enableVehicleProficiency && ProficiencyUtility.AreVehicleModsActive) activeRows++;
