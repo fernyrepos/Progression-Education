@@ -21,7 +21,7 @@
 
 
   <Operation Class="PatchOperationAddModExtension">
-    <xpath>Defs/ResearchProjectDef[defName="BasicGravtech"]</xpath>
+    <xpath>Defs/ResearchProjectDef[defName="Shuttles"]</xpath>
     <value>
       <li Class="ProgressionEducation.ResearchGrantsTrait">
         <trait>PE_OrbitalPilotingProficiency</trait>
