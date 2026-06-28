@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using RimWorld;
 using Verse;
 
@@ -26,8 +26,7 @@ public static class Thing_SetFaction_Patch
         {
             if (comp.classroom != null)
             {
-                EducationLog.Message(
-                    $"Learning board '{__instance.Label}' un-claimed. Removing associated classroom '{comp.classroom.name}'.");
+                EducationLog.Message($"Learning board '{__instance.Label}' un-claimed. Removing associated classroom '{comp.classroom.name}'.");
                 EducationManager.Instance.RemoveClassroom(comp.classroom);
                 comp.classroom = null;
             }

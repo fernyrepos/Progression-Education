@@ -48,10 +48,20 @@ public abstract class ClassSubjectLogic : IExposable
     public virtual string Label => "None".Translate();
     public virtual string LabelCap => Label.CapitalizeFirst();
     public virtual string LabelFocus => LabelCap;
+    public virtual string TeacherRoleLabel => "PE_TeacherRole".Translate();
+    public virtual string StudentRoleLabel => "PE_StudentRole".Translate();
     public virtual JobDef LearningJob => DefsOf.PE_AttendClass;
     public abstract float LearningSpeedModifier { get; }
-
+    
+    public virtual bool IsEnabled => true;
+    public virtual int MaxStudents => 99;
+    public virtual int DefaultSemesterGoal => 10000;
     public virtual float ProgressPerTick => 0f;
+
+    public virtual string GetReport()
+    {
+        return null;
+    }
 
     public virtual void ExposeData()
     {
@@ -265,5 +275,23 @@ public abstract class ClassSubjectLogic : IExposable
         {
             classDialog.AssignmentsManager.TryUnassignAnyRole(pawn);
         }
+    }
+
+    public virtual string GetCompletionLetterLabel()
+    {
+        return "PE_ClassCompleted".Translate(studyGroup.className);
+    }
+
+    public virtual string GetCompletionLetterText()
+    {
+        var text = new StringBuilder("PE_ClassCompletedDesc".Translate(studyGroup.className));
+        var graduates = new StringBuilder();
+        foreach (var student in studyGroup.students)
+        {
+            graduates.AppendWithComma(student.LabelShort);
+        }
+        text.AppendLineIfNotEmpty();
+        text.AppendInNewLine("PE_ClassGraduates".Translate(graduates.ToString()));
+        return text.ToString();
     }
 }

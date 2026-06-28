@@ -71,8 +71,7 @@ public class EducationManager(World world) : WorldComponent(world)
     public void AddStudyGroup(StudyGroup studyGroup)
     {
         studyGroups.Add(studyGroup);
-        EducationLog.Message(
-            $"EducationManager.AddStudyGroup Scheduled class added: {studyGroup.className} ({studyGroup.GetUniqueLoadID()})");
+        EducationLog.Message($"EducationManager.AddStudyGroup Scheduled class added: {studyGroup.className} ({studyGroup.GetUniqueLoadID()})");
     }
 
     public static void ApplyScheduleToPawns(StudyGroup studyGroup)
@@ -98,12 +97,10 @@ public class EducationManager(World world) : WorldComponent(world)
     public override void FinalizeInit(bool fromLoad)
     {
         base.FinalizeInit(fromLoad);
-        EducationLog.Message("Finalizing EducationManager init");
         TimeAssignmentUtility.RemoveAllDynamicTimeAssignmentDefs();
         foreach (var studyGroup in studyGroups)
         {
-            EducationLog.Message(
-                $"Generating TimeAssignmentDef for study group '{studyGroup.className}'");
+            EducationLog.Message($"Generating TimeAssignmentDef for study group '{studyGroup.className}'");
             TimeAssignmentUtility.GenerateTimeAssignmentDef(studyGroup);
         }
         foreach (var pawn in PawnsFinder.AllMapsAndWorld_Alive)
@@ -111,7 +108,7 @@ public class EducationManager(World world) : WorldComponent(world)
             ProficiencyUtility.ApplyProficiencyTraitToPawn(pawn);
         }
     }
- 
+
     public int GetNextClassroomId()
     {
         return nextClassroomId++;
@@ -124,7 +121,6 @@ public class EducationManager(World world) : WorldComponent(world)
 
     private void InterruptPawnsUsingLearningBenches(StudyGroup studyGroup)
     {
-        EducationLog.Message("EducationManager.InterruptPawnsUsingLearningBenches");
         var validBenches = studyGroup.subjectLogic.GetValidLearningBenches();
         if (validBenches == null
             || !validBenches.Any())
@@ -154,8 +150,7 @@ public class EducationManager(World world) : WorldComponent(world)
             if (shouldInterrupt)
             {
                 pawn.jobs?.EndCurrentJob(JobCondition.InterruptForced);
-                EducationLog.Message(
-                    $"-> Interrupted pawn {pawn.LabelShort} who was using a learning bench during class initiation.");
+                EducationLog.Message($"-> Interrupted pawn {pawn.LabelShort} who was using a learning bench during class initiation.");
             }
         }
     }
@@ -167,13 +162,11 @@ public class EducationManager(World world) : WorldComponent(world)
 
     public void RemoveClassroom(Classroom classroom)
     {
-        EducationLog.Message("EducationManager.RemoveClassroom");
         var studyGroupsToRemove = StudyGroups.Where(sg => sg.classroom == classroom).ToList();
         foreach (var studyGroup in studyGroupsToRemove)
         {
             var allParticipants = studyGroup.AllParticipants;
-            EducationLog.Message(
-                $"-> Removing study group '{studyGroup.className}' due to classroom removal. Cleaning up timetables for participants: {allParticipants.ToStringSafeEnumerable()}");
+            EducationLog.Message($"-> Removing study group '{studyGroup.className}' due to classroom removal. Cleaning up timetables for participants: {allParticipants.ToStringSafeEnumerable()}");
             TimeAssignmentUtility.ClearScheduleFromPawns(studyGroup,
                 allParticipants);
             TimeAssignmentUtility.RemoveTimeAssignmentDef(studyGroup);
@@ -188,8 +181,7 @@ public class EducationManager(World world) : WorldComponent(world)
     {
         studyGroups.Remove(studyGroup);
         var allParticipants = studyGroup.AllParticipants;
-        EducationLog.Message(
-            $"EducationManager.RemoveStudyGroup Removing study group '{studyGroup.className}'. Cleaning up timetables for participants: {allParticipants.ToStringSafeEnumerable()}");
+        EducationLog.Message($"EducationManager.RemoveStudyGroup Removing study group '{studyGroup.className}'. Cleaning up timetables for participants: {allParticipants.ToStringSafeEnumerable()}");
         TimeAssignmentUtility.ClearScheduleFromPawns(studyGroup,
             allParticipants);
         TimeAssignmentUtility.RemoveTimeAssignmentDef(studyGroup);
@@ -197,8 +189,6 @@ public class EducationManager(World world) : WorldComponent(world)
 
     public void TryInitiateClassForStudyGroup(StudyGroup studyGroup)
     {
-        EducationLog.Message("EducationManager.TryInitiateClassForStudyGroup");
-
         if (studyGroup.cancelledUntilTick > Find.TickManager.TicksGame)
         {
             return;
@@ -219,8 +209,7 @@ public class EducationManager(World world) : WorldComponent(world)
         var validationReport = studyGroup.ValidateClassStatus();
         if (!validationReport.Accepted)
         {
-            EducationLog.Message(
-                $"-> Class '{studyGroup.className}' cancelled due to validation failure: {validationReport.Reason}");
+            EducationLog.Message($"-> Class '{studyGroup.className}' cancelled due to validation failure: {validationReport.Reason}");
             if (studyGroup.cancelledUntilTick < Find.TickManager.TicksGame)
             {
                 Messages.Message(
@@ -237,16 +226,14 @@ public class EducationManager(World world) : WorldComponent(world)
 
         if (!EducationUtility.HasBellOnMap(classroomMap, true))
         {
-            EducationLog.Message(
-                $"-> No bell found on map for class '{studyGroup.className}'. Cannot initiate class.");
+            EducationLog.Message($"-> No bell found on map for class '{studyGroup.className}'. Cannot initiate class.");
             return;
         }
 
         if (studyGroup.teacher.GetLord() is Lord lord
             && lord.LordJob is LordJob_AttendClass)
         {
-            EducationLog.Message(
-                $"-> Teacher {studyGroup.teacher.LabelShort} is already in a LordJob_AttendClass. Not initiating another class.");
+            EducationLog.Message($"-> Teacher {studyGroup.teacher.LabelShort} is already in a LordJob_AttendClass. Not initiating another class.");
             return;
         }
 
@@ -254,8 +241,7 @@ public class EducationManager(World world) : WorldComponent(world)
             .Any(l => l.LordJob is LordJob_AttendClass attendClassLordJob
                       && attendClassLordJob.studyGroup == studyGroup))
         {
-            EducationLog.Message(
-                $"-> An existing LordJob_AttendClass was found for class '{studyGroup.className}'. Not initiating another class.");
+            EducationLog.Message($"-> An existing LordJob_AttendClass was found for class '{studyGroup.className}'. Not initiating another class.");
             return;
         }
 
@@ -272,13 +258,11 @@ public class EducationManager(World world) : WorldComponent(world)
 
         if (initialPawns.Count < 1)
         {
-            EducationLog.Message(
-                $"-> All participants for class '{studyGroup.className}' are already in other lords. Cannot initiate class.");
+            EducationLog.Message($"-> All participants for class '{studyGroup.className}' are already in other lords. Cannot initiate class.");
             return;
         }
 
-        EducationLog.Message(
-            $"-> Initiating class '{studyGroup.className}' with teacher {studyGroup.teacher.LabelShort}.");
+        EducationLog.Message($"-> Initiating class '{studyGroup.className}' with teacher {studyGroup.teacher.LabelShort}.");
 
         if (studyGroup.classroom.restrictReservationsDuringClass)
         {
@@ -312,8 +296,7 @@ public class EducationManager(World world) : WorldComponent(world)
                      .Where(classroom => classroom.LearningBoard == null
                                          || classroom.LearningBoard.parent.Destroyed))
         {
-            EducationLog.Message(
-                $"EducationManager.WorldComponentTick Classroom '{classroom.name}' has no valid learning board. Removing classroom.");
+            EducationLog.Message($"EducationManager.WorldComponentTick Classroom '{classroom.name}' has no valid learning board. Removing classroom.");
             RemoveClassroom(classroom);
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -7,6 +8,21 @@ namespace ProgressionEducation;
 
 public static class EducationUtility
 {
+    public static List<ClassSubjectLogic> GetAvailableSubjectLogics(StudyGroup studyGroup)
+    {
+        var logics = new List<ClassSubjectLogic>();
+        foreach (var type in typeof(ClassSubjectLogic).AllSubclasses())
+        {
+            if (type.IsAbstract) continue;
+            var logic = (ClassSubjectLogic)Activator.CreateInstance(type, [studyGroup]);
+            if (logic.IsEnabled)
+            {
+                logics.Add(logic);
+            }
+        }
+        return logics;
+    }
+
     public static bool CanAttendClass(this Pawn pawn)
     {
         return pawn is

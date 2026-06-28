@@ -21,8 +21,7 @@ public class JobDriver_RingBell : JobDriver
             return false;
         }
 
-        EducationLog.Message(
-            $"Pawn {pawn.LabelShort} bell lost power. Sending 'MemoClassCancelled' memo to lord.");
+        EducationLog.Message($"Pawn {pawn.LabelShort} bell lost power. Sending 'MemoClassCancelled' memo to lord.");
         pawn.GetLord()?.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
         return true;
     }
@@ -53,8 +52,7 @@ public class JobDriver_RingBell : JobDriver
         };
         waitAtBell.AddFinishAction(() =>
         {
-            EducationLog.Message(
-                $"Pawn {pawn.LabelShort} finished ringing bell. Sending 'BellRung' memo to lord.");
+            EducationLog.Message($"Pawn {pawn.LabelShort} finished ringing bell. Sending 'BellRung' memo to lord.");
             pawn.GetLord()?.ReceiveMemo(LordJob_AttendClass.MemoBellRung);
         });
         yield return waitAtBell;

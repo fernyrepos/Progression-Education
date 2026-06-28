@@ -28,8 +28,7 @@ public class LordToil_RingBell(StudyGroup studyGroup) : LordToil
         {
             bellComp.RingBell();
             bellRung = true;
-            EducationLog.Message(
-                $"Automatic bell '{bellComp.parent.Label}' rang for class '{studyGroup.className}'. Sending BellRung memo.");
+            EducationLog.Message($"Automatic bell '{bellComp.parent.Label}' rang for class '{studyGroup.className}'. Sending BellRung memo.");
             lord.ReceiveMemo("BellRung");
             return;
         }
@@ -37,8 +36,6 @@ public class LordToil_RingBell(StudyGroup studyGroup) : LordToil
 
     public override void UpdateAllDuties()
     {
-        EducationLog.Message(
-            $"LordToil_RingBell.UpdateAllDuties called for class '{studyGroup.className}'");
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
         {
             EducationLog.Message($"-> but {studyGroup.teacher.LabelShort} is unavailable. Suspending class.");
@@ -52,8 +49,7 @@ public class LordToil_RingBell(StudyGroup studyGroup) : LordToil
         {
             studyGroup.teacher.mindState.duty =
                 new PawnDuty(DefsOf.PE_RingBellDuty, studyGroup.teacher.Position);
-            EducationLog.Message(
-                $"-> Set teacher {studyGroup.teacher.LabelShort} duty to PE_RingBellDuty at position {studyGroup.teacher.Position}");
+            EducationLog.Message($"-> Set teacher {studyGroup.teacher.LabelShort} duty to PE_RingBellDuty at position {studyGroup.teacher.Position}");
         }
         else
         {

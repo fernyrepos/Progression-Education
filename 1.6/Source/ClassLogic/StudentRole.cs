@@ -12,6 +12,11 @@ public class StudentRole(StudyGroup studyGroup)
         studyGroup
     )
 {
+    public override TaggedString Label => studyGroup.subjectLogic.StudentRoleLabel;
+    public override TaggedString CategoryLabel => studyGroup.subjectLogic.StudentRoleLabel;
+
+    public override int MaxCount => studyGroup.subjectLogic.MaxStudents;
+
     public override AcceptanceReport CanAcceptPawn(Pawn pawn)
     {
         var baseReport = base.CanAcceptPawn(pawn);

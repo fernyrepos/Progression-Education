@@ -10,20 +10,19 @@ public class JobGiver_RingBell : ThinkNode_JobGiver
 {
     public override Job TryGiveJob(Pawn pawn)
     {
-        EducationLog.Message($"JobGiver_RingBell.TryGiveJob called for pawn: {pawn.LabelShort}");
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(pawn))
         {
-            EducationLog.Message(
-                $"-> Pawn {pawn.LabelShort} is cannot gather at this time. Returning null.");
+            return null;
+        }
+
+        if (pawn.mindState.duty?.def != DefsOf.PE_RingBellDuty)
+        {
             return null;
         }
 
         if (pawn.GetLord()?.LordJob is not LordJob_AttendClass attendClass)
         {
-            EducationLog.Message(
-                $"-> Pawn {pawn.LabelShort} is not in a LordJob_AttendClass. Returning null.");
-            return null;
-        }
+            return null;        }
 
         var bell = CompBell.AllBells
             .Where(bc => bc.parent.Map == pawn.Map
@@ -44,8 +43,7 @@ public class JobGiver_RingBell : ThinkNode_JobGiver
         var waypoints = learningBoard.GetWaypointsInFrontOfBoard(pawn);
         if (waypoints.Any())
         {
-            EducationLog.Message(
-                "-> No bell found. Found classroom board. Creating job to go to it.");
+            EducationLog.Message("-> No bell found. Found classroom board. Creating job to go to it.");
             var waypoint = waypoints.RandomElement();
             return JobMaker.MakeJob(JobDefOf.GotoWander, waypoint);
         }

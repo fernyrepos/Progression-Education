@@ -523,7 +523,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
 
         if (unqualifiedStudents.Count > 0)
         {
-            return new AcceptanceReport("PE_StudentsUnqualified".Translate());
+            return new AcceptanceReport("PE_StudentsUnqualified".Translate(unqualifiedStudents.Select(x => x.Label).ToStringSafeEnumerable()));
         }
 
         if (students.Count == 0)

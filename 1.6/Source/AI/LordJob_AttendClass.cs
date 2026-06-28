@@ -178,8 +178,7 @@ public class LordJob_AttendClass : LordJob
         base.LordJobTick();
         if (studyGroup == null)
         {
-            EducationLog.Message(
-                "LordJob_AttendClass.LordJobTick Study group is null. Canceling class.");
+            EducationLog.Message("LordJob_AttendClass.LordJobTick Study group is null. Canceling class.");
             lord.ReceiveMemo(MemoClassCancelled);
 
             return;
@@ -187,8 +186,7 @@ public class LordJob_AttendClass : LordJob
 
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
         {
-            EducationLog.Message(
-                $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: teacher is unavailable.");
+            EducationLog.Message($"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: teacher is unavailable.");
             lord.ReceiveMemo(MemoClassCancelledTeacherIncapacitated);
             studyGroup.Notify_TeacherUnavailable();
 
@@ -197,8 +195,7 @@ public class LordJob_AttendClass : LordJob
 
         if (studyGroup.teacher.GetLord() != lord)
         {
-            EducationLog.Message(
-                $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: teacher is no longer in the class.");
+            EducationLog.Message($"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: teacher is no longer in the class.");
             studyGroup.Notify_TeacherUnavailable();
             return;
         }
@@ -207,15 +204,13 @@ public class LordJob_AttendClass : LordJob
                 studyGroup))
         {
             lord.ReceiveMemo(MemoClassTimeFinished);
-            EducationLog.Message(
-                $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is finished: teacher is no longer scheduled for class.");
+            EducationLog.Message($"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is finished: teacher is no longer scheduled for class.");
             return;
         }
 
         if (studyGroup.ValidateClassStatus() is { Accepted: false } validationReport)
         {
-            EducationLog.Message(
-                $"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: {validationReport.Reason}");
+            EducationLog.Message($"LordJob_AttendClass.LordJobTick Class '{studyGroup.className}' is being cancelled: {validationReport.Reason}");
             Messages.Message(
                 "PE_ClassCancelledToday".Translate(studyGroup.className) + " " + validationReport.Reason,
                 MessageTypeDefOf.NegativeEvent);
@@ -245,8 +240,7 @@ public class LordJob_AttendClass : LordJob
                 }
 
                 lord.AddPawn(student);
-                EducationLog.Message(
-                    $"LordJob_AttendClass.TransitionAction_AddStudentsToLord Added student {student.LabelShort} to lord for class '{studyGroup.className}'");
+                EducationLog.Message($"LordJob_AttendClass.TransitionAction_AddStudentsToLord Added student {student.LabelShort} to lord for class '{studyGroup.className}'");
             }
         }
     }

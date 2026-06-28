@@ -83,7 +83,7 @@
   <PE_NoLearningBoard>No learning board found in classroom</PE_NoLearningBoard>
   <PE_NoBell>No bell found in map</PE_NoBell>
   <PE_BellNotPowered>Bell is not powered</PE_BellNotPowered>
-  <PE_StudentUnqualified>{0} cannot participate in class: {1}</PE_StudentUnqualified>
+  <PE_StudentsUnqualified>{0} cannot participate in class</PE_StudentsUnqualified>
   <PE_ClassroomSettings>Classroom settings</PE_ClassroomSettings>
   <PE_RestrictReservationsDuringClass>Disallow traditional work in classroom</PE_RestrictReservationsDuringClass>
   <PE_RestrictReservationsDuringClass_Desc>If enabled, pawns will not be able to use classroom furniture (desks, etc.).</PE_RestrictReservationsDuringClass_Desc>

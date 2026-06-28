@@ -12,15 +12,18 @@ public class JobGiver_Teach : ThinkNode_JobGiver
         EducationLog.Message($"JobGiver_Teach.TryGiveJob called for pawn: {pawn.LabelShort}");
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(pawn))
         {
-            EducationLog.Message(
-                $"-> Pawn {pawn.LabelShort} cannot gather at this time. Returning null.");
+            EducationLog.Message($"-> Pawn {pawn.LabelShort} cannot gather at this time. Returning null.");
+            return null;
+        }
+
+        if (pawn.mindState.duty?.def != DefsOf.PE_TeachDuty)
+        {
             return null;
         }
 
         if (pawn.GetLord()?.LordJob is not LordJob_AttendClass lordJob)
         {
-            EducationLog.Message(
-                $"-> Pawn {pawn.LabelShort} is not in a LordJob_AttendClass. Returning null.");
+            EducationLog.Message($"-> Pawn {pawn.LabelShort} is not in a LordJob_AttendClass. Returning null.");
             return null;
         }
 
@@ -30,10 +33,14 @@ public class JobGiver_Teach : ThinkNode_JobGiver
             return null;
         }
 
+        if (!TimeAssignmentUtility.IsPawnScheduledForClass(pawn, studyGroup))
+        {
+            return null;
+        }
+
         if (studyGroup.suspended)
         {
-            EducationLog.Message(
-                $"-> Study group {studyGroup.className} is suspended. Returning null.");
+            EducationLog.Message($"-> Study group {studyGroup.className} is suspended. Returning null.");
             return null;
         }
 
@@ -43,8 +50,7 @@ public class JobGiver_Teach : ThinkNode_JobGiver
             return null;
         }
 
-        EducationLog.Message(
-            $"-> giving job to {pawn.LabelShort} to teach at {learningBoard.LabelCap}.");
+        EducationLog.Message($"-> giving job to {pawn.LabelShort} to teach at {learningBoard.LabelCap}.");
         return JobMaker.MakeJob(DefsOf.PE_Teach, learningBoard);
     }
 }

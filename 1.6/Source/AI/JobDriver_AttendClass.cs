@@ -10,24 +10,24 @@ public class JobDriver_AttendClass : JobDriver_LessonBase
 {
     public static IntVec3 DeskSpotForStudent(Thing desk)
     {
+        if (desk.def.hasInteractionCell is false)
+        {
+            return desk.Position;
+        }
         if (desk.InteractionCells.Any())
         {
             return desk.InteractionCells[0];
         }
-
-        return desk.def.hasInteractionCell
-            ? desk.InteractionCell
-            : desk.Position;
+        return desk.InteractionCell;
     }
 
-    private void DoLearningInterval(int delta)
+    protected virtual void DoLearningInterval(int delta)
     {
         pawn?.GainComfortFromCellIfPossible(delta, true);
         pawn?.rotationTracker?.FaceTarget(job.GetTarget(TargetIndex.A));
         if (pawn?.GetLord()?.LordJob is not LordJob_AttendClass lordJob)
         {
-            EducationLog.Message(
-                "-> lord is not LordJob_AttendClass, returning.");
+            EducationLog.Message("-> lord is not LordJob_AttendClass, returning.");
             return;
         }
 

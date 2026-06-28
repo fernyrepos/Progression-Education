@@ -17,8 +17,6 @@ public static class Apparel_PawnCanWear_Patch
         if (!pawn.CanEquipItem(__instance))
         {
             __result = false;
-            EducationLog.Message(
-                $"EquipmentUtility_CanEquip blocked {pawn.LabelShort} from equipping {__instance.LabelCap} due to missing proficiency.");
         }
     }
 }

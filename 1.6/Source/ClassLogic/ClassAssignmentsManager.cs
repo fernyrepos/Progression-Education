@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -23,12 +23,6 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
         Map map,
         Dictionary<string, Pawn> forcedRoles = null)
     {
-        EducationLog.Message("ClassAssignmentsManager constructor called");
-        EducationLog.Message(
-            $"teacherRole: {teacherRole?.Label ?? "null"}, category: {teacherRole?.CategoryLabel ?? "null"}");
-        EducationLog.Message(
-            $"studentRole: {studentRole?.Label ?? "null"}, category: {studentRole?.CategoryLabel ?? "null"}");
-
         Roles.Add(teacherRole);
         Roles.Add(studentRole);
         assignedPawns[teacherRole!] = [];
@@ -40,8 +34,6 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
         {
             requiredPawns.AddRange(forcedRoles.Values);
         }
-
-        EducationLog.Message($"roles count after adding: {Roles.Count}");
     }
 
     public List<ClassRole> Roles { get; } = [];
@@ -139,7 +131,6 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
 
     public bool PawnSpectating(Pawn pawn)
     {
-        EducationLog.Message($"PawnSpectating called for pawn: {pawn?.LabelShort ?? "null"}");
         var isSpectating = SpectatorsForReading.Contains(pawn);
         EducationLog.Message($"PawnSpectating - pawn is spectating: {isSpectating}");
         return isSpectating;
@@ -176,8 +167,6 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
             PsychicRitualRoleDef.Context.Dialog_BeginPsychicRitual,
         Pawn insertBefore = null)
     {
-        EducationLog.Message(
-            $"TryAssign called for pawn: {pawn?.LabelShort ?? "null"} to role: {role?.LabelCap ?? "null"}");
         reason = PsychicRitualRoleDef.Reason.None;
         if (pawn == null
             || role == null)
@@ -188,16 +177,14 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
 
         if (!assignedPawns.ContainsKey(role))
         {
-            EducationLog.Message(
-                $"-> role is not one of the supported roles: {assignedPawns.Keys.ToStringSafeEnumerable()}");
+            EducationLog.Message($"-> role is not one of the supported roles: {assignedPawns.Keys.ToStringSafeEnumerable()}");
             return false;
         }
 
         if (ForcedRole(pawn) is ClassRole forcedRole
             && role != forcedRole)
         {
-            EducationLog.Message(
-                $"-> pawn has forced role {forcedRole.LabelCap} which is different from requested role {role.LabelCap}");
+            EducationLog.Message($"-> pawn has forced role {forcedRole.LabelCap} which is different from requested role {role.LabelCap}");
             return false;
         }
 
@@ -241,7 +228,6 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
 
     public bool TryUnassignAnyRole(Pawn pawn)
     {
-        EducationLog.Message($"TryUnassignAnyRole called for pawn: {pawn?.LabelShort ?? "null"}");
         if (pawn == null)
         {
             EducationLog.Message("-> pawn is null, cannot unassign");
@@ -259,7 +245,6 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
 
             if (kvp.Value.Remove(pawn))
             {
-                EducationLog.Message("-> completed");
                 if (SpectatorsAllowed)
                 {
                     EducationLog.Message("-> adding to spectators");
@@ -275,7 +260,6 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
 
     public void RemoveParticipant(Pawn pawn)
     {
-        EducationLog.Message($"RemoveParticipant called for pawn: {pawn?.LabelShort ?? "null"}");
         if (pawn == null)
         {
             EducationLog.Message("-> pawn is null, cannot unassign");
@@ -292,16 +276,13 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
 
     public void FillPawns()
     {
-        EducationLog.Message($"FillPawns called, allPawns count: {allPawns.Count}");
         foreach (var kvp in assignedPawns)
         {
-            EducationLog.Message(
-                $"FillPawns - clearing role: {kvp.Key?.Label ?? "null"}, current count: {kvp.Value.Count}");
+            EducationLog.Message($"FillPawns - clearing role: {kvp.Key?.Label ?? "null"}, current count: {kvp.Value.Count}");
             kvp.Value.Clear();
         }
 
-        EducationLog.Message(
-            $"FillPawns - clearing spectators, current count: {SpectatorsForReading.Count}");
+        EducationLog.Message($"FillPawns - clearing spectators, current count: {SpectatorsForReading.Count}");
         SpectatorsForReading.Clear();
         var remainingPawns = new List<Pawn>(allPawns);
         foreach (var role in Roles)
@@ -323,13 +304,10 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
             }
         }
 
-        EducationLog.Message("FillPawns completed");
     }
 
     public void FillRole(ClassRole role, List<Pawn> pawns, out List<Pawn> unassignedPawns)
     {
-        EducationLog.Message(
-            $"FillRole called for role {role?.LabelCap ?? "null"} with {pawns.ToStringSafeEnumerable()}");
         unassignedPawns = [];
         if (role == null)
         {
@@ -340,12 +318,10 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
 
         foreach (var pawn in pawns)
         {
-            EducationLog.Message(
-                $"-> Processing pawn: {pawn.LabelShort}, stage: {pawn.DevelopmentalStage}");
+            EducationLog.Message($"-> Processing pawn: {pawn.LabelShort}, stage: {pawn.DevelopmentalStage}");
             if (!pawn.CanAttendClass())
             {
-                EducationLog.Message(
-                    $"-> Skipping {pawn.LabelShort} because they are unable to attend classes");
+                EducationLog.Message($"-> Skipping {pawn.LabelShort} because they are unable to attend classes");
                 continue;
             }
 
@@ -362,13 +338,11 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
             {
                 if (!report.Accepted)
                 {
-                    EducationLog.Message(
-                        $"-> Cannot assign to role {role.LabelCap} because: {report.Reason}");
+                    EducationLog.Message($"-> Cannot assign to role {role.LabelCap} because: {report.Reason}");
                 }
                 else if (isFull)
                 {
-                    EducationLog.Message(
-                        $"-> Cannot assign to role {role.LabelCap} because it is full");
+                    EducationLog.Message($"-> Cannot assign to role {role.LabelCap} because it is full");
                 }
 
                 unassignedPawns.Add(pawn);
@@ -399,8 +373,6 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
 
     public bool TryAssignToFirstAvailableRole(Pawn pawn, Pawn insertBefore = null)
     {
-        EducationLog.Message(
-            $"TryAssignToFirstAvailableRole called for pawn: {pawn?.LabelShort ?? "null"}");
         foreach (var role in Roles
                      .Where(role => assignedPawns.ContainsKey(role)
                                     && (role.MaxCount <= 0
@@ -415,25 +387,21 @@ public class ClassAssignmentsManager : ILordJobAssignmentsManager<ClassRole>
             if (insertBefore != null
                 && assignedPawns[role].Contains(insertBefore))
             {
-                EducationLog.Message(
-                    $"TryAssignToFirstAvailableRole - inserting pawn before: {insertBefore.LabelShort ?? "null"} in role {role.Label}");
+                EducationLog.Message($"TryAssignToFirstAvailableRole - inserting pawn before: {insertBefore.LabelShort ?? "null"} in role {role.Label}");
                 var index = assignedPawns[role].IndexOf(insertBefore);
                 assignedPawns[role].Insert(index, pawn);
             }
             else
             {
-                EducationLog.Message(
-                    $"TryAssignToFirstAvailableRole - adding pawn to role {role.Label}");
+                EducationLog.Message($"TryAssignToFirstAvailableRole - adding pawn to role {role.Label}");
                 assignedPawns[role].Add(pawn);
             }
 
-            EducationLog.Message(
-                $"TryAssignToFirstAvailableRole - successfully assigned pawn to role {role.Label}");
+            EducationLog.Message($"TryAssignToFirstAvailableRole - successfully assigned pawn to role {role.Label}");
             return true;
         }
 
-        EducationLog.Message(
-            "TryAssignToFirstAvailableRole - pawn could not be assigned to any role");
+        EducationLog.Message("TryAssignToFirstAvailableRole - pawn could not be assigned to any role");
         return false;
     }
 

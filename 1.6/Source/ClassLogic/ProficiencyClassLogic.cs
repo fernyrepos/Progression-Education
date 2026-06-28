@@ -33,6 +33,10 @@ public class ProficiencyClassLogic : ClassSubjectLogic
     public override float LearningSpeedModifier =>
         EducationMod.settings.proficiencyClassesLearningSpeedModifier;
 
+    public override bool IsEnabled => EducationMod.settings.enableProficiencySystem;
+
+    public override int DefaultSemesterGoal => targetTier.semesterGoal;
+
     public override string LabelFocus => GetLabel(targetTier).CapitalizeFirst();
 
     public static string GetLabel(ProficiencyTierDef tier)

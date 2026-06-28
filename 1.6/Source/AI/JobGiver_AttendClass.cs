@@ -13,7 +13,6 @@ public class JobGiver_AttendClass : ThinkNode_JobGiver
     private Thing FindUnoccupiedThing(List<Thing> things, Pawn pawn,
         Predicate<Thing> thingValidator)
     {
-        EducationLog.Message($"JobGiver_AttendClass.FindUnoccupiedThing called for pawn {pawn.LabelShort}");
         foreach (var thing in things
                      .Where(thing => thingValidator(thing)))
         {
@@ -24,8 +23,7 @@ public class JobGiver_AttendClass : ThinkNode_JobGiver
                     JobDriver_AttendClass.DeskSpotForStudent(thing),
                     thing))
             {
-                EducationLog.Message(
-                    $"-> Pawn can reserve {thing.Label} and its spot. Returning it.");
+                EducationLog.Message($"-> Pawn can reserve {thing.Label} and its spot. Returning it.");
                 TimeAssignmentUtility.allowUsing = false;
                 return thing;
             }
@@ -40,19 +38,21 @@ public class JobGiver_AttendClass : ThinkNode_JobGiver
 
     public override Job TryGiveJob(Pawn pawn)
     {
-        EducationLog.Message($"JobGiver_AttendClass.TryGiveJob called for pawn: {pawn.LabelShort}");
         if (!GatheringsUtility.PawnCanStartOrContinueGathering(pawn))
         {
-            EducationLog.Message(
-                $"-> Pawn {pawn.LabelShort} cannot gather at this time. Returning null.");
+            EducationLog.Message($"-> Pawn {pawn.LabelShort} cannot gather at this time. Returning null.");
+            return null;
+        }
+
+        if (pawn.mindState.duty?.def != DefsOf.PE_AttendClassDuty)
+        {
             return null;
         }
 
         var lord = pawn.GetLord();
         if (lord?.LordJob is not LordJob_AttendClass lordJob)
         {
-            EducationLog.Message(
-                $"-> Pawn {pawn.LabelShort} is not in a LordJob_AttendClass. Returning null.");
+            EducationLog.Message($"-> Pawn {pawn.LabelShort} is not in a LordJob_AttendClass. Returning null.");
             return null;
         }
 
@@ -63,18 +63,21 @@ public class JobGiver_AttendClass : ThinkNode_JobGiver
             return null;
         }
 
+        if (!TimeAssignmentUtility.IsPawnScheduledForClass(pawn, studyGroup))
+        {
+            return null;
+        }
+
         if (studyGroup.suspended)
         {
-            EducationLog.Message(
-                $"-> Study group {studyGroup.className} is suspended. Returning null.");
+            EducationLog.Message($"-> Study group {studyGroup.className} is suspended. Returning null.");
             return null;
         }
 
         if (!studyGroup.students.NotNullAndContains(pawn)
             && studyGroup.teacher != pawn)
         {
-            EducationLog.Message(
-                $"-> {pawn.LabelShort} is neither a student nor teacher. Returning null.");
+            EducationLog.Message($"-> {pawn.LabelShort} is neither a student nor teacher. Returning null.");
             return null;
         }
 

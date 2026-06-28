@@ -44,6 +44,12 @@ public class JobDriver_Teach : JobDriver_LessonBase
 
     public override string GetReport()
     {
+        var logicReport = StudyGroup?.subjectLogic?.GetReport();
+        if (!string.IsNullOrEmpty(logicReport))
+        {
+            return logicReport;
+        }
+
         if (!(StudyGroup?.ClassIsActive() ?? true))
         {
             return "PE_JobReport_WaitingForStudents".Translate();

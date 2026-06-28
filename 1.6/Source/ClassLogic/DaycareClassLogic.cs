@@ -35,6 +35,8 @@ public class DaycareClassLogic : ClassSubjectLogic
     public override float LearningSpeedModifier =>
         EducationMod.settings.daycareClassesLearningSpeedModifier;
 
+    public override int DefaultSemesterGoal => 0;
+
     public override float ProgressPerTick
     {
         get

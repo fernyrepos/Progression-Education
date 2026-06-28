@@ -1,4 +1,4 @@
-﻿using Verse;
+using Verse;
 
 namespace ProgressionEducation;
 
@@ -12,6 +12,9 @@ public class TeacherRole(StudyGroup studyGroup)
         studyGroup
     )
 {
+    public override TaggedString Label => studyGroup.subjectLogic.TeacherRoleLabel;
+    public override TaggedString CategoryLabel => studyGroup.subjectLogic.TeacherRoleLabel;
+
     public override AcceptanceReport CanAcceptPawn(Pawn pawn)
     {
         var baseReport = base.CanAcceptPawn(pawn);

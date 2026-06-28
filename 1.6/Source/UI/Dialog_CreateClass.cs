@@ -11,12 +11,10 @@ namespace ProgressionEducation;
 [HotSwappable]
 public class Dialog_CreateClass : Window, IClassDialog
 {
-    private readonly DaycareClassLogic daycareClassLogic;
     private readonly Map map;
     private readonly PawnClassRoleSelectionWidget participantsDrawer;
-    private readonly ProficiencyClassLogic proficiencyClassLogic;
-    private readonly SkillClassLogic skillClassLogic;
     private readonly StudyGroup studyGroup;
+    private readonly List<ClassSubjectLogic> availableLogics;
 
     private Vector2 scrollPosition = Vector2.zero;
 
@@ -41,10 +39,9 @@ public class Dialog_CreateClass : Window, IClassDialog
         {
             studyGroup = studyGroup,
         };
-        skillClassLogic = new SkillClassLogic(studyGroup);
-        proficiencyClassLogic = new ProficiencyClassLogic(studyGroup);
-        daycareClassLogic = new DaycareClassLogic(studyGroup);
-        studyGroup.subjectLogic = skillClassLogic;
+
+        availableLogics = EducationUtility.GetAvailableSubjectLogics(studyGroup);
+        studyGroup.subjectLogic = availableLogics.Find(l => l is SkillClassLogic);
 
         var educationManager = EducationManager.Instance;
         if (educationManager.Classrooms.Count > 0)
@@ -122,31 +119,17 @@ public class Dialog_CreateClass : Window, IClassDialog
                 new Rect(viewRect.x + 160f, curY, 200f, 25f),
                 studyGroup.subjectLogic.LabelCap))
         {
-            var options = new List<FloatMenuOption>
-                {
-                    new(skillClassLogic.LabelCap, () =>
-                    {
-                        studyGroup.subjectLogic = skillClassLogic;
-                        studyGroup.semesterGoal = 10000;
-                        studyGroup.subjectLogic.UnassignParticipants(this);
-                    }),
-                };
-
-            if (EducationMod.settings.enableProficiencySystem)
+            var options = new List<FloatMenuOption>();
+            foreach (var logic in availableLogics)
             {
-                options.Add(new FloatMenuOption(proficiencyClassLogic.LabelCap, () =>
+                var localLogic = logic;
+                options.Add(new FloatMenuOption(localLogic.LabelCap, () =>
                 {
-                    studyGroup.subjectLogic = proficiencyClassLogic;
-                    studyGroup.semesterGoal = proficiencyClassLogic.targetTier.semesterGoal;
+                    studyGroup.subjectLogic = localLogic;
+                    studyGroup.semesterGoal = localLogic.DefaultSemesterGoal;
                     studyGroup.subjectLogic.UnassignParticipants(this);
                 }));
             }
-
-            options.Add(new FloatMenuOption(daycareClassLogic.LabelCap, () =>
-            {
-                studyGroup.subjectLogic = daycareClassLogic;
-                studyGroup.subjectLogic.UnassignParticipants(this);
-            }));
             Find.WindowStack.Add(new FloatMenu(options));
         }
 

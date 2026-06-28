@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using RimWorld;
 using Verse;
 
@@ -19,17 +19,17 @@ public class ClassRole(
 
     public string RoleId { get; } = roleId;
 
-    public int MaxCount { get; } = maxCount;
+    public virtual int MaxCount { get; } = maxCount;
 
-    public int MinCount { get; } = minCount;
+    public virtual int MinCount { get; } = minCount;
 
-    public TaggedString Label => label;
+    public virtual TaggedString Label => label;
 
-    public TaggedString LabelCap => label.CapitalizeFirst();
+    public virtual TaggedString LabelCap => Label.CapitalizeFirst();
 
-    public TaggedString CategoryLabel => categoryLabel;
+    public virtual TaggedString CategoryLabel => categoryLabel;
 
-    public TaggedString CategoryLabelCap => categoryLabel.CapitalizeFirst();
+    public virtual TaggedString CategoryLabelCap => CategoryLabel.CapitalizeFirst();
 
     public virtual AcceptanceReport CanAcceptPawn(Pawn pawn)
     {

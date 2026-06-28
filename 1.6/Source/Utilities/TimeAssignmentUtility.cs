@@ -69,8 +69,7 @@ public static class TimeAssignmentUtility
                                     && sg.subjectLogic.GetValidLearningBenches()
                                         .Contains(building.def))))
         {
-            EducationLog.Message(
-                $"Pawn {pawn.LabelShort} cannot use {building.Label} during active class time in classroom {classroom.name}.");
+            EducationLog.Message($"Pawn {pawn.LabelShort} cannot use {building.Label} during active class time in classroom {classroom.name}.");
             return false;
         }
 
@@ -107,8 +106,7 @@ public static class TimeAssignmentUtility
             dynamicDef.color = studyGroup.classroom.color;
         });
         DefDatabase<TimeAssignmentDef>.Add(dynamicDef);
-        EducationLog.Message(
-            $"Generating and injecting TimeAssignmentDef: {studyGroup.timeAssignmentDefName}");
+        EducationLog.Message($"Generating and injecting TimeAssignmentDef: {studyGroup.timeAssignmentDefName}");
     }
 
     public static bool HasConflict(this StudyGroup lhs, StudyGroup rhs)
@@ -158,10 +156,8 @@ public static class TimeAssignmentUtility
         var dynamicDefsToRemove = DefDatabase<TimeAssignmentDef>.AllDefsListForReading
             .Where(def => def.IsStudyGroupAssignment())
             .ToList();
-        EducationLog.Message(
-            $"Found {dynamicDefsToRemove.ToStringSafeEnumerable()} dynamic defs to remove.");
-        EducationLog.Message(
-            $"All defs present: {DefDatabase<TimeAssignmentDef>.AllDefsListForReading.ToStringSafeEnumerable()}");
+        EducationLog.Message($"Found {dynamicDefsToRemove.ToStringSafeEnumerable()} dynamic defs to remove.");
+        EducationLog.Message($"All defs present: {DefDatabase<TimeAssignmentDef>.AllDefsListForReading.ToStringSafeEnumerable()}");
         foreach (var def in dynamicDefsToRemove)
         {
             DefDatabase<TimeAssignmentDef>.Remove(def);
@@ -195,8 +191,7 @@ public static class TimeAssignmentUtility
         TimeAssignmentDef timeAssignment = null)
     {
         TryRepairTimetable(pawn);
-        EducationLog.Message(
-            $"SetPawnSchedule called for pawn {pawn.LabelShort} in {studyGroup.className} to {timeAssignment?.defName ?? "null"}");
+        EducationLog.Message($"SetPawnSchedule called for pawn {pawn.LabelShort} in {studyGroup.className} to {timeAssignment?.defName ?? "null"}");
         for (var i = 0; i < studyGroup.Duration; ++i)
         {
             var hour = (studyGroup.startHour + i) % 24;
@@ -219,16 +214,14 @@ public static class TimeAssignmentUtility
                         pawn.jobs?.EndCurrentJob(JobCondition.InterruptForced);
                     }
                 }
-                EducationLog.Message(
-                    $"Restored timetable for pawn {pawn.LabelShort} at hour {hour} to {assignmentRemember.defName}");
+                EducationLog.Message($"Restored timetable for pawn {pawn.LabelShort} at hour {hour} to {assignmentRemember.defName}");
             }
             else
             {
                 AddTimeAssignment(studyGroup, pawn, hour,
                     assignmentRemember);
                 pawn.timetable.SetAssignment(hour, timeAssignment);
-                EducationLog.Message(
-                    $"Set timetable for pawn {pawn.LabelShort} at hour {hour} to {timeAssignment.defName}");
+                EducationLog.Message($"Set timetable for pawn {pawn.LabelShort} at hour {hour} to {timeAssignment.defName}");
             }
         }
     }

@@ -11,7 +11,7 @@ public class JobDriver_AttendMeleeClass : JobDriver_AttendClass
 {
     private int ticksUntilNextAction;
 
-    private void DoLearningInterval(int delta)
+    protected override void DoLearningInterval(int delta)
     {
         if (pawn.GetLord()?.LordJob is not LordJob_AttendClass lordJob
             || !lordJob.studyGroup.ClassIsActive())
