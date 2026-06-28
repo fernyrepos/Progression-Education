@@ -58,6 +58,8 @@ public abstract class ClassSubjectLogic : IExposable
     public virtual int DefaultSemesterGoal => 10000;
     public virtual float ProgressPerTick => 0f;
 
+    public virtual bool ShowAttendance => true;
+
     public virtual string GetReport()
     {
         return null;

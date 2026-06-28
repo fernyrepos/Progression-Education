@@ -209,7 +209,7 @@ public class MainTabWindow_Education : MainTabWindow
                     studyGroup.ProgressPercentage.ToStringPercent());
             }
         }
-        else
+        else if (studyGroup.subjectLogic.ShowAttendance)
         {
             var maxAttendance = Mathf.Min(studyGroup.GetStudentRole().MaxCount,
                 studyGroup.subjectLogic.BenchCount);
