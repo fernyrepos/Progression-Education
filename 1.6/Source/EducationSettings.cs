@@ -26,25 +26,25 @@ public class EducationSettings : ModSettings
                       + (globalLearningSpeedModifier * 100).ToString("F0")
                       + "%");
         globalLearningSpeedModifier =
-            listing.Slider(globalLearningSpeedModifier, 0.1f, 3.0f);
+            listing.Slider(globalLearningSpeedModifier, 0.1f, 10f);
         listing.Label("PE_SkillClassesLearningSpeed".Translate()
                       + ": "
                       + (skillClassesLearningSpeedModifier * 100).ToString("F0")
                       + "%");
         skillClassesLearningSpeedModifier =
-            listing.Slider(skillClassesLearningSpeedModifier, 0.1f, 3.0f);
+            listing.Slider(skillClassesLearningSpeedModifier, 0.1f, 10f);
         listing.Label("PE_ProficiencyClassesLearningSpeed".Translate()
                       + ": "
                       + (proficiencyClassesLearningSpeedModifier * 100).ToString("F0")
                       + "%");
         proficiencyClassesLearningSpeedModifier =
-            listing.Slider(proficiencyClassesLearningSpeedModifier, 0.1f, 3.0f);
+            listing.Slider(proficiencyClassesLearningSpeedModifier, 0.1f, 10f);
         listing.Label("PE_DaycareClassesLearningSpeed".Translate()
                       + ": "
                       + (daycareClassesLearningSpeedModifier * 100).ToString("F0")
                       + "%");
         daycareClassesLearningSpeedModifier =
-            listing.Slider(daycareClassesLearningSpeedModifier, 0.1f, 3.0f);
+            listing.Slider(daycareClassesLearningSpeedModifier, 0.1f, 10f);
         listing.CheckboxLabeled("PE_EnableProficiencySystem".Translate(),
             ref enableProficiencySystem);
 
