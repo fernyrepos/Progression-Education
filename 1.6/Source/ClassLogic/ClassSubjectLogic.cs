@@ -50,6 +50,7 @@ public abstract class ClassSubjectLogic : IExposable
     public virtual string LabelFocus => LabelCap;
     public virtual string TeacherRoleLabel => "PE_TeacherRole".Translate();
     public virtual string StudentRoleLabel => "PE_StudentRole".Translate();
+    public virtual bool CanChangeSubject => true;
     public virtual JobDef LearningJob => DefsOf.PE_AttendClass;
     public abstract float LearningSpeedModifier { get; }
     

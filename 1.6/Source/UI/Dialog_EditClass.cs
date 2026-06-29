@@ -115,22 +115,30 @@ public class Dialog_EditClass : Window, IClassDialog
         curY += 30f;
         Widgets.Label(new Rect(viewRect.x, curY, 150f, 25f),
             "PE_Subject".Translate());
-        if (Widgets.ButtonText(
-                new Rect(viewRect.x + 160f, curY, 200f, 25f),
-                studyGroup.subjectLogic.LabelCap))
+        if (studyGroup.subjectLogic.CanChangeSubject)
         {
-            var options = new List<FloatMenuOption>();
-            foreach (var logic in availableLogics)
+            if (Widgets.ButtonText(
+                    new Rect(viewRect.x + 160f, curY, 200f, 25f),
+                    studyGroup.subjectLogic.LabelCap))
             {
-                var localLogic = logic;
-                options.Add(new FloatMenuOption(localLogic.LabelCap, () =>
+                var options = new List<FloatMenuOption>();
+                foreach (var logic in availableLogics)
                 {
-                    studyGroup.subjectLogic = localLogic;
-                    studyGroup.semesterGoal = localLogic.DefaultSemesterGoal;
-                    studyGroup.subjectLogic.UnassignParticipants(this);
-                }));
+                    var localLogic = logic;
+                    options.Add(new FloatMenuOption(localLogic.LabelCap, () =>
+                    {
+                        studyGroup.subjectLogic = localLogic;
+                        studyGroup.semesterGoal = localLogic.DefaultSemesterGoal;
+                        studyGroup.subjectLogic.UnassignParticipants(this);
+                    }));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
             }
-            Find.WindowStack.Add(new FloatMenu(options));
+        }
+        else
+        {
+            Widgets.Label(new Rect(viewRect.x + 160f, curY, 200f, 25f),
+                studyGroup.subjectLogic.LabelCap);
         }
         curY += 30f;
         studyGroup.subjectLogic.DrawConfigurationUI(viewRect, ref curY,
