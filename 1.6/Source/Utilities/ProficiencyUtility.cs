@@ -261,8 +261,11 @@ public static class ProficiencyUtility
         return techLevelSources.MaxBy(x => (int)x);
     }
 
+    public static float LastKnowledgePanelY;
+
     public static void DrawKnowledgePanel(Rect rect, Pawn pawn)
     {
+        LastKnowledgePanelY = rect.y;
         Rect inner = rect;
         float curY = inner.y;
         Text.Font = GameFont.Small;

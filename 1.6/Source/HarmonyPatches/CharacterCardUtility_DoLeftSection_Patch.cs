@@ -16,21 +16,34 @@ namespace ProgressionEducation;
 public static class CharacterCardUtility_DoLeftSection_Patch
 {
     public static Type sectionType = AccessTools.TypeByName("RimWorld.CharacterCardUtility+LeftRectSection");
-    private static readonly FieldInfo numSectionsField = AccessTools.InnerTypes(typeof(CharacterCardUtility))
-        .SelectMany(t => AccessTools.GetDeclaredFields(t))
-        .FirstOrDefault(f => f.Name == "numSections");
+    private static FieldInfo rectField = AccessTools.Field(sectionType, "rect");
 
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
+        var instructionsList = instructions.ToList();
         var getCountMethod = AccessTools.Method(typeof(List<>).MakeGenericType(sectionType), "get_Count");
+        var allowWorkTagField = AccessTools.InnerTypes(typeof(CharacterCardUtility))
+            .SelectMany(t => AccessTools.GetDeclaredFields(t))
+            .FirstOrDefault(f => f.Name == "allowWorkTagVerticalLayout");
+
         bool insertedSection = false;
 
-        foreach (var inst in instructions)
+        for (var i = 0; i < instructionsList.Count; i++)
         {
-            if (inst.StoresField(numSectionsField))
+            var inst = instructionsList[i];
+
+            if (allowWorkTagField != null && inst.StoresField(allowWorkTagField))
             {
-                yield return new CodeInstruction(OpCodes.Ldarg_2);
-                yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CharacterCardUtility_DoLeftSection_Patch), nameof(AdjustNumSections)));
+                yield return new CodeInstruction(OpCodes.Pop);
+                yield return new CodeInstruction(OpCodes.Ldc_I4_0);
+            }
+
+            if (inst.opcode == OpCodes.Div && i >= 2 && instructionsList[i - 1].opcode == OpCodes.Conv_R4 && instructionsList[i - 2].Calls(getCountMethod))
+            {
+                yield return new CodeInstruction(OpCodes.Pop);
+                yield return new CodeInstruction(OpCodes.Pop);
+                yield return new CodeInstruction(OpCodes.Ldc_R4, 0f);
+                continue;
             }
 
             if (!insertedSection && inst.Calls(getCountMethod))
@@ -45,22 +58,6 @@ public static class CharacterCardUtility_DoLeftSection_Patch
         }
     }
 
-    public static int AdjustNumSections(int original, Pawn pawn)
-    {
-        if (EducationMod.settings.enableKnowledgePanel && pawn.CanHaveProficiencies())
-        {
-            int activeRows = 0;
-            if (EducationMod.settings.enableWeaponProficiency) activeRows++;
-            if (EducationMod.settings.enableVehicleProficiency && ProficiencyUtility.AreVehicleModsActive) activeRows++;
-            if (EducationMod.settings.enableSpeechProficiency) activeRows++;
-            if (activeRows > 0)
-            {
-                return original + 1;
-            }
-        }
-        return original;
-    }
-
     public static void AddProficienciesSection(object listObj, Pawn pawn, Rect leftRect)
     {
         if (!EducationMod.settings.enableKnowledgePanel) return;
@@ -68,6 +65,23 @@ public static class CharacterCardUtility_DoLeftSection_Patch
         var list = (IList)listObj;
         var hasAbilities = pawn.abilities != null && pawn.abilities.AllAbilitiesForReading.Any(a => a.def.showOnCharacterCard);
         var topGap = hasAbilities ? 6f : 0f;
+
+        bool alignWithTrauma = Current.ProgramState == ProgramState.Playing && ModsConfig.IsActive("ferny.traumaandintegrity");
+        if (alignWithTrauma)
+        {
+            float leftY = 22f;
+            foreach (var item in list)
+            {
+                var r = (Rect)rectField.GetValue(item);
+                leftY += r.height;
+            }
+            float rightY = DefDatabase<SkillDef>.AllDefsListForReading.Count * 27f + 10f;
+            if (rightY > leftY + topGap)
+            {
+                topGap = rightY - leftY;
+            }
+        }
+
         float height = 24f + topGap;
         int activeRows = 0;
         if (EducationMod.settings.enableWeaponProficiency) activeRows++;
