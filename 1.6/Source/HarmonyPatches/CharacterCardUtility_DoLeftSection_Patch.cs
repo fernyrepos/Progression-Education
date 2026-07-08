@@ -17,6 +17,8 @@ public static class CharacterCardUtility_DoLeftSection_Patch
 {
     public static Type sectionType = AccessTools.TypeByName("RimWorld.CharacterCardUtility+LeftRectSection");
     private static FieldInfo rectField = AccessTools.Field(sectionType, "rect");
+    private static MethodInfo getSkillsColumnHeightMethod;
+    private static bool checkedTrauma;
 
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
@@ -75,7 +77,13 @@ public static class CharacterCardUtility_DoLeftSection_Patch
                 var r = (Rect)rectField.GetValue(item);
                 leftY += r.height;
             }
-            float rightY = DefDatabase<SkillDef>.AllDefsListForReading.Count * 27f + 10f;
+            if (!checkedTrauma)
+            {
+                checkedTrauma = true;
+                var traumaPatchType = AccessTools.TypeByName("TraumaAndIntegrity.SkillUI_DrawSkillsOf_Patch");
+                getSkillsColumnHeightMethod = AccessTools.Method(traumaPatchType, "GetSkillsColumnHeight", new[] { typeof(Pawn) });
+            }
+            float rightY = (float)getSkillsColumnHeightMethod.Invoke(null, new object[] { pawn }) + 10f;
             if (rightY > leftY + topGap)
             {
                 topGap = rightY - leftY;
