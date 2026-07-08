@@ -16,23 +16,49 @@ namespace ProgressionEducation;
 public static class CharacterCardUtility_DoLeftSection_Patch
 {
     public static Type sectionType = AccessTools.TypeByName("RimWorld.CharacterCardUtility+LeftRectSection");
+    private static readonly FieldInfo numSectionsField = AccessTools.InnerTypes(typeof(CharacterCardUtility))
+        .SelectMany(t => AccessTools.GetDeclaredFields(t))
+        .FirstOrDefault(f => f.Name == "numSections");
+
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var getCountMethod = AccessTools.Method(typeof(List<>).MakeGenericType(sectionType), "get_Count");
-        bool inserted = false;
+        bool insertedSection = false;
 
         foreach (var inst in instructions)
         {
-            if (!inserted && inst.opcode == OpCodes.Callvirt && inst.operand as MethodInfo == getCountMethod)
+            if (inst.StoresField(numSectionsField))
+            {
+                yield return new CodeInstruction(OpCodes.Ldarg_2);
+                yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CharacterCardUtility_DoLeftSection_Patch), nameof(AdjustNumSections)));
+            }
+
+            if (!insertedSection && inst.Calls(getCountMethod))
             {
                 yield return new CodeInstruction(OpCodes.Dup);
                 yield return new CodeInstruction(OpCodes.Ldarg_2);
                 yield return new CodeInstruction(OpCodes.Ldarg_1);
                 yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(CharacterCardUtility_DoLeftSection_Patch), nameof(AddProficienciesSection)));
-                inserted = true;
+                insertedSection = true;
             }
             yield return inst;
         }
+    }
+
+    public static int AdjustNumSections(int original, Pawn pawn)
+    {
+        if (EducationMod.settings.enableKnowledgePanel && pawn.CanHaveProficiencies())
+        {
+            int activeRows = 0;
+            if (EducationMod.settings.enableWeaponProficiency) activeRows++;
+            if (EducationMod.settings.enableVehicleProficiency && ProficiencyUtility.AreVehicleModsActive) activeRows++;
+            if (EducationMod.settings.enableSpeechProficiency) activeRows++;
+            if (activeRows > 0)
+            {
+                return original + 1;
+            }
+        }
+        return original;
     }
 
     public static void AddProficienciesSection(object listObj, Pawn pawn, Rect leftRect)
@@ -53,7 +79,7 @@ public static class CharacterCardUtility_DoLeftSection_Patch
         AccessTools.Field(sectionType, "rect").SetValue(section, new Rect(0f, 0f, leftRect.width, height));
         AccessTools.Field(sectionType, "drawer").SetValue(section, (Action<Rect>)((Rect r) =>
         {
-            var drawingRect = new Rect(r.x, r.y + topGap, r.width - 20, r.height - topGap);
+            var drawingRect = new Rect(r.x, r.y + topGap, r.width, r.height - topGap);
             ProficiencyUtility.DrawKnowledgePanel(drawingRect, pawn);
         }));
 
