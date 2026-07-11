@@ -13,15 +13,24 @@ public static class CharacterCardUtility_PawnCardSize_Patch
     {
         if (!EducationMod.settings.enableKnowledgePanel) return;
         if (pawn.CanHaveProficiencies() is false) return;
-
-        int activeRows = 0;
-        if (EducationMod.settings.enableWeaponProficiency) activeRows++;
-        if (EducationMod.settings.enableVehicleProficiency && ProficiencyUtility.AreVehicleModsActive) activeRows++;
-        if (EducationMod.settings.enableSpeechProficiency) activeRows++;
-        if (activeRows > 0)
+        
+        int activeRows = DefDatabase<ProficiencyDef>.AllDefsListForReading.Count(ProficiencyUtility.IsTrackEnabled);
+        int heightRows = activeRows;
+        if (ModsConfig.IsActive("ferny.traumaandintegrity"))
+        {
+            if (activeRows == 0)
+            {
+                heightRows = 4;
+            }
+            else
+            {
+                heightRows = Mathf.Max(activeRows, 3);
+            }
+        }
+        if (heightRows > 0)
         {
             var hasAbilities = pawn.abilities != null && pawn.abilities.AllAbilitiesForReading.Any(a => a.def.showOnCharacterCard);
-            float extraHeight = 24f + (hasAbilities ? 6f : 0f) + activeRows * 24f;
+            float extraHeight = (activeRows > 0 ? 24f : 0f) + (hasAbilities ? 6f : 0f) + heightRows * 24f;
             __result.y += extraHeight;
         }
     }
