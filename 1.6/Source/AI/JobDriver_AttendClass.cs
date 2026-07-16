@@ -10,15 +10,15 @@ public class JobDriver_AttendClass : JobDriver_LessonBase
 {
     public static IntVec3 DeskSpotForStudent(Thing desk)
     {
-        if (desk.def.hasInteractionCell is false)
-        {
-            return desk.Position;
-        }
-        if (desk.InteractionCells.Any())
+        if (desk.def.multipleInteractionCellOffsets.NullOrEmpty() is false)
         {
             return desk.InteractionCells[0];
         }
-        return desk.InteractionCell;
+        if (desk.def.hasInteractionCell)
+        {
+            return desk.InteractionCell;
+        }
+        return desk.Position;
     }
 
     protected virtual void DoLearningInterval(int delta)
