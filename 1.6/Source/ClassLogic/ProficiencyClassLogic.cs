@@ -71,6 +71,44 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         return 0f;
     }
 
+    public override void ApplyLearningTick(Pawn student, int delta)
+    {
+        base.ApplyLearningTick(student, delta);
+        if (student == null)
+        {
+            return;
+        }
+
+        if (ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyTrack, targetTier))
+        {
+            EducationManager.Instance.ClearProficiencyClassProgress(student, proficiencyTrack, targetTier);
+            return;
+        }
+
+        var progressGain = ProgressPerTick * delta;
+        if (progressGain <= 0f)
+        {
+            return;
+        }
+
+        var progress = EducationManager.Instance.AddProficiencyClassProgress(
+            student,
+            proficiencyTrack,
+            targetTier,
+            progressGain,
+            studyGroup.semesterGoal);
+        if (progress < studyGroup.semesterGoal)
+        {
+            UpdateGroupProgress();
+            return;
+        }
+
+        ProficiencyUtility.GrantTier(student, proficiencyTrack, targetTier);
+        EducationManager.Instance.ClearProficiencyClassProgress(student, proficiencyTrack, targetTier);
+        studyGroup.RemoveStudent(student);
+        UpdateGroupProgress();
+    }
+
     public override float CalculateTeacherScore(Pawn teacher)
     {
         if (!IsTeacherQualified(teacher))
@@ -220,10 +258,21 @@ public class ProficiencyClassLogic : ClassSubjectLogic
 
     public override void GrantCompletionRewards()
     {
-        foreach (var student in studyGroup.students)
+        UpdateGroupProgress();
+    }
+
+    public override void HandleStudentLifecycleEvents()
+    {
+        var completedStudents = studyGroup.students
+            .Where(student => ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyTrack, targetTier))
+            .ToList();
+        foreach (var student in completedStudents)
         {
-            ProficiencyUtility.GrantTier(student, proficiencyTrack, targetTier);
+            EducationManager.Instance.ClearProficiencyClassProgress(student, proficiencyTrack, targetTier);
+            studyGroup.RemoveStudent(student);
         }
+
+        UpdateGroupProgress();
     }
 
     private bool HasProficiency(Pawn pawn, out string proficiencyLabel)
@@ -284,6 +333,24 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         return AcceptanceReport.WasAccepted;
     }
 
+    public override string StudentTooltipFor(Pawn pawn)
+    {
+        if (pawn == null
+            || !studyGroup.students.Contains(pawn)
+            || studyGroup.semesterGoal <= 0)
+        {
+            return "";
+        }
+
+        var text = new StringBuilder(base.StudentTooltipFor(pawn));
+        var progress = EducationManager.Instance.GetProficiencyClassProgress(pawn, proficiencyTrack, targetTier);
+        var progressPercent = Mathf.Clamp01(progress / studyGroup.semesterGoal);
+        text.AppendLineIfNotEmpty();
+        text.AppendLineTagged($"{GetLabel(targetTier).CapitalizeFirst().AsTipTitle()}: {progressPercent.ToStringPercent()}");
+        text.AppendLineTagged($"{ "PE_ProgressFormat".Translate(progress.ToString("F0"), studyGroup.semesterGoal.ToString()) }");
+        return text.ToString().TrimEndNewlines();
+    }
+
     public override string TeacherTooltipFor(Pawn pawn)
     {
         if (pawn == null
@@ -322,5 +389,28 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             + $" x{socialImpact.ToStringPercent()}");
 
         return text.ToString().TrimEndNewlines();
+    }
+
+    private void UpdateGroupProgress()
+    {
+        if (studyGroup.students.Count == 0)
+        {
+            studyGroup.currentProgress = studyGroup.semesterGoal;
+            return;
+        }
+
+        var totalProgress = 0f;
+        foreach (var student in studyGroup.students)
+        {
+            if (ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyTrack, targetTier))
+            {
+                totalProgress += studyGroup.semesterGoal;
+                continue;
+            }
+
+            totalProgress += EducationManager.Instance.GetProficiencyClassProgress(student, proficiencyTrack, targetTier);
+        }
+
+        studyGroup.currentProgress = totalProgress / studyGroup.students.Count;
     }
 }
