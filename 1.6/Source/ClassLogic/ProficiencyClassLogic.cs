@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RimWorld;
 using UnityEngine;
@@ -258,7 +259,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
 
     public override void GrantCompletionRewards()
     {
-        UpdateGroupProgress();
+        // Proficiency graduation is applied per student in ApplyLearningTick once they hit semester goal.
     }
 
     public override void HandleStudentLifecycleEvents()
@@ -347,7 +348,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         var progressPercent = Mathf.Clamp01(progress / studyGroup.semesterGoal);
         text.AppendLineIfNotEmpty();
         text.AppendLineTagged($"{GetLabel(targetTier).CapitalizeFirst().AsTipTitle()}: {progressPercent.ToStringPercent()}");
-        text.AppendLineTagged($"{ "PE_ProgressFormat".Translate(progress.ToString("F0"), studyGroup.semesterGoal.ToString()) }");
+        text.AppendLineTagged($"{"PE_ProgressFormat".Translate(progress.ToString("F0"), studyGroup.semesterGoal.ToString())}");
         return text.ToString().TrimEndNewlines();
     }
 
@@ -393,7 +394,8 @@ public class ProficiencyClassLogic : ClassSubjectLogic
 
     private void UpdateGroupProgress()
     {
-        if (studyGroup.students.Count == 0)
+        var studentCount = studyGroup.students.Count;
+        if (studentCount == 0)
         {
             studyGroup.currentProgress = studyGroup.semesterGoal;
             return;
@@ -411,6 +413,6 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             totalProgress += EducationManager.Instance.GetProficiencyClassProgress(student, proficiencyTrack, targetTier);
         }
 
-        studyGroup.currentProgress = totalProgress / studyGroup.students.Count;
+        studyGroup.currentProgress = totalProgress / studentCount;
     }
 }

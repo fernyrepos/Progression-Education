@@ -142,7 +142,7 @@ public class EducationManager(World world) : WorldComponent(world)
                 continue;
             }
 
-            foreach (var entry in pawnProgress.Value.Where(entry => entry is { Value: > 0f } && !entry.Key.NullOrEmpty()))
+            foreach (var entry in pawnProgress.Value.Where(entry => entry.Value > 0f && !entry.Key.NullOrEmpty()))
             {
                 savedProgressPawns.Add(pawnProgress.Key);
                 savedProgressKeys.Add(entry.Key);
@@ -155,7 +155,9 @@ public class EducationManager(World world) : WorldComponent(world)
     {
         proficiencyProgressByPawn = [];
 
-        var entryCount = Mathf.Min(savedProgressPawns.Count, Mathf.Min(savedProgressKeys.Count, savedProgressValues.Count));
+        var entryCount = savedProgressPawns.Count;
+        entryCount = Mathf.Min(entryCount, savedProgressKeys.Count);
+        entryCount = Mathf.Min(entryCount, savedProgressValues.Count);
         for (var i = 0; i < entryCount; i++)
         {
             var pawn = savedProgressPawns[i];

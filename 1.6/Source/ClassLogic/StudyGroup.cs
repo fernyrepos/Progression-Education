@@ -104,6 +104,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
             {
                 if (students.Count == 0)
                 {
+                    // Proficiency classes finish when all enrolled students have graduated/been removed.
                     return true;
                 }
 

@@ -309,8 +309,8 @@ public static class ProficiencyUtility
         var title = currentTier.traitDef.degreeDatas.Count > 0 ? currentTier.traitDef.degreeDatas[0].label : currentTier.label;
         var desc = currentTier.traitDef.degreeDatas.Count > 0 ? currentTier.traitDef.degreeDatas[0].description : currentTier.traitDef.description;
         var progressDescription = nextTier == null
-            ? $"{"PE_ProgressToNextProficiency".Translate("None".Translate())}: {"100%"}"
-            : $"{"PE_ProgressToNextProficiency".Translate(nextTier.label.CapitalizeFirst())}: {progressToNextTier.ToStringPercent()}";
+            ? "PE_MaxProficiencyTier".Translate().ToString()
+            : $"{"PE_ProgressToNextProficiency".Translate(nextTier.label.CapitalizeFirst())} {progressToNextTier.ToStringPercent()}";
         TooltipHandler.TipRegion(bubbleRect, new TipSignal($"{title.CapitalizeFirst()}\n\n{desc}\n\n{progressDescription}"));
 
         var spacing = 22f;
