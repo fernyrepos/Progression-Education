@@ -69,7 +69,12 @@ public class ProficiencyClassLogic : ClassSubjectLogic
 
     public override float CalculateStudentScore(Pawn student)
     {
-        return 0f;
+        if (student == null)
+        {
+            return 0f;
+        }
+
+        return Mathf.Max(0f, student.GetStatValue(StatDefOf.GlobalLearningFactor));
     }
 
     public override void ApplyLearningTick(Pawn student, int delta)
@@ -86,7 +91,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return;
         }
 
-        var studentLearningFactor = Mathf.Max(0f, student.GetStatValue(StatDefOf.GlobalLearningFactor));
+        var studentLearningFactor = CalculateStudentScore(student);
         var progressGain = ProgressPerTick * studentLearningFactor * delta;
         if (progressGain <= 0f)
         {
