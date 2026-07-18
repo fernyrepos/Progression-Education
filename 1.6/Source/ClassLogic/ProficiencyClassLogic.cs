@@ -86,7 +86,8 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return;
         }
 
-        var progressGain = ProgressPerTick * delta;
+        var studentLearningFactor = Mathf.Max(0f, student.GetStatValue(StatDefOf.GlobalLearningFactor));
+        var progressGain = ProgressPerTick * studentLearningFactor * delta;
         if (progressGain <= 0f)
         {
             return;
