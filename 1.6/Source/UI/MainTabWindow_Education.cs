@@ -264,8 +264,11 @@ public class MainTabWindow_Education : MainTabWindow
             Widgets.Label(rect, $"{minPercent.ToStringPercent()} - {maxPercent.ToStringPercent()}");
             TooltipHandler.TipRegion(rect, new TipSignal($"{"PE_BestProgress".Translate()}: {maxPercent.ToStringPercent()} ({maxStudent})\n\n{"PE_WorstProgress".Translate()}: {minPercent.ToStringPercent()} ({minStudent})"));
         }
+        else
+        {
+            Widgets.Label(rect, $"{maxPercent.ToStringPercent()}");
+        }
 
-        Widgets.Label(rect, $"{maxPercent.ToStringPercent()}");
     }
 
     private void DrawClassroomList(Rect rect)
