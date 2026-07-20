@@ -114,6 +114,8 @@ public class EducationManager(World world) : WorldComponent(world)
         }
     }
 
+    private static readonly Dictionary<(string TrackDefName, string TierDefName), string> ProficiencyProgressKeyCache = new();
+
     private static string BuildProficiencyProgressKey(ProficiencyDef track, ProficiencyTierDef tier)
     {
         if (track == null || tier == null)
@@ -121,7 +123,14 @@ public class EducationManager(World world) : WorldComponent(world)
             return null;
         }
 
-        return track.defName + ":" + tier.defName;
+        var cacheKey = (track.defName, tier.defName);
+        if (!ProficiencyProgressKeyCache.TryGetValue(cacheKey, out var key))
+        {
+            key = string.Concat(cacheKey.TrackDefName, ":", cacheKey.TierDefName);
+            ProficiencyProgressKeyCache[cacheKey] = key;
+        }
+
+        return key;
     }
 
     private void FlattenProficiencyProgress()
