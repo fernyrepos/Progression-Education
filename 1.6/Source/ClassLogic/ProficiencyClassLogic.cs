@@ -410,26 +410,24 @@ public class ProficiencyClassLogic : ClassSubjectLogic
 
         var goal = studyGroup.semesterGoal;
         var educationManager = EducationManager.Instance;
-        var initialized = false;
-        foreach (var student in studyGroup.students)
+        var firstStudent = studyGroup.students[0];
+        minProgress = ProficiencyUtility.MeetsOrExceedsTier(firstStudent, proficiencyTrack, targetTier)
+            ? goal
+            : educationManager.GetProficiencyClassProgress(firstStudent, proficiencyTrack, targetTier);
+        minProgress = Mathf.Clamp(minProgress, 0f, goal);
+        maxProgress = minProgress;
+        for (var i = 1; i < studyGroup.students.Count; i++)
         {
+            var student = studyGroup.students[i];
             var progress = ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyTrack, targetTier)
                 ? goal
                 : educationManager.GetProficiencyClassProgress(student, proficiencyTrack, targetTier);
             progress = Mathf.Clamp(progress, 0f, goal);
-            if (!initialized)
-            {
-                minProgress = progress;
-                maxProgress = progress;
-                initialized = true;
-                continue;
-            }
-
             minProgress = Mathf.Min(minProgress, progress);
             maxProgress = Mathf.Max(maxProgress, progress);
         }
 
-        return initialized;
+        return true;
     }
 
     private void UpdateGroupProgress()

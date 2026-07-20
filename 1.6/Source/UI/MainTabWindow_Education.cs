@@ -256,9 +256,10 @@ public class MainTabWindow_Education : MainTabWindow
         var rangeWidth = rect.width * (maxPercent - minPercent);
         if (rangeWidth > 0f)
         {
-            Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y, rangeWidth, rect.height),
+            var rangeStartX = rect.x + rect.width * minPercent;
+            Widgets.DrawBoxSolid(new Rect(rangeStartX, rect.y, rangeWidth, rect.height),
                 new Color(0f, 0f, 0f, ProgressRangeOverlayAlpha));
-            Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y + ProgressRangeBarVerticalInset, rangeWidth, rect.height - ProgressRangeBarVerticalInset * 2f),
+            Widgets.DrawBoxSolid(new Rect(rangeStartX, rect.y + ProgressRangeBarVerticalInset, rangeWidth, rect.height - ProgressRangeBarVerticalInset * 2f),
                 ProgressRangeFillColor);
         }
 
