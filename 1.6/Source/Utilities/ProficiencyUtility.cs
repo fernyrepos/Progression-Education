@@ -338,6 +338,7 @@ public static class ProficiencyUtility
     private static void DrawTierProgressIcon(Rect iconRect, ProficiencyTierDef currentTier, ProficiencyTierDef nextTier, float progressToNextTier)
     {
         // Draw dark (unfilled) state: dark circle background with dimmed icon
+        GUI.color = Color.white;
         GUI.DrawTexture(iconRect, CircleDarkTex);
         GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
         GUI.DrawTexture(iconRect.ExpandedBy(-TierIconPadding), currentTier.icon);
