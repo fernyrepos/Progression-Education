@@ -328,7 +328,7 @@ public static class ProficiencyUtility
             var dotData = tier.traitDef.degreeDatas[0];
             if (i == currentIndex + 1 && nextTier != null)
             {
-                DrawTierProgressIcon(dotRect, tier, tier, progressToNextTier);
+                DrawTierProgressIcon(dotRect, tier, nextTier, progressToNextTier);
                 TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}\n\n{progressDescription}"));
             }
             else
