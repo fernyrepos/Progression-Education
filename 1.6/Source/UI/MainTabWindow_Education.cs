@@ -26,8 +26,7 @@ public class MainTabWindow_Education : MainTabWindow
     private static readonly Texture2D ProgressBarFillTexture =
         SolidColorMaterials.NewSolidColorTexture(new Color(0.34f, 0.72f, 0.33f));
 
-    private static readonly Texture2D ProgressRangeFillTexture =
-        SolidColorMaterials.NewSolidColorTexture(new Color(0.95f, 0.8f, 0.25f, 0.9f));
+    private static readonly Color ProgressRangeFillColor = new(0.95f, 0.8f, 0.25f, 0.9f);
 
     private static readonly Texture2D
         RenameIcon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename");
@@ -258,7 +257,7 @@ public class MainTabWindow_Education : MainTabWindow
             Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y, rangeWidth, rect.height),
                 new Color(0f, 0f, 0f, 0.18f));
             Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y + 3f, rangeWidth, rect.height - 6f),
-                ProgressRangeFillTexture.color);
+                ProgressRangeFillColor);
         }
 
         Widgets.Label(rect, $"{minPercent.ToStringPercent()} - {maxPercent.ToStringPercent()}");
