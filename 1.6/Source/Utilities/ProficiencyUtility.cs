@@ -302,10 +302,7 @@ public static class ProficiencyUtility
         Widgets.DrawHighlightIfMouseover(bubbleRect);
 
         var activeIconRect = new Rect(rect.x + 4f, rect.y + 2f, 18f, 18f);
-        GUI.DrawTexture(activeIconRect, CircleBrightTex);
-        GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
-        GUI.DrawTexture(activeIconRect.ExpandedBy(-TierIconPadding), currentTier.icon);
-        GUI.color = Color.white;
+        GUI.DrawTexture(activeIconRect, currentTier.icon);
 
         var labelRect = new Rect(rect.x + 26f, rect.y, dotAreaStartX - rect.x - 32f, rect.height);
         Widgets.Label(labelRect, currentTier.label.CapitalizeFirst());
