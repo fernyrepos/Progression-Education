@@ -96,7 +96,24 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
                                    : endHour - startHour
                            );
 
-    public bool IsCompleted => !subjectLogic.IsInfinite && currentProgress >= semesterGoal;
+    public bool IsCompleted
+    {
+        get
+        {
+            if (subjectLogic is ProficiencyClassLogic proficiencyLogic)
+            {
+                if (students.Count == 0)
+                {
+                    // Proficiency classes finish when all enrolled students have graduated/been removed.
+                    return true;
+                }
+
+                return students.All(student => ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier));
+            }
+
+            return !subjectLogic.IsInfinite && currentProgress >= semesterGoal;
+        }
+    }
 
     public Map Map => classroom?.LearningBoard?.parent?.Map;
 
@@ -258,6 +275,11 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         if (students.NullOrEmpty())
         {
             return false;
+        }
+
+        if (subjectLogic is ProficiencyClassLogic)
+        {
+            return students.Any(IsStudentPresentAndAttending);
         }
 
         if (subjectLogic is DaycareClassLogic)

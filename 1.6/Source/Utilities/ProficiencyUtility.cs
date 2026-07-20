@@ -282,29 +282,36 @@ public static class ProficiencyUtility
                 ApplyProficiencyTraitToPawn(pawn);
                 currentTier = GetCurrentTier(pawn, track);
             }
-            DrawProficiencyRow(new Rect(inner.x, curY, inner.width, 22f), track, currentTier);
+            DrawProficiencyRow(new Rect(inner.x, curY, inner.width, 22f), pawn, track, currentTier);
             curY += 24f;
         }
     }
 
-    private static void DrawProficiencyRow(Rect rect, ProficiencyDef track, ProficiencyTierDef currentTier)
+    private static void DrawProficiencyRow(Rect rect, Pawn pawn, ProficiencyDef track, ProficiencyTierDef currentTier)
     {
         if (currentTier == null) currentTier = track.tiers[0];
         int currentIndex = track.tiers.IndexOf(currentTier);
+        var nextTier = currentIndex + 1 < track.tiers.Count ? track.tiers[currentIndex + 1] : null;
+        var progressToNextTier = nextTier != null
+            ? GetProgressToNextTier(pawn, track)
+            : 1f;
 
         float dotAreaStartX = rect.x + 130f;
         var bubbleRect = new Rect(rect.x, rect.y, dotAreaStartX - rect.x - 6f, rect.height);
         Widgets.DrawHighlightIfMouseover(bubbleRect);
 
         var activeIconRect = new Rect(rect.x + 4f, rect.y + 2f, 18f, 18f);
-        GUI.DrawTexture(activeIconRect, currentTier.icon);
+        DrawTierProgressIcon(activeIconRect, currentTier, nextTier, progressToNextTier);
 
         var labelRect = new Rect(rect.x + 26f, rect.y, dotAreaStartX - rect.x - 32f, rect.height);
         Widgets.Label(labelRect, currentTier.label.CapitalizeFirst());
 
         var title = currentTier.traitDef.degreeDatas.Count > 0 ? currentTier.traitDef.degreeDatas[0].label : currentTier.label;
         var desc = currentTier.traitDef.degreeDatas.Count > 0 ? currentTier.traitDef.degreeDatas[0].description : currentTier.traitDef.description;
-        TooltipHandler.TipRegion(bubbleRect, new TipSignal($"{title.CapitalizeFirst()}\n\n{desc}"));
+        var progressDescription = nextTier == null
+            ? "PE_MaxProficiencyTier".Translate().ToString()
+            : $"{"PE_ProgressToNextProficiency".Translate(nextTier.label.CapitalizeFirst())} {progressToNextTier.ToStringPercent()}";
+        TooltipHandler.TipRegion(bubbleRect, new TipSignal($"{title.CapitalizeFirst()}\n\n{desc}\n\n{progressDescription}"));
 
         var spacing = 22f;
 
@@ -323,6 +330,54 @@ public static class ProficiencyUtility
             curX += spacing;
         }
         GUI.color = Color.white;
+    }
+
+    private static void DrawTierProgressIcon(Rect iconRect, ProficiencyTierDef currentTier, ProficiencyTierDef nextTier, float progressToNextTier)
+    {
+        GUI.DrawTexture(iconRect, currentTier.icon);
+        if (nextTier?.icon == null)
+        {
+            return;
+        }
+
+        var progress = Mathf.Clamp01(progressToNextTier);
+        if (progress <= 0f)
+        {
+            return;
+        }
+
+        var fillHeight = iconRect.height * progress;
+        var fillRect = new Rect(iconRect.x, iconRect.yMax - fillHeight, iconRect.width, fillHeight);
+        GUI.BeginGroup(fillRect);
+        var iconDrawRect = new Rect(0f, fillHeight - iconRect.height, iconRect.width, iconRect.height);
+        GUI.DrawTexture(iconDrawRect, nextTier.icon);
+        GUI.EndGroup();
+    }
+
+    public static float GetProgressToNextTier(Pawn pawn, ProficiencyDef track)
+    {
+        if (pawn == null
+            || track == null)
+        {
+            return 0f;
+        }
+
+        var currentTier = GetCurrentTier(pawn, track);
+        if (currentTier == null)
+        {
+            return 0f;
+        }
+
+        var currentIndex = track.tiers.IndexOf(currentTier);
+        if (currentIndex < 0 || currentIndex + 1 >= track.tiers.Count)
+        {
+            return 1f;
+        }
+
+        var nextTier = track.tiers[currentIndex + 1];
+        var requiredProgress = Mathf.Max(1f, nextTier.semesterGoal);
+        var progress = EducationManager.Instance.GetProficiencyClassProgress(pawn, track, nextTier);
+        return Mathf.Clamp01(progress / requiredProgress);
     }
 
     public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd)

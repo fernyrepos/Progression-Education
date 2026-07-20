@@ -144,6 +144,8 @@
   <PE_BestowProficiencyDesc>Select a colonist to receive the researched proficiency. They must be capable of Intellectual work.</PE_BestowProficiencyDesc>
   <PE_BestowProficiencyDescWithProf>You have researched {0}. Select a colonist to receive the researched proficiency. They must be capable of Intellectual work.</PE_BestowProficiencyDescWithProf>
   <PE_Knowledge>Knowledge</PE_Knowledge>
+  <PE_ProgressToNextProficiency>Progress to {0}:</PE_ProgressToNextProficiency>
+  <PE_MaxProficiencyTier>Maximum proficiency tier reached</PE_MaxProficiencyTier>
   <PE_StudentMustBeOneTierBelow>All students must be {0}.</PE_StudentMustBeOneTierBelow>
   <PE_TeacherMustHaveProficiency>Teacher must have at least {0} proficiency.</PE_TeacherMustHaveProficiency>
   <PE_EnableKnowledgePanel>Enable knowledge panel? (Disable to show as standard traits)</PE_EnableKnowledgePanel>

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -16,6 +17,10 @@ public class EducationManager(World world) : WorldComponent(world)
     private List<Classroom> classrooms = [];
     private int nextClassroomId;
     private int nextStudyGroupId;
+    private Dictionary<Pawn, Dictionary<string, float>> proficiencyProgressByPawn = [];
+    private List<Pawn> savedProgressPawns = [];
+    private List<string> savedProgressKeys = [];
+    private List<float> savedProgressValues = [];
     public List<StudyGroup> studyGroups = [];
 
     public List<Classroom> Classrooms
@@ -85,12 +90,168 @@ public class EducationManager(World world) : WorldComponent(world)
         base.ExposeData();
         Scribe_Collections.Look(ref studyGroups, nameof(studyGroups),
             LookMode.Deep);
+        if (Scribe.mode == LoadSaveMode.Saving)
+        {
+            FlattenProficiencyProgress();
+        }
+
+        Scribe_Collections.Look(ref savedProgressPawns, nameof(savedProgressPawns),
+            LookMode.Reference);
+        Scribe_Collections.Look(ref savedProgressKeys, nameof(savedProgressKeys),
+            LookMode.Value);
+        Scribe_Collections.Look(ref savedProgressValues, nameof(savedProgressValues),
+            LookMode.Value);
         Scribe_Values.Look(ref nextClassroomId, nameof(nextClassroomId));
         Scribe_Values.Look(ref nextStudyGroupId, nameof(nextStudyGroupId));
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
             studyGroups ??= [];
             classrooms ??= [];
+            savedProgressPawns ??= [];
+            savedProgressKeys ??= [];
+            savedProgressValues ??= [];
+            RebuildProficiencyProgress();
+        }
+    }
+
+    private static readonly Dictionary<(string TrackDefName, string TierDefName), string> ProficiencyProgressKeyCache = new();
+
+    private static string BuildProficiencyProgressKey(ProficiencyDef track, ProficiencyTierDef tier)
+    {
+        if (track == null || tier == null)
+        {
+            return null;
+        }
+
+        var cacheKey = (track.defName, tier.defName);
+        if (!ProficiencyProgressKeyCache.TryGetValue(cacheKey, out var key))
+        {
+            key = string.Concat(cacheKey.TrackDefName, ":", cacheKey.TierDefName);
+            ProficiencyProgressKeyCache[cacheKey] = key;
+        }
+
+        return key;
+    }
+
+    private void FlattenProficiencyProgress()
+    {
+        savedProgressPawns = [];
+        savedProgressKeys = [];
+        savedProgressValues = [];
+
+        if (proficiencyProgressByPawn == null)
+        {
+            return;
+        }
+
+        foreach (var pawnProgress in proficiencyProgressByPawn)
+        {
+            if (pawnProgress.Key == null || pawnProgress.Value == null)
+            {
+                continue;
+            }
+
+            foreach (var entry in pawnProgress.Value.Where(entry => entry.Value > 0f && !entry.Key.NullOrEmpty()))
+            {
+                savedProgressPawns.Add(pawnProgress.Key);
+                savedProgressKeys.Add(entry.Key);
+                savedProgressValues.Add(entry.Value);
+            }
+        }
+    }
+
+    private void RebuildProficiencyProgress()
+    {
+        proficiencyProgressByPawn = [];
+
+        var entryCount = savedProgressPawns.Count;
+        entryCount = Mathf.Min(entryCount, savedProgressKeys.Count);
+        entryCount = Mathf.Min(entryCount, savedProgressValues.Count);
+        for (var i = 0; i < entryCount; i++)
+        {
+            var pawn = savedProgressPawns[i];
+            var key = savedProgressKeys[i];
+            var progress = savedProgressValues[i];
+            if (pawn == null || key.NullOrEmpty() || progress <= 0f)
+            {
+                continue;
+            }
+
+            if (!proficiencyProgressByPawn.TryGetValue(pawn, out var pawnProgress))
+            {
+                pawnProgress = [];
+                proficiencyProgressByPawn[pawn] = pawnProgress;
+            }
+
+            pawnProgress[key] = progress;
+        }
+    }
+
+    public float GetProficiencyClassProgress(Pawn pawn, ProficiencyDef track, ProficiencyTierDef tier)
+    {
+        var key = BuildProficiencyProgressKey(track, tier);
+        if (pawn == null || key == null)
+        {
+            return 0f;
+        }
+
+        if (!proficiencyProgressByPawn.TryGetValue(pawn, out var pawnProgress)
+            || !pawnProgress.TryGetValue(key, out var progress))
+        {
+            return 0f;
+        }
+
+        return progress;
+    }
+
+    public float AddProficiencyClassProgress(Pawn pawn, ProficiencyDef track, ProficiencyTierDef tier, float amount, float goal)
+    {
+        if (pawn == null || track == null || tier == null || amount <= 0f)
+        {
+            return GetProficiencyClassProgress(pawn, track, tier);
+        }
+
+        var key = BuildProficiencyProgressKey(track, tier);
+        if (key == null)
+        {
+            return 0f;
+        }
+
+        if (!proficiencyProgressByPawn.TryGetValue(pawn, out var pawnProgress))
+        {
+            pawnProgress = [];
+            proficiencyProgressByPawn[pawn] = pawnProgress;
+        }
+
+        var progress = pawnProgress.TryGetValue(key, out var existingProgress)
+            ? existingProgress + amount
+            : amount;
+        if (goal > 0f)
+        {
+            progress = Mathf.Min(progress, goal);
+        }
+
+        pawnProgress[key] = Mathf.Max(0f, progress);
+        return pawnProgress[key];
+    }
+
+    public void ClearProficiencyClassProgress(Pawn pawn, ProficiencyDef track, ProficiencyTierDef tier)
+    {
+        var key = BuildProficiencyProgressKey(track, tier);
+        if (pawn == null || key == null)
+        {
+            return;
+        }
+
+        if (!proficiencyProgressByPawn.TryGetValue(pawn, out var pawnProgress))
+        {
+            return;
+        }
+
+        pawnProgress.Remove(key);
+        if (pawnProgress.Count == 0)
+        {
+            proficiencyProgressByPawn.Remove(pawn);
         }
     }
 
