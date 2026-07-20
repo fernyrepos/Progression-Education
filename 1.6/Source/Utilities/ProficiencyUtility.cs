@@ -20,6 +20,8 @@ public static class ProficiencyUtility
     private static FieldInfo typeField;
     private static readonly Texture2D CircleBrightTex = ContentFinder<Texture2D>.Get("UI/CircleBright");
     private static readonly Texture2D CircleDarkTex = ContentFinder<Texture2D>.Get("UI/CircleDark");
+    private static readonly Color TierProgressBarBgColor = new(0f, 0f, 0f, 0.7f);
+    private static readonly Color TierProgressBarFillColor = new(0.95f, 0.8f, 0.25f, 0.95f);
 
     public static bool AreVehicleModsActive => ModsConfig.OdysseyActive || ModsConfig.IsActive("MemeGoddess.GiddyUp") || ModsConfig.IsActive("SmashPhil.VehicleFramework");
 
@@ -346,12 +348,12 @@ public static class ProficiencyUtility
             return;
         }
 
-        var fillHeight = iconRect.height * progress;
-        var fillRect = new Rect(iconRect.x, iconRect.yMax - fillHeight, iconRect.width, fillHeight);
-        GUI.BeginGroup(fillRect);
-        var iconDrawRect = new Rect(0f, fillHeight - iconRect.height, iconRect.width, iconRect.height);
-        GUI.DrawTexture(iconDrawRect, nextTier.icon);
-        GUI.EndGroup();
+        var barHeight = Mathf.Min(4f, iconRect.height / 4f);
+        var barRect = new Rect(iconRect.x, iconRect.yMax - barHeight, iconRect.width, barHeight);
+        Widgets.DrawBoxSolid(barRect, TierProgressBarBgColor);
+        Widgets.DrawBoxSolid(new Rect(barRect.x, barRect.y, barRect.width * progress, barRect.height),
+            TierProgressBarFillColor);
+        Widgets.DrawBox(new Rect(barRect.x - 1f, barRect.y - 1f, barRect.width + 2f, barRect.height + 2f), 1);
     }
 
     public static float GetProgressToNextTier(Pawn pawn, ProficiencyDef track)
