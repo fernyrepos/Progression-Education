@@ -347,8 +347,6 @@ public static class ProficiencyUtility
         // Draw dark (unfilled) state: dark circle background with dimmed icon
         GUI.color = Color.white;
         GUI.DrawTexture(iconRect, CircleDarkTex);
-        GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
-        GUI.DrawTexture(iconRect.ExpandedBy(-TierIconPadding), currentTier.icon);
         GUI.color = Color.white;
 
         // At max tier show fully filled; otherwise fill based on progress to next tier
@@ -365,6 +363,9 @@ public static class ProficiencyUtility
             GUI.DrawTexture(new Rect(TierIconPadding, dy + TierIconPadding, iconRect.width - TierIconPadding * 2f, iconRect.height - TierIconPadding * 2f), currentTier.icon);
             GUI.EndClip();
         }
+
+        GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+        GUI.DrawTexture(iconRect.ExpandedBy(-TierIconPadding), currentTier.icon);
     }
 
     public static float GetProgressToNextTier(Pawn pawn, ProficiencyDef track)
