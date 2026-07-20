@@ -302,12 +302,6 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return new AcceptanceReport("PE_TooYoung".Translate(student.LabelShortCap));
         }
 
-        if (studyGroup.currentProgress > 0f
-            && !studyGroup.students.NotNullAndContains(student))
-        {
-            return new AcceptanceReport("PE_CannotAddOngoing".Translate());
-        }
-
         var targetIdx = proficiencyTrack.tiers.IndexOf(targetTier);
         var tierBelow = targetIdx > 0 ? proficiencyTrack.tiers[targetIdx - 1] : null;
 
