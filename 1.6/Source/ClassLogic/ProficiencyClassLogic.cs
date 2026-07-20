@@ -399,10 +399,12 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         return text.ToString().TrimEndNewlines();
     }
 
-    public bool TryGetProgressRange(out float minProgress, out float maxProgress)
+    public bool TryGetProgressRange(out float minProgress, out float maxProgress, out string minStudent, out string maxStudent)
     {
         minProgress = 0f;
         maxProgress = 0f;
+        minStudent = "";
+        maxStudent = "";
         if (studyGroup is not { semesterGoal: > 0 }
             || studyGroup.students.Count == 0)
         {
@@ -417,6 +419,8 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             : educationManager.GetProficiencyClassProgress(firstStudent, proficiencyTrack, targetTier);
         minProgress = Mathf.Clamp(minProgress, 0f, goal);
         maxProgress = minProgress;
+        minStudent = firstStudent.LabelShort;
+        maxStudent = firstStudent.LabelShort;
         for (var i = 1; i < studyGroup.students.Count; i++)
         {
             var student = studyGroup.students[i];
@@ -424,8 +428,16 @@ public class ProficiencyClassLogic : ClassSubjectLogic
                 ? goal
                 : educationManager.GetProficiencyClassProgress(student, proficiencyTrack, targetTier);
             progress = Mathf.Clamp(progress, 0f, goal);
-            minProgress = Mathf.Min(minProgress, progress);
-            maxProgress = Mathf.Max(maxProgress, progress);
+            if (progress < minProgress)
+            {
+                minProgress = progress;
+                minStudent = student.LabelShort;
+            }
+            if (progress > maxProgress)
+            {
+                maxProgress = progress;
+                maxStudent = student.LabelShort;
+            }
         }
 
         return true;

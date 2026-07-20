@@ -159,4 +159,6 @@
   <PE_RequiredProficiencyStatDesc>The proficiency level required to effectively use this weapon.</PE_RequiredProficiencyStatDesc>
   <PE_RequiredProficiencyStatVehicleDesc>The proficiency level required to effectively use this vehicle.</PE_RequiredProficiencyStatVehicleDesc>
   <PE_CannotTradeMute>Cannot trade: {0} is mute</PE_CannotTradeMute>
+  <PE_BestProgress>Highest Progress</PE_BestProgress>
+  <PE_WorstProgress>Lowest Progress</PE_WorstProgress>
 </LanguageData>

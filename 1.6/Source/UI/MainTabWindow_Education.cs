@@ -28,7 +28,7 @@ public class MainTabWindow_Education : MainTabWindow
     private static readonly Texture2D ProgressBarFillTexture =
         SolidColorMaterials.NewSolidColorTexture(new Color(0.34f, 0.72f, 0.33f));
 
-    private static readonly Color ProgressRangeFillColor = new(0.95f, 0.8f, 0.25f, 0.9f);
+    private static readonly Color ProgressRangeFillColor = new(0.37f, 0.62f, 0.63f, 0.95f);
 
     private static readonly Texture2D
         RenameIcon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename");
@@ -240,7 +240,7 @@ public class MainTabWindow_Education : MainTabWindow
     {
         var logic = studyGroup.subjectLogic as ProficiencyClassLogic;
         if (logic == null
-            || !logic.TryGetProgressRange(out var minProgress, out var maxProgress)
+            || !logic.TryGetProgressRange(out var minProgress, out var maxProgress, out var minStudent, out var maxStudent)
             || studyGroup.semesterGoal <= 0)
         {
             Widgets.FillableBar(rect, Mathf.Clamp01(studyGroup.ProgressPercentage),
@@ -264,6 +264,7 @@ public class MainTabWindow_Education : MainTabWindow
         }
 
         Widgets.Label(rect, $"{minPercent.ToStringPercent()} - {maxPercent.ToStringPercent()}");
+        TooltipHandler.TipRegion(rect, new TipSignal($"{"PE_BestProgress".Translate()}: {maxPercent.ToStringPercent()} ({maxStudent})\n\n{"PE_WorstProgress".Translate()}: {minPercent.ToStringPercent()} ({minStudent})"));
     }
 
     private void DrawClassroomList(Rect rect)
