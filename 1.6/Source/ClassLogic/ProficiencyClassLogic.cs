@@ -398,6 +398,39 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         return text.ToString().TrimEndNewlines();
     }
 
+    public bool TryGetProgressRange(out float minProgress, out float maxProgress)
+    {
+        minProgress = 0f;
+        maxProgress = 0f;
+        if (studyGroup is not { semesterGoal: > 0 }
+            || studyGroup.students.Count == 0)
+        {
+            return false;
+        }
+
+        var goal = studyGroup.semesterGoal;
+        var initialized = false;
+        foreach (var student in studyGroup.students)
+        {
+            var progress = ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyTrack, targetTier)
+                ? goal
+                : EducationManager.Instance.GetProficiencyClassProgress(student, proficiencyTrack, targetTier);
+            progress = Mathf.Clamp(progress, 0f, goal);
+            if (!initialized)
+            {
+                minProgress = progress;
+                maxProgress = progress;
+                initialized = true;
+                continue;
+            }
+
+            minProgress = Mathf.Min(minProgress, progress);
+            maxProgress = Mathf.Max(maxProgress, progress);
+        }
+
+        return initialized;
+    }
+
     private void UpdateGroupProgress()
     {
         var studentCount = studyGroup.students.Count;

@@ -35,6 +35,7 @@ public class LordJob_AttendClass : LordJob
                      .Append(studyGroup.teacher)
                      .Where(m => GatheringsUtility.PawnCanStartOrContinueGathering(m)
                                  && m.CurJob?.def != DefsOf.PE_RingBell
+                                 && !(m.CurJob?.playerForced ?? false)
                                  && (studyGroup.classroom.interruptJobs
                                      || CanInterruptJob(m)))
                     )

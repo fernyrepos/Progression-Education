@@ -26,6 +26,9 @@ public class MainTabWindow_Education : MainTabWindow
     private static readonly Texture2D ProgressBarFillTexture =
         SolidColorMaterials.NewSolidColorTexture(new Color(0.34f, 0.72f, 0.33f));
 
+    private static readonly Texture2D ProgressRangeFillTexture =
+        SolidColorMaterials.NewSolidColorTexture(new Color(0.95f, 0.8f, 0.25f, 0.9f));
+
     private static readonly Texture2D
         RenameIcon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename");
 
@@ -193,11 +196,11 @@ public class MainTabWindow_Education : MainTabWindow
         curX += progressRect.width + ElementPadding;
         if (!studyGroup.subjectLogic.IsInfinite)
         {
-            var progress = Mathf.Clamp01(studyGroup.ProgressPercentage);
-            Widgets.FillableBar(progressRect, progress,
-                ProgressBarFillTexture);
             if (studyGroup.subjectLogic is SkillClassLogic)
             {
+                var progress = Mathf.Clamp01(studyGroup.ProgressPercentage);
+                Widgets.FillableBar(progressRect, progress,
+                    ProgressBarFillTexture);
                 Widgets.Label(progressRect,
                     "PE_ProgressFormat".Translate(
                         studyGroup.currentProgress.ToString("F0"),
@@ -205,8 +208,13 @@ public class MainTabWindow_Education : MainTabWindow
             }
             else if (studyGroup.subjectLogic is ProficiencyClassLogic)
             {
-                Widgets.Label(progressRect,
-                    studyGroup.ProgressPercentage.ToStringPercent());
+                DrawProficiencyProgressRange(progressRect, studyGroup);
+            }
+            else
+            {
+                var progress = Mathf.Clamp01(studyGroup.ProgressPercentage);
+                Widgets.FillableBar(progressRect, progress,
+                    ProgressBarFillTexture);
             }
         }
         else if (studyGroup.subjectLogic.ShowAttendance)
@@ -225,6 +233,35 @@ public class MainTabWindow_Education : MainTabWindow
 
         Text.Font = restoreFont;
         Text.Anchor = restoreAnchor;
+    }
+
+    private static void DrawProficiencyProgressRange(Rect rect, StudyGroup studyGroup)
+    {
+        var logic = studyGroup.subjectLogic as ProficiencyClassLogic;
+        if (logic == null
+            || !logic.TryGetProgressRange(out var minProgress, out var maxProgress)
+            || studyGroup.semesterGoal <= 0)
+        {
+            Widgets.FillableBar(rect, Mathf.Clamp01(studyGroup.ProgressPercentage),
+                ProgressBarFillTexture);
+            Widgets.Label(rect, studyGroup.ProgressPercentage.ToStringPercent());
+            return;
+        }
+
+        var goal = studyGroup.semesterGoal;
+        var minPercent = Mathf.Clamp01(minProgress / goal);
+        var maxPercent = Mathf.Clamp01(maxProgress / goal);
+        Widgets.FillableBar(rect, maxPercent, ProgressBarFillTexture);
+        var rangeWidth = rect.width * (maxPercent - minPercent);
+        if (rangeWidth > 0f)
+        {
+            Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y, rangeWidth, rect.height),
+                new Color(0f, 0f, 0f, 0.18f));
+            Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y + 3f, rangeWidth, rect.height - 6f),
+                ProgressRangeFillTexture.color);
+        }
+
+        Widgets.Label(rect, $"{minPercent.ToStringPercent()} - {maxPercent.ToStringPercent()}");
     }
 
     private void DrawClassroomList(Rect rect)
