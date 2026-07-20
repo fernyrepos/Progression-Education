@@ -126,7 +126,7 @@
   <PE_CannotSchedule>Cannot schedule: {0} is already scheduled at {1}h - {2}h in the {3} classroom.</PE_CannotSchedule>
   <PE_TooYoung>{0} is too young.</PE_TooYoung>
   <PE_EditClass>Edit class</PE_EditClass>
-  <PE_EditClassDesc>Update the roster of an ongoing class, rename it, or change the hours. Students can be freely removed, but if the class has made any progress, they cannot be added to it.</PE_EditClassDesc>
+  <PE_EditClassDesc>Update the roster of an ongoing class, rename it, or change the hours.</PE_EditClassDesc>
   <PE_SemesterProgress>Semester progress</PE_SemesterProgress>
   <PE_CannotAddOngoing>Cannot add to an ongoing class they are not part of.</PE_CannotAddOngoing>
   <PE_AsATeacher>As a teacher</PE_AsATeacher>
