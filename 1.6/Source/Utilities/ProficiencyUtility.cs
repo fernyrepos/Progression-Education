@@ -20,8 +20,7 @@ public static class ProficiencyUtility
     private static FieldInfo typeField;
     private static readonly Texture2D CircleBrightTex = ContentFinder<Texture2D>.Get("UI/CircleBright");
     private static readonly Texture2D CircleDarkTex = ContentFinder<Texture2D>.Get("UI/CircleDark");
-    private static readonly Color TierProgressBarBgColor = new(0f, 0f, 0f, 0.7f);
-    private static readonly Color TierProgressBarFillColor = new(0.95f, 0.8f, 0.25f, 0.95f);
+    private const float TierIconPadding = 3f;
 
     public static bool AreVehicleModsActive => ModsConfig.OdysseyActive || ModsConfig.IsActive("MemeGoddess.GiddyUp") || ModsConfig.IsActive("SmashPhil.VehicleFramework");
 
@@ -325,7 +324,7 @@ public static class ProficiencyUtility
             var bgTex = i == currentIndex ? CircleBrightTex : CircleDarkTex;
             GUI.DrawTexture(dotRect, bgTex);
             GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
-            GUI.DrawTexture(dotRect.ExpandedBy(-3), tier.icon);
+            GUI.DrawTexture(dotRect.ExpandedBy(-TierIconPadding), tier.icon);
             GUI.color = Color.white;
             var dotData = tier.traitDef.degreeDatas[0];
             TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}"));
@@ -336,24 +335,26 @@ public static class ProficiencyUtility
 
     private static void DrawTierProgressIcon(Rect iconRect, ProficiencyTierDef currentTier, ProficiencyTierDef nextTier, float progressToNextTier)
     {
-        GUI.DrawTexture(iconRect, currentTier.icon);
-        if (nextTier?.icon == null)
-        {
-            return;
-        }
+        // Draw dark (unfilled) state: dark circle background with dimmed icon
+        GUI.DrawTexture(iconRect, CircleDarkTex);
+        GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+        GUI.DrawTexture(iconRect.ExpandedBy(-TierIconPadding), currentTier.icon);
+        GUI.color = Color.white;
 
-        var progress = Mathf.Clamp01(progressToNextTier);
-        if (progress <= 0f)
+        // At max tier show fully filled; otherwise fill based on progress to next tier
+        var progress = nextTier != null ? Mathf.Clamp01(progressToNextTier) : 1f;
+        if (progress > 0f)
         {
-            return;
+            // Clip a rect rising from the bottom of the icon proportional to progress
+            var fillHeight = iconRect.height * progress;
+            var clipRect = new Rect(iconRect.x, iconRect.yMax - fillHeight, iconRect.width, fillHeight);
+            GUI.BeginClip(clipRect);
+            // Within clip space the origin is at clipRect.position, so shift the draw position up
+            var dy = fillHeight - iconRect.height;
+            GUI.DrawTexture(new Rect(0f, dy, iconRect.width, iconRect.height), CircleBrightTex);
+            GUI.DrawTexture(new Rect(TierIconPadding, dy + TierIconPadding, iconRect.width - TierIconPadding * 2f, iconRect.height - TierIconPadding * 2f), currentTier.icon);
+            GUI.EndClip();
         }
-
-        var barHeight = Mathf.Min(4f, iconRect.height / 4f);
-        var barRect = new Rect(iconRect.x, iconRect.yMax - barHeight, iconRect.width, barHeight);
-        Widgets.DrawBoxSolid(barRect, TierProgressBarBgColor);
-        Widgets.DrawBoxSolid(new Rect(barRect.x, barRect.y, barRect.width * progress, barRect.height),
-            TierProgressBarFillColor);
-        Widgets.DrawBox(new Rect(barRect.x - 1f, barRect.y - 1f, barRect.width + 2f, barRect.height + 2f), 1);
     }
 
     public static float GetProgressToNextTier(Pawn pawn, ProficiencyDef track)
