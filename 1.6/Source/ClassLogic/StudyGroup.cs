@@ -550,6 +550,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
 
         if (students.Count == 0)
         {
+            Suspend(true);
             return new AcceptanceReport("PE_NoStudents".Translate());
         }
 
