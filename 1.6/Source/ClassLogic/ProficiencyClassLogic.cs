@@ -54,7 +54,8 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         get
         {
             if (studyGroup.teacher == null
-                || studyGroup.classroom == null)
+                || studyGroup.classroom == null
+                || studyGroup.teacher.jobs?.curDriver is not JobDriver_Teach)
             {
                 return 0f;
             }
