@@ -261,10 +261,11 @@ public class MainTabWindow_Education : MainTabWindow
                 new Color(0f, 0f, 0f, ProgressRangeOverlayAlpha));
             Widgets.DrawBoxSolid(new Rect(rangeStartX, rect.y + ProgressRangeBarVerticalInset, rangeWidth, rect.height - ProgressRangeBarVerticalInset * 2f),
                 ProgressRangeFillColor);
+            Widgets.Label(rect, $"{minPercent.ToStringPercent()} - {maxPercent.ToStringPercent()}");
+            TooltipHandler.TipRegion(rect, new TipSignal($"{"PE_BestProgress".Translate()}: {maxPercent.ToStringPercent()} ({maxStudent})\n\n{"PE_WorstProgress".Translate()}: {minPercent.ToStringPercent()} ({minStudent})"));
         }
 
-        Widgets.Label(rect, $"{minPercent.ToStringPercent()} - {maxPercent.ToStringPercent()}");
-        TooltipHandler.TipRegion(rect, new TipSignal($"{"PE_BestProgress".Translate()}: {maxPercent.ToStringPercent()} ({maxStudent})\n\n{"PE_WorstProgress".Translate()}: {minPercent.ToStringPercent()} ({minStudent})"));
+        Widgets.Label(rect, $"{maxPercent.ToStringPercent()}");
     }
 
     private void DrawClassroomList(Rect rect)
