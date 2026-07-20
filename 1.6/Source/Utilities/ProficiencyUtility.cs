@@ -302,7 +302,10 @@ public static class ProficiencyUtility
         Widgets.DrawHighlightIfMouseover(bubbleRect);
 
         var activeIconRect = new Rect(rect.x + 4f, rect.y + 2f, 18f, 18f);
-        DrawTierProgressIcon(activeIconRect, currentTier, nextTier, progressToNextTier);
+        GUI.DrawTexture(activeIconRect, CircleBrightTex);
+        GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+        GUI.DrawTexture(activeIconRect.ExpandedBy(-TierIconPadding), currentTier.icon);
+        GUI.color = Color.white;
 
         var labelRect = new Rect(rect.x + 26f, rect.y, dotAreaStartX - rect.x - 32f, rect.height);
         Widgets.Label(labelRect, currentTier.label.CapitalizeFirst());
@@ -311,10 +314,9 @@ public static class ProficiencyUtility
         var desc = currentTier.traitDef.degreeDatas.Count > 0 ? currentTier.traitDef.degreeDatas[0].description : currentTier.traitDef.description;
         TooltipHandler.TipRegion(bubbleRect, new TipSignal($"{title.CapitalizeFirst()}\n\n{desc}"));
 
-        var progressDescription = nextTier == null
-            ? "PE_MaxProficiencyTier".Translate().ToString()
-            : $"{"PE_ProgressToNextProficiency".Translate(nextTier.label.CapitalizeFirst())} {progressToNextTier.ToStringPercent()}";
-        TooltipHandler.TipRegion(activeIconRect, new TipSignal(progressDescription));
+        var progressDescription = nextTier != null
+            ? $"{"PE_ProgressToNextProficiency".Translate(nextTier.label.CapitalizeFirst())} {progressToNextTier.ToStringPercent()}"
+            : null;
 
         var spacing = 22f;
 
@@ -323,13 +325,21 @@ public static class ProficiencyUtility
         {
             var tier = track.tiers[i];
             var dotRect = new Rect(curX, rect.y + 2f, 18f, 18f);
-            var bgTex = i == currentIndex ? CircleBrightTex : CircleDarkTex;
-            GUI.DrawTexture(dotRect, bgTex);
-            GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
-            GUI.DrawTexture(dotRect.ExpandedBy(-TierIconPadding), tier.icon);
-            GUI.color = Color.white;
             var dotData = tier.traitDef.degreeDatas[0];
-            TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}"));
+            if (i == currentIndex + 1 && nextTier != null)
+            {
+                DrawTierProgressIcon(dotRect, tier, nextTier, progressToNextTier);
+                TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}\n\n{progressDescription}"));
+            }
+            else
+            {
+                var bgTex = i == currentIndex ? CircleBrightTex : CircleDarkTex;
+                GUI.DrawTexture(dotRect, bgTex);
+                GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+                GUI.DrawTexture(dotRect.ExpandedBy(-TierIconPadding), tier.icon);
+                GUI.color = Color.white;
+                TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}"));
+            }
             curX += spacing;
         }
         GUI.color = Color.white;
