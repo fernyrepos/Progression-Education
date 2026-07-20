@@ -409,12 +409,13 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         }
 
         var goal = studyGroup.semesterGoal;
+        var educationManager = EducationManager.Instance;
         var initialized = false;
         foreach (var student in studyGroup.students)
         {
             var progress = ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyTrack, targetTier)
                 ? goal
-                : EducationManager.Instance.GetProficiencyClassProgress(student, proficiencyTrack, targetTier);
+                : educationManager.GetProficiencyClassProgress(student, proficiencyTrack, targetTier);
             progress = Mathf.Clamp(progress, 0f, goal);
             if (!initialized)
             {

@@ -12,6 +12,8 @@ public class MainTabWindow_Education : MainTabWindow
     private const float ClassRowHeight = 90f;
     private const float ElementPadding = 2f;
     private const float HeaderHeight = 35f;
+    private const float ProgressRangeBarVerticalInset = 3f;
+    private const float ProgressRangeOverlayAlpha = 0.18f;
     private const float TeacherPortraitSize = ClassRowHeight - WindowPadding;
     private const float ToolbarButtonSize = 30f;
     private const float WindowPadding = 12f;
@@ -255,8 +257,8 @@ public class MainTabWindow_Education : MainTabWindow
         if (rangeWidth > 0f)
         {
             Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y, rangeWidth, rect.height),
-                new Color(0f, 0f, 0f, 0.18f));
-            Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y + 3f, rangeWidth, rect.height - 6f),
+                new Color(0f, 0f, 0f, ProgressRangeOverlayAlpha));
+            Widgets.DrawBoxSolid(new Rect(rect.x + rect.width * minPercent, rect.y + ProgressRangeBarVerticalInset, rangeWidth, rect.height - ProgressRangeBarVerticalInset * 2f),
                 ProgressRangeFillColor);
         }
 
