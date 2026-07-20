@@ -123,7 +123,7 @@ public class EducationManager(World world) : WorldComponent(world)
             return null;
         }
 
-        var cacheKey = (track.defName, tier.defName);
+        var cacheKey = (TrackDefName: track.defName, TierDefName: tier.defName);
         if (!ProficiencyProgressKeyCache.TryGetValue(cacheKey, out var key))
         {
             key = string.Concat(cacheKey.TrackDefName, ":", cacheKey.TierDefName);
