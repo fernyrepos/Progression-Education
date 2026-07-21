@@ -63,6 +63,7 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
                 EducationLog.Message($"-> Stopped job for student {student.LabelShort} because it was not PE_AttendClass");
 
                 if (lord.ownedPawns.Contains(student)
+                    || student.GetLord() != null
                     || !CanAddPawn(student))
                 {
                     continue;
