@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -75,6 +76,22 @@ public class JobDriver_AttendClass : JobDriver_LessonBase
         };
     }
 
+    private bool IsAtAssignedLearningPosition()
+    {
+        if (TargetA.Thing == null)
+        {
+            return false;
+        }
+
+        if (this is JobDriver_AttendMeleeClass)
+        {
+            return GenAdj.CellsAdjacent8Way(TargetA.Thing)
+                .Contains(pawn.Position);
+        }
+
+        return pawn.Position == DeskSpotForStudent(TargetA.Thing);
+    }
+
     public override IEnumerable<Toil> MakeNewToils()
     {
         this.FailOn(() => !GatheringsUtility.PawnCanStartOrContinueGathering(pawn));
@@ -83,7 +100,12 @@ public class JobDriver_AttendClass : JobDriver_LessonBase
         this.FailOn(IsFailOnLordChanged);
         var deskSpot = DeskSpotForStudent(TargetA.Thing);
         yield return Toils_Goto.GotoCell(deskSpot, PathEndMode.OnCell);
-        yield return MakeLearningToil();
+        var learningToil = MakeLearningToil();
+        // This toil never completes on its own. If a student is displaced,
+        // end it so the lord can issue a fresh job and path them back.
+        learningToil.FailOn(() => !pawn.pather.Moving
+                                   && !IsAtAssignedLearningPosition());
+        yield return learningToil;
     }
 
     public override bool TryMakePreToilReservations(bool errorOnFailed)
