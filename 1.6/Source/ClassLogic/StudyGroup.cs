@@ -304,16 +304,8 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
             return false;
         }
 
-        if (classroom?.LearningBoard?.parent is ThingWithComps learningBoard)
-        {
-            var studentRoom = student.GetRoom();
-            var boardRoom = learningBoard.GetRoom();
-            if (studentRoom != boardRoom)
-            {
-                return false;
-            }
-        }
-
+        // The assigned desk/bench already belongs to this classroom. Room
+        // identities can change mid-job and must not deadlock the whole class.
         if (attendClassDriver is JobDriver_AttendMeleeClass)
         {
             if (!GenAdj.CellsAdjacent8Way(attendClassDriver.TargetA.Thing)

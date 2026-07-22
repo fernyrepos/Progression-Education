@@ -231,7 +231,7 @@ public class LordJob_AttendClass : LordJob
 
             var studentRole = studyGroup.GetStudentRole();
             foreach (var student in studyGroup.students
-                         .Where(s => !GatheringsUtility.PawnCanStartOrContinueGathering(s)
+                         .Where(s => GatheringsUtility.PawnCanStartOrContinueGathering(s)
                                      && s.GetLord() == null))
             {
                 if (!studentRole.CanAcceptPawn(student).Accepted)

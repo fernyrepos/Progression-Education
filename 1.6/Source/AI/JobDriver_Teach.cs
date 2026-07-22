@@ -9,6 +9,10 @@ namespace ProgressionEducation;
 [HotSwappable]
 public class JobDriver_Teach : JobDriver_LessonBase
 {
+    private const int SocialConversationInterval = 150;
+
+    private int socialConversationTicks;
+
     public SkillDef taughtSkill;
     public int waitingTicks;
 
@@ -27,11 +31,29 @@ public class JobDriver_Teach : JobDriver_LessonBase
             StudyGroup.AddProgress(StudyGroup.subjectLogic.ProgressPerTick * delta);
         }
 
-        foreach (var student in StudyGroup.students
-                     .Where(StudyGroup.IsStudentPresentAndAttending))
+        var attendingStudents = StudyGroup.students
+            .Where(StudyGroup.IsStudentPresentAndAttending)
+            .ToList();
+        foreach (var student in attendingStudents)
         {
             StudyGroup.subjectLogic.ApplyTeachingTick(student, this,
                 delta);
+        }
+
+        if (StudyGroup.subjectLogic is SkillClassLogic skillClass
+            && skillClass.SkillFocus == SkillDefOf.Social)
+        {
+            socialConversationTicks += delta;
+            if (socialConversationTicks >= SocialConversationInterval)
+            {
+                socialConversationTicks %= SocialConversationInterval;
+                SocioButterflyCompatibility.TryRunClassConversation(pawn,
+                    attendingStudents);
+            }
+        }
+        else
+        {
+            socialConversationTicks = 0;
         }
     }
 
