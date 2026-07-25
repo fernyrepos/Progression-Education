@@ -175,7 +175,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return;
         }
 
-        var progressRemaining = studyGroup.semesterGoal - studyGroup.currentProgress;
+        var progressRemaining = Mathf.Max(0f, studyGroup.semesterGoal - studyGroup.currentProgress);
         var estimatedTicks = Mathf.CeilToInt(progressRemaining / progressPerTick);
         Widgets.Label(new Rect(rect.x, curY, 360f, 25f),
             "PE_StudyTimeNeeded".Translate(estimatedTicks.ToStringTicksToPeriod()));

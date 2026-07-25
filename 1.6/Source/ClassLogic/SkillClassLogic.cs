@@ -158,7 +158,7 @@ public class SkillClassLogic : ClassSubjectLogic
             return;
         }
 
-        var progress = studyGroup.semesterGoal - studyGroup.currentProgress;
+        var progress = Mathf.Max(0f, studyGroup.semesterGoal - studyGroup.currentProgress);
         var estimatedTicks = (int)(progress / progressPerTick);
         Widgets.Label(new Rect(rect.x, curY, 360f, 25f),
             "PE_StudyTimeNeeded".Translate(estimatedTicks.ToStringTicksToPeriod()));

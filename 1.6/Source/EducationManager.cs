@@ -321,6 +321,24 @@ public class EducationManager(World world) : WorldComponent(world)
         studyGroup.cancelledUntilTick = -1;
     }
 
+    public void CompleteStudyGroup(StudyGroup studyGroup, Lord lord = null)
+    {
+        EducationLog.Message($"Class '{studyGroup.className}' has completed its semester goal. Granting rewards and ending class.");
+        studyGroup.subjectLogic.GrantCompletionRewards();
+        var label = studyGroup.subjectLogic.GetCompletionLetterLabel();
+        var text = studyGroup.subjectLogic.GetCompletionLetterText();
+        Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.PositiveEvent);
+        RemoveStudyGroup(studyGroup);
+        if (lord != null)
+        {
+            lord.ReceiveMemo("ClassCompleted");
+        }
+        else
+        {
+            studyGroup.CancelClass();
+        }
+    }
+
     public void RemoveClassroom(Classroom classroom)
     {
         var studyGroupsToRemove = StudyGroups.Where(sg => sg.classroom == classroom).ToList();
@@ -350,6 +368,12 @@ public class EducationManager(World world) : WorldComponent(world)
 
     public void TryInitiateClassForStudyGroup(StudyGroup studyGroup)
     {
+        if (studyGroup.IsCompleted)
+        {
+            CompleteStudyGroup(studyGroup);
+            return;
+        }
+
         if (studyGroup.cancelledUntilTick > Find.TickManager.TicksGame)
         {
             return;
@@ -442,8 +466,14 @@ public class EducationManager(World world) : WorldComponent(world)
             return;
         }
 
-        foreach (var studyGroup in StudyGroups)
+        foreach (var studyGroup in StudyGroups.ToList())
         {
+            if (studyGroup.IsCompleted)
+            {
+                CompleteStudyGroup(studyGroup);
+                continue;
+            }
+
             studyGroup.subjectLogic.HandleStudentLifecycleEvents();
             if (studyGroup.cancelledUntilTick != -1 && Find.TickManager.TicksGame >= studyGroup.cancelledUntilTick)
             {

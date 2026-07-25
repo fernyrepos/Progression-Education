@@ -16,16 +16,7 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
         base.LordToilTick();
         if (studyGroup.IsCompleted)
         {
-            EducationLog.Message($"Class '{studyGroup.className}' has completed its semester goal. Granting rewards and ending lord.");
-            studyGroup.subjectLogic.GrantCompletionRewards();
-
-            var label = studyGroup.subjectLogic.GetCompletionLetterLabel();
-            var text = studyGroup.subjectLogic.GetCompletionLetterText();
-
-            Find.LetterStack.ReceiveLetter(label, text,
-                LetterDefOf.PositiveEvent);
-            EducationManager.Instance.RemoveStudyGroup(studyGroup);
-            lord.ReceiveMemo("ClassCompleted");
+            EducationManager.Instance.CompleteStudyGroup(studyGroup, lord);
         }
         else
         {
