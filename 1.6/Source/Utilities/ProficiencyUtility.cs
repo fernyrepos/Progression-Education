@@ -189,6 +189,42 @@ public static class ProficiencyUtility
         return true;
     }
 
+    public static void EnsureGearProficiency(Pawn pawn)
+    {
+        if (pawn.CanHaveProficiencies() is false) return;
+        var weaponTrack = DefsOf.PE_WeaponTrack;
+        if (!IsTrackEnabled(weaponTrack)) return;
+
+        var gear = new List<Thing>();
+        if (pawn.equipment?.Primary != null) gear.Add(pawn.equipment.Primary);
+        if (pawn.apparel?.WornApparel != null) gear.AddRange(pawn.apparel.WornApparel);
+
+        var currentTier = GetCurrentTier(pawn, weaponTrack);
+        var currentIndex = currentTier != null ? weaponTrack.tiers.IndexOf(currentTier) : -1;
+
+        var highestUnmetIndex = -1;
+        ProficiencyTierDef highestUnmetTier = null;
+
+        foreach (var item in gear)
+        {
+            var requiredTrait = ResolveRequiredProficiency(item.def, out var isDefaultFallback);
+            if (isDefaultFallback && item is Apparel && requiredTrait != DefsOf.PE_HighTechProficiency)
+                continue;
+
+            for (var i = 0; i < weaponTrack.tiers.Count; i++)
+            {
+                var tier = weaponTrack.tiers[i];
+                if (tier.traitDef != requiredTrait) continue;
+                if (i <= currentIndex) continue;
+                if (i <= highestUnmetIndex) continue;
+                highestUnmetIndex = i;
+                highestUnmetTier = tier;
+            }
+        }
+
+        if (highestUnmetTier != null) GrantTier(pawn, weaponTrack, highestUnmetTier);
+    }
+
     public static string GetProficiencyLevelString(ThingDef thingDef)
     {
         var requiredProficiency = ResolveRequiredProficiency(thingDef, out _);

@@ -30,6 +30,8 @@ public static class PawnGenerator_GeneratePawn_Patch
             {
                 ProficiencyUtility.ApplyProficiencyTraitToPawn(__result);
             }
+
+            ProficiencyUtility.EnsureGearProficiency(__result);
         }
     }
 }
