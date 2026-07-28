@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -20,30 +19,10 @@ public static class ThingDef_SpecialDisplayStats_Patch
 
         if ((__instance.IsWeapon || __instance.IsApparel) && EducationMod.settings.enableWeaponProficiency)
         {
-            var reqExt = __instance.GetModExtension<ItemProficiencyRequirement>();
-            var requiredTrait = reqExt?.requiredProficiency;
-            bool isDefaultFallback = requiredTrait == null;
-            var label = "";
-
-            if (isDefaultFallback)
-            {
-                var techLevel = ProficiencyUtility.GetTechLevelFor(__instance);
-                foreach (var tier in DefsOf.PE_WeaponTrack.tiers.Where(tier => tier.generationTechLevel != TechLevel.Undefined && techLevel <= tier.generationTechLevel))
-                {
-                    label = tier.label;
-                    requiredTrait = tier.traitDef;
-                    break;
-                }
-                if (label.NullOrEmpty())
-                {
-                    label = DefsOf.PE_WeaponTrack.tiers.Last().label;
-                    requiredTrait = DefsOf.PE_WeaponTrack.tiers.Last().traitDef;
-                }
-            }
-            else
-            {
-                label = requiredTrait.degreeDatas[0].label;
-            }
+            var requiredTrait = ProficiencyUtility.ResolveRequiredProficiency(__instance, out var isDefaultFallback);
+            var label = isDefaultFallback
+                ? ProficiencyUtility.GetProficiencyLevelString(__instance)
+                : requiredTrait.degreeDatas[0].label;
 
             bool shouldShow = false;
             if (__instance.IsWeapon) shouldShow = true;

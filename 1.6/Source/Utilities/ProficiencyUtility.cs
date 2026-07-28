@@ -126,6 +126,27 @@ public static class ProficiencyUtility
         return bestTier;
     }
 
+    public static TraitDef ResolveRequiredProficiency(ThingDef thingDef, out bool isDefaultFallback)
+    {
+        var proficiencyRequirement = thingDef.GetModExtension<ItemProficiencyRequirement>();
+        if (proficiencyRequirement != null && proficiencyRequirement.requiredProficiency != null)
+        {
+            isDefaultFallback = false;
+            return proficiencyRequirement.requiredProficiency;
+        }
+
+        isDefaultFallback = true;
+        var techLevel = GetTechLevelFor(thingDef);
+        foreach (var tier in DefsOf.PE_WeaponTrack.tiers)
+        {
+            if (tier.generationTechLevel != TechLevel.Undefined && techLevel <= tier.generationTechLevel)
+            {
+                return tier.traitDef;
+            }
+        }
+        return DefsOf.PE_WeaponTrack.tiers.Last().traitDef;
+    }
+
     public static bool CanEquipItem(this Pawn pawn, Thing equipment)
     {
         if (pawn.CanHaveProficiencies() is false
@@ -135,31 +156,7 @@ public static class ProficiencyUtility
             return true;
         }
 
-        var proficiencyRequirement = equipment.def.GetModExtension<ItemProficiencyRequirement>();
-        TraitDef requiredProficiency = null;
-        bool isDefaultFallback = false;
-
-        if (proficiencyRequirement == null || proficiencyRequirement.requiredProficiency == null)
-        {
-            isDefaultFallback = true;
-            var techLevel = GetTechLevelFor(equipment.def);
-            foreach (var tier in DefsOf.PE_WeaponTrack.tiers)
-            {
-                if (tier.generationTechLevel != TechLevel.Undefined && techLevel <= tier.generationTechLevel)
-                {
-                    requiredProficiency = tier.traitDef;
-                    break;
-                }
-            }
-            if (requiredProficiency == null)
-            {
-                requiredProficiency = DefsOf.PE_WeaponTrack.tiers.Last().traitDef;
-            }
-        }
-        else
-        {
-            requiredProficiency = proficiencyRequirement.requiredProficiency;
-        }
+        var requiredProficiency = ResolveRequiredProficiency(equipment.def, out var isDefaultFallback);
 
         if (requiredProficiency != null)
         {
@@ -194,10 +191,10 @@ public static class ProficiencyUtility
 
     public static string GetProficiencyLevelString(ThingDef thingDef)
     {
-        var techLevel = GetTechLevelFor(thingDef);
+        var requiredProficiency = ResolveRequiredProficiency(thingDef, out _);
         foreach (var tier in DefsOf.PE_WeaponTrack.tiers)
         {
-            if (tier.generationTechLevel != TechLevel.Undefined && techLevel <= tier.generationTechLevel)
+            if (tier.traitDef == requiredProficiency)
             {
                 return tier.label;
             }
