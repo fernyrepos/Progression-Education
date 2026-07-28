@@ -9,7 +9,7 @@ public static class Pawn_EquipmentTracker_AddEquipment_Patch
 {
     public static void Postfix(Pawn_EquipmentTracker __instance, Thing newEq)
     {
-        if (!__instance.pawn.CanEquipItem(newEq))
+        if (!PawnGenerator.IsBeingGenerated(__instance.pawn) && !__instance.pawn.CanEquipItem(newEq))
         {
             __instance.pawn.equipment.Remove((ThingWithComps)newEq);
             if (__instance.pawn.Spawned)
