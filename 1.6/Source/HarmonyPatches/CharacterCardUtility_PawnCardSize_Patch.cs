@@ -13,6 +13,7 @@ public static class CharacterCardUtility_PawnCardSize_Patch
     {
         if (!EducationMod.settings.enableKnowledgePanel) return;
         if (pawn.CanHaveProficiencies() is false) return;
+        if (!ModsConfig.IsActive("ferny.traumaandintegrity")) return;
         
         int activeRows = DefDatabase<ProficiencyDef>.AllDefsListForReading.Count(ProficiencyUtility.IsTrackEnabled);
         int heightRows = activeRows;
