@@ -4,7 +4,7 @@
 
     <!-- GEAR -->
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_Knife"]</xpath>
+        <xpath>Defs/ThingDef[defName="DOR_MeleeWeapon_Atreides_Knife"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -13,7 +13,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_Gladius"]</xpath>
+        <xpath>Defs/ThingDef[defName="DOR_MeleeWeapon_Atreides_Gladius"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -22,7 +22,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_Spear"]</xpath>
+        <xpath>Defs/ThingDef[defName="DOR_MeleeWeapon_Atreides_Spear"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -31,7 +31,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_LucerneHammer"]</xpath>
+        <xpath>Defs/ThingDef[defName="DOR_MeleeWeapon_Atreides_LucerneHammer"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -40,7 +40,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_ZeusHammer"]</xpath>
+        <xpath>Defs/ThingDef[defName="DOR_MeleeWeapon_Atreides_ZeusHammer"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -49,7 +49,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_PlasmaSword"]</xpath>
+        <xpath>Defs/ThingDef[defName="DOR_MeleeWeapon_Atreides_PlasmaSword"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -58,7 +58,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_ZeusHammerPersona"]</xpath>
+        <xpath>Defs/ThingDef[defName="DOR_MeleeWeapon_Atreides_ZeusHammerPersona"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -67,7 +67,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="DOR_MeleeWeapon_Atreides_PlasmaswordPersona"]</xpath>
+        <xpath>Defs/ThingDef[defName="DOR_MeleeWeapon_Atreides_PlasmaswordPersona"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
