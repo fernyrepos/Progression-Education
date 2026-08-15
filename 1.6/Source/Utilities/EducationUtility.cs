@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -49,11 +50,19 @@ public static class EducationUtility
                 forward - board.Rotation.RighthandCell,
             })
             .Where(c => c.InBounds(map)
-                        && c.GetFirstBuilding(map) == null
+                        && !c.HasBlockingBuilding(map)
                         && c.Walkable(map)
                         && pawn.CanReach(c, PathEndMode.OnCell,
                             Danger.Deadly))
             .ToList();
+    }
+
+    public static bool HasBlockingBuilding(this IntVec3 cell, Map map)
+    {
+        var building = cell.GetFirstBuilding(map);
+        return building != null
+               && building.def.passability != Traversability.Standable
+               && building.def != ThingDefOf.HiddenConduit;
     }
 
     public static bool HasBellOnMap(Map map, bool checkForPower)

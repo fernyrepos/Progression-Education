@@ -490,10 +490,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         }
 
         var facingCell = learningBoard.Position + learningBoard.Rotation.FacingCell;
-        var blockingBuilding = facingCell.GetFirstBuilding(classroom.LearningBoard.parent.Map);
-        if (blockingBuilding != null
-            && blockingBuilding.def.passability != Traversability.Standable
-            && blockingBuilding.def != ThingDefOf.HiddenConduit)
+        if (facingCell.HasBlockingBuilding(classroom.LearningBoard.parent.Map))
         {
             return new AcceptanceReport(
                 "PE_LearningBoardIsBlocked".Translate(classroom.LearningBoard.parent.def.label));
