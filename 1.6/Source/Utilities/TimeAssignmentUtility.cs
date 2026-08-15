@@ -209,7 +209,9 @@ public static class TimeAssignmentUtility
                 if (pawn.Spawned)
                 {
                     var curJobDef = pawn.CurJob?.def;
-                    if (curJobDef is JobDef jobDef && (jobDef == DefsOf.PE_AttendClass || jobDef == DefsOf.PE_Teach || jobDef == DefsOf.PE_RingBell || jobDef == DefsOf.PE_AttendMeleeClass || jobDef == DefsOf.PE_AttendShootingClass))
+                    if (!pawn.Drafted
+                        && curJobDef is JobDef jobDef
+                        && (jobDef == DefsOf.PE_AttendClass || jobDef == DefsOf.PE_Teach || jobDef == DefsOf.PE_RingBell || jobDef == DefsOf.PE_AttendMeleeClass || jobDef == DefsOf.PE_AttendShootingClass))
                     {
                         pawn.jobs?.EndCurrentJob(JobCondition.InterruptForced);
                     }
