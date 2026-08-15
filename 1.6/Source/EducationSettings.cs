@@ -16,6 +16,7 @@ public class EducationSettings : ModSettings
     public bool enableWeaponProficiency = true;
     public bool enableVehicleProficiency = true;
     public bool enableSpeechProficiency = true;
+    public bool showClassSuspendedAlert = false;
 
     public void DoSettingsWindowContents(Rect inRect)
     {
@@ -55,6 +56,8 @@ public class EducationSettings : ModSettings
         listing.CheckboxLabeled("PE_EnableVehicleProficiency".Translate(), ref enableVehicleProficiency);
         listing.CheckboxLabeled("PE_EnableSpeechProficiency".Translate(), ref enableSpeechProficiency);
         listing.Gap();
+        listing.CheckboxLabeled("PE_ShowClassSuspendedAlert".Translate(), ref showClassSuspendedAlert);
+        listing.Gap();
         listing.CheckboxLabeled("PE_EnableDebugMode".Translate(), ref debugMode);
         listing.End();
     }
@@ -78,5 +81,6 @@ public class EducationSettings : ModSettings
         Scribe_Values.Look(ref enableWeaponProficiency, "enableWeaponProficiency", true);
         Scribe_Values.Look(ref enableVehicleProficiency, "enableVehicleProficiency", true);
         Scribe_Values.Look(ref enableSpeechProficiency, "enableSpeechProficiency", true);
+        Scribe_Values.Look(ref showClassSuspendedAlert, "showClassSuspendedAlert", false);
     }
 }

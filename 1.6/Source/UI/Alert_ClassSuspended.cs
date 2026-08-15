@@ -46,6 +46,11 @@ public class Alert_ClassSuspended : Alert
 
     public override AlertReport GetReport()
     {
+        if (!EducationMod.settings.showClassSuspendedAlert)
+        {
+            return false;
+        }
+
         CollectSuspendedClasses();
         return suspendedClasses.Count > 0;
     }
