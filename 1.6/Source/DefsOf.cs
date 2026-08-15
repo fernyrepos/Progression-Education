@@ -35,6 +35,7 @@ namespace ProgressionEducation
         [DefAlias("PE_RingBell")] public static DutyDef PE_RingBellDuty;
         public static JobDef PE_Teach;
         [DefAlias("PE_Teach")] public static DutyDef PE_TeachDuty;
+        public static MainButtonDef PE_Education;
         public static MainButtonDef Schedule;
 
         static DefsOf()

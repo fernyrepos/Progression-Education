@@ -140,6 +140,12 @@
   <PE_AddKids_Desc>If enabled, daycares in this classroom are allowed to add children when they age-up.</PE_AddKids_Desc>
   <PE_CannotAttendClass>Class {0} was suspended because the teacher is not available.</PE_CannotAttendClass>
   <PE_CannotUnsuspendNoTeacher>Cannot unsuspend class: Teacher unavailable to teach</PE_CannotUnsuspendNoTeacher>
+  <PE_ClassSuspended>Class suspended</PE_ClassSuspended>
+  <PE_ClassSuspendedNamed>Class {0} suspended</PE_ClassSuspendedNamed>
+  <PE_ClassesSuspended>{0} classes suspended</PE_ClassesSuspended>
+  <PE_ClassSuspendedDesc>One or more classes are suspended. Students will not attend until the class is resumed from the Education tab.\n\nClick this alert to open the Education tab.\n\nSuspended:</PE_ClassSuspendedDesc>
+  <PE_ClassSuspendedLine>{0} (teacher: {1})</PE_ClassSuspendedLine>
+  <PE_ClassSuspendedNoTeacher>none</PE_ClassSuspendedNoTeacher>
   <PE_BestowProficiency>Bestow new proficiency</PE_BestowProficiency>
   <PE_BestowProficiencyDesc>Select a colonist to receive the researched proficiency. They must be capable of Intellectual work.</PE_BestowProficiencyDesc>
   <PE_BestowProficiencyDescWithProf>You have researched {0}. Select a colonist to receive the researched proficiency. They must be capable of Intellectual work.</PE_BestowProficiencyDescWithProf>
