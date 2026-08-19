@@ -266,6 +266,13 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
                     && lordJob.studyGroup == this)
             is { } lordToCancel)
         {
+            foreach (var draftedParticipant in lordToCancel.ownedPawns
+                         .Where(pawn => pawn.Drafted)
+                         .ToList())
+            {
+                lordToCancel.RemovePawn(draftedParticipant);
+            }
+
             lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
         }
     }
