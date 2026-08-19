@@ -399,7 +399,7 @@ public static class ProficiencyUtility
 
         GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
         GUI.DrawTexture(iconRect.ExpandedBy(-TierIconPadding), currentTier.icon);
-    }
+        GUI.color = Color.white;
 
     public static float GetProgressToNextTier(Pawn pawn, ProficiencyDef track)
     {
