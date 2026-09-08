@@ -138,7 +138,7 @@
   <PE_CantChangeTeacher>Class is ongoing so the teacher role is locked</PE_CantChangeTeacher>
   <PE_AddKids>Can accept children on age-up</PE_AddKids>
   <PE_AddKids_Desc>If enabled, daycares in this classroom are allowed to add children when they age-up.</PE_AddKids_Desc>
-  <PE_CannotAttendClass>Class {0} was suspended because the teacher is not available.</PE_CannotAttendClass>
+  <PE_CannotAttendClass>Class {0} was cancelled for today because the teacher is not available.</PE_CannotAttendClass>
   <PE_CannotUnsuspendNoTeacher>Cannot unsuspend class: Teacher unavailable to teach</PE_CannotUnsuspendNoTeacher>
   <PE_ClassSuspended>Class suspended</PE_ClassSuspended>
   <PE_ClassSuspendedNamed>Class {0} suspended</PE_ClassSuspendedNamed>

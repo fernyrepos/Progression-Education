@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Patch>
 
-  <Operation Class="PatchOperationAddModExtension">
-    <xpath>Defs/ResearchProjectDef[defName="Gunsmithing"]</xpath>
-    <value>
-      <li Class="ProgressionEducation.ResearchGrantsTrait">
-        <trait>PE_FirearmProficiency</trait>
-        <title>Learning to use guns</title>
-        <desc>Your intellectual has been bestowed the understanding of how to operate firearms. Other colonists can now be taught this knowledge in proficiency classes.</desc>
-      </li>
-    </value>
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Vanilla Factions Expanded - Medieval 2</li>
+    </mods>
+    <match Class="PatchOperationAddModExtension">
+      <xpath>Defs/ResearchProjectDef[defName="VFEM2_Matchlocks"]</xpath>
+      <value>
+        <li Class="ProgressionEducation.ResearchGrantsTrait">
+          <trait>PE_FirearmProficiency</trait>
+          <title>Learning to use guns</title>
+          <desc>Your intellectual has been bestowed the understanding of how to operate firearms. Other colonists can now be taught this knowledge in proficiency classes.</desc>
+        </li>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAddModExtension">
+      <xpath>Defs/ResearchProjectDef[defName="Gunsmithing"]</xpath>
+      <value>
+        <li Class="ProgressionEducation.ResearchGrantsTrait">
+          <trait>PE_FirearmProficiency</trait>
+          <title>Learning to use guns</title>
+          <desc>Your intellectual has been bestowed the understanding of how to operate firearms. Other colonists can now be taught this knowledge in proficiency classes.</desc>
+        </li>
+      </value>
+    </nomatch>
   </Operation>
 
   <Operation Class="PatchOperationAddModExtension">

@@ -36,7 +36,7 @@
     <soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <researchPrerequisites>
-      <li>Stonecutting</li>
+      <li>Ferny_NeolithicEducation</li>
     </researchPrerequisites>
     <comps>
       <li Class="ProgressionEducation.CompProperties_Bell">
@@ -82,7 +82,7 @@
     <soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <researchPrerequisites>
-      <li>Ferny_NeolithicEducation</li>
+      <li>Ferny_SchoolBell</li>
     </researchPrerequisites>
     <comps>
       <li Class="ProgressionEducation.CompProperties_Bell">
@@ -114,7 +114,7 @@
     <uiOrder>0.3</uiOrder>
     <size>(1,1)</size>
     <researchPrerequisites>
-      <li>Ferny_IndustrialEducation</li>
+      <li>Ferny_ElectricSchoolBell</li>
     </researchPrerequisites>
     <costList>
       <Steel>75</Steel>

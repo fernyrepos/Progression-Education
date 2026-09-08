@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using UnityEngine;
@@ -20,12 +21,17 @@ public class Dialog_BestowProficiency : Window
         absorbInputAroundWindow = true;
         closeOnClickedOutside = false;
 
-        var pawnsCount = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction
-            .Count(p => p.IsFreeColonist && !p.WorkTypeIsDisabled(WorkTypeDefOf.Research));
-
-        canClose = pawnsCount == 0;
+        canClose = !EligiblePawns(ext.trait).Any();
         closeOnCancel = canClose;
         closeOnAccept = canClose;
+    }
+
+    public static IEnumerable<Pawn> EligiblePawns(TraitDef trait)
+    {
+        return PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction
+            .Where(p => p.IsFreeColonist
+                        && !p.WorkTypeIsDisabled(WorkTypeDefOf.Research)
+                        && ProficiencyUtility.CanBeBestowedProficiency(p, trait));
     }
 
     public override void DoWindowContents(Rect inRect)
@@ -44,8 +50,10 @@ public class Dialog_BestowProficiency : Window
         var descHeight = Text.CalcHeight(description, inRect.width);
         Widgets.Label(new Rect(0, 35, inRect.width, descHeight), description);
 
-        var pawns = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction
-            .Where(p => p.IsFreeColonist && !p.WorkTypeIsDisabled(WorkTypeDefOf.Research)).ToList();
+        var pawns = EligiblePawns(extension.trait).ToList();
+        canClose = pawns.Count == 0;
+        closeOnCancel = canClose;
+        closeOnAccept = canClose;
 
         var listTop = 35f + descHeight + 10f;
         var listRect = new Rect(0, listTop, inRect.width, inRect.height - listTop - 50f);
