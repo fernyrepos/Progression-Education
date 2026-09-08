@@ -9,9 +9,9 @@
 		<prerequisites>
 			<li MayRequire="OskarPotocki.VFE.Tribals">VFET_Furniture</li>
 		</prerequisites>
-		<researchViewX>2.6</researchViewX>
-		<researchViewY>0.80</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>5</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Neolithic</techLevel>
 		<tags>
 			<li>ClassicStart</li>
@@ -26,9 +26,9 @@
 		<prerequisites>
 			<li>Stonecutting</li>
 		</prerequisites>
-		<researchViewX>3.0</researchViewX>
-		<researchViewY>0.10</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>0</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Neolithic</techLevel>
 		<tags>
 			<li>ClassicStart</li>
@@ -43,9 +43,9 @@
 		<prerequisites>
 			<li>Ferny_NeolithicEducation</li>
 		</prerequisites>
-		<researchViewX>3.8</researchViewX>
-		<researchViewY>0.10</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>0</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Medieval</techLevel>
 		<tags>
 			<li>ClassicStart</li>
@@ -61,9 +61,9 @@
 			<li>Ferny_NeolithicEducation</li>
 			<li>Smithing</li>
 		</prerequisites>
-		<researchViewX>4.2</researchViewX>
-		<researchViewY>1.90</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>2</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Medieval</techLevel>
 		<tags>
 			<li>ClassicStart</li>
@@ -78,9 +78,9 @@
 		<prerequisites>
 			<li>Ferny_NeolithicEducation</li>
 		</prerequisites>
-		<researchViewX>4.2</researchViewX>
-		<researchViewY>1.00</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>3</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Medieval</techLevel>
 		<tags>
 			<li>ClassicStart</li>
@@ -95,9 +95,9 @@
 		<prerequisites>
 			<li>Ferny_NeolithicEducation</li>
 		</prerequisites>
-		<researchViewX>4.6</researchViewX>
-		<researchViewY>1.90</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>1</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Medieval</techLevel>
 		<tags>
 			<li>ClassicStart</li>
@@ -113,9 +113,9 @@
 			<li>Ferny_NeolithicEducation</li>
 			<li MayRequire="ferny.progressionfurniture">Ferny_Tables</li>
 		</prerequisites>
-		<researchViewX>4.6</researchViewX>
-		<researchViewY>2.80</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>1</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Medieval</techLevel>
 		<tags>
 			<li>ClassicStart</li>
@@ -130,9 +130,9 @@
 		<prerequisites>
 			<li>Ferny_NeolithicEducation</li>
 		</prerequisites>
-		<researchViewX>5.0</researchViewX>
-		<researchViewY>1.00</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>2</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Medieval</techLevel>
 		<tags>
 			<li>ClassicStart</li>
@@ -147,9 +147,9 @@
 		<prerequisites>
 			<li>Ferny_BasicEducation</li>
 		</prerequisites>
-		<researchViewX>5.0</researchViewX>
-		<researchViewY>0.10</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>0</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Industrial</techLevel>
 	</ResearchProjectDef>
 
@@ -162,9 +162,9 @@
 			<li>Ferny_SchoolBell</li>
 			<li>Electricity</li>
 		</prerequisites>
-		<researchViewX>5.8</researchViewX>
-		<researchViewY>1.90</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>2</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Industrial</techLevel>
 	</ResearchProjectDef>
 
@@ -177,9 +177,9 @@
 			<li>Ferny_NeolithicEducation</li>
 			<li>Gunsmithing</li>
 		</prerequisites>
-		<researchViewX>5.8</researchViewX>
-		<researchViewY>1.00</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>4</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Industrial</techLevel>
 	</ResearchProjectDef>
 
@@ -192,9 +192,9 @@
 			<li>Ferny_IndustrialEducation</li>
 			<li>Electricity</li>
 		</prerequisites>
-		<researchViewX>6.2</researchViewX>
-		<researchViewY>0.10</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>3</researchViewX>
+		<researchViewY>0</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Industrial</techLevel>
 	</ResearchProjectDef>
 
@@ -207,9 +207,9 @@
 			<li>Fabrication</li>
 			<li>Ferny_Projector</li>
 		</prerequisites>
-		<researchViewX>7.0</researchViewX>
-		<researchViewY>0.10</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>4</researchViewX>
+		<researchViewY>0</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Spacer</techLevel>
 	</ResearchProjectDef>
 
@@ -222,9 +222,9 @@
 			<li>Fabrication</li>
 			<li>Ferny_SchoolDesk</li>
 		</prerequisites>
-		<researchViewX>7.4</researchViewX>
-		<researchViewY>2.80</researchViewY>
-		<tab>Main</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>1</researchViewY>
+		<tab>Education_Tab</tab>
 		<techLevel>Spacer</techLevel>
 	</ResearchProjectDef>
 

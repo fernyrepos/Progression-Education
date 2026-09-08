@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<ResearchTabDef>
+		<defName>Education_Tab</defName>
+		<label>Education</label>
+		<generalTitle>Education Research Projects</generalTitle>
+		<generalDescription>Unlock education technology at a research bench. You can only have one active project at a time.</generalDescription>
+	</ResearchTabDef>
+
+</Defs>
