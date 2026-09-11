@@ -463,7 +463,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
     {
         averageTicksNeeded = 0;
         averageSessionsNeeded = 0f;
-        if (studyGroup is not { semesterGoal: > 0 }
+        if (studyGroup is not { semesterGoal: > 0, classroom: not null }
             || studyGroup.students.Count == 0)
         {
             return false;

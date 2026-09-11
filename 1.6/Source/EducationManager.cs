@@ -208,14 +208,18 @@ public class EducationManager(World world) : WorldComponent(world)
                 .Where(student => student != null
                                   && !ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier))
                 .ToList();
-            if (activeStudents.Count == 0
-                || activeStudents.Any(student => GetProficiencyClassProgress(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier) > 0f))
+            if (activeStudents.Count == 0)
             {
                 continue;
             }
 
             foreach (var student in activeStudents)
             {
+                if (GetProficiencyClassProgress(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier) > 0f)
+                {
+                    continue;
+                }
+
                 AddProficiencyClassProgress(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier, classProgress, studyGroup.semesterGoal);
             }
         }
