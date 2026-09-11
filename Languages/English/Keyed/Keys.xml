@@ -116,7 +116,6 @@
   <PE_AddedToDaycareOnAgeUp>{0} has aged up and has been automatically added to the "{1}" daycare.</PE_AddedToDaycareOnAgeUp>
   <PE_StudyGroupFull>Study group already has {0} students and cannot accept more.</PE_StudyGroupFull>
   <PE_CannotUnsuspendNoStudents>Cannot unsuspend class: No students</PE_CannotUnsuspendNoStudents>
-  <PE_StudentsOffMap>Students off map</PE_StudentsOffMap>
   <PE_DeleteClass>Delete class</PE_DeleteClass>
   <PE_TeacherSkillDisabled>{0}'s {1} skill is disabled and thus cannot teach.</PE_TeacherSkillDisabled>
   <PE_HourlyTeaching>Hourly teaching</PE_HourlyTeaching>

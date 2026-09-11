@@ -517,34 +517,15 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         }
 
         var studentRole = GetStudentRole();
-        List<Pawn> studentsOffMap = [];
         List<Pawn> unqualifiedStudents = [];
 
         foreach (var student in students)
         {
-            if (!student.Spawned
-                || MapOrSourceMap(student) != learningBoardSourceMap)
-            {
-                if (student.Map?.Parent is PocketMapParent mapParent
-                    && mapParent.sourceMap == classroom.LearningBoard.parent.Map)
-                {
-                    continue;
-                }
-
-                studentsOffMap.Add(student);
-                continue;
-            }
-
             var studentQualification = studentRole.CanAcceptPawn(student);
             if (!studentQualification.Accepted)
             {
                 unqualifiedStudents.Add(student);
             }
-        }
-
-        if (studentsOffMap.Count > 0)
-        {
-            return new AcceptanceReport("PE_StudentsOffMap".Translate());
         }
 
         if (unqualifiedStudents.Count > 0)
