@@ -111,6 +111,7 @@ public class EducationManager(World world) : WorldComponent(world)
             savedProgressKeys ??= [];
             savedProgressValues ??= [];
             RebuildProficiencyProgress();
+            MigrateLegacyProficiencyClassProgress();
         }
     }
 
@@ -184,6 +185,39 @@ public class EducationManager(World world) : WorldComponent(world)
             }
 
             pawnProgress[key] = progress;
+        }
+    }
+
+    private void MigrateLegacyProficiencyClassProgress()
+    {
+        foreach (var studyGroup in studyGroups)
+        {
+            if (studyGroup?.subjectLogic is not ProficiencyClassLogic proficiencyLogic
+                || proficiencyLogic.proficiencyTrack == null
+                || proficiencyLogic.targetTier == null
+                || studyGroup.semesterGoal <= 0
+                || studyGroup.currentProgress <= 0f
+                || studyGroup.currentProgress >= studyGroup.semesterGoal
+                || studyGroup.students.NullOrEmpty())
+            {
+                continue;
+            }
+
+            var classProgress = Mathf.Clamp(studyGroup.currentProgress, 0f, studyGroup.semesterGoal);
+            var activeStudents = studyGroup.students
+                .Where(student => student != null
+                                  && !ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier))
+                .ToList();
+            if (activeStudents.Count == 0
+                || activeStudents.Any(student => GetProficiencyClassProgress(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier) > 0f))
+            {
+                continue;
+            }
+
+            foreach (var student in activeStudents)
+            {
+                AddProficiencyClassProgress(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier, classProgress, studyGroup.semesterGoal);
+            }
         }
     }
 

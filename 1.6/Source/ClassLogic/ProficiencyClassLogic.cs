@@ -54,8 +54,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         get
         {
             if (studyGroup.teacher == null
-                || studyGroup.classroom == null
-                || studyGroup.teacher.jobs?.curDriver is not JobDriver_Teach)
+                || studyGroup.classroom == null)
             {
                 return 0f;
             }
@@ -169,22 +168,16 @@ public class ProficiencyClassLogic : ClassSubjectLogic
     public override void DrawConfigurationUI(Rect rect, ref float curY, IClassDialog classDialog)
     {
         DrawProficiencyUI(rect, ref curY, classDialog);
-        var progressPerTick = ProgressPerTick;
-        if (progressPerTick <= 0)
+        if (!TryGetAverageStudyEstimates(out var estimatedTicks, out var sessionsNeeded))
         {
             return;
         }
 
-        var progressRemaining = Mathf.Max(0f, studyGroup.semesterGoal - studyGroup.currentProgress);
-        var estimatedTicks = Mathf.CeilToInt(progressRemaining / progressPerTick);
         Widgets.Label(new Rect(rect.x, curY, 360f, 25f),
-            "PE_StudyTimeNeeded".Translate(estimatedTicks.ToStringTicksToPeriod()));
+            "PE_AverageStudyTimeNeeded".Translate(estimatedTicks.ToStringTicksToPeriod()));
         curY += 30f;
-        var sessionsNeeded =
-            Mathf.Ceil(
-                (float)estimatedTicks / (GenDate.TicksPerHour * studyGroup.Duration));
         Widgets.Label(new Rect(rect.x, curY, 360f, 25f),
-            "PE_StudySessionsNeeded".Translate(sessionsNeeded.ToString("F0")
+            "PE_AverageStudySessionsNeeded".Translate(sessionsNeeded.ToString("F0")
                 .Colorize(ColoredText.DateTimeColor)));
         curY += 30f;
     }
@@ -267,6 +260,11 @@ public class ProficiencyClassLogic : ClassSubjectLogic
     public override void GrantCompletionRewards()
     {
         // Proficiency graduation is applied per student in ApplyLearningTick once they hit semester goal.
+    }
+
+    public override string GetCompletionLetterText()
+    {
+        return "PE_ClassCompletedDesc".Translate(studyGroup.className);
     }
 
     public override void HandleStudentLifecycleEvents()
@@ -459,5 +457,54 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         }
 
         studyGroup.currentProgress = totalProgress / studentCount;
+    }
+
+    private bool TryGetAverageStudyEstimates(out int averageTicksNeeded, out float averageSessionsNeeded)
+    {
+        averageTicksNeeded = 0;
+        averageSessionsNeeded = 0f;
+        if (studyGroup is not { semesterGoal: > 0 }
+            || studyGroup.students.Count == 0)
+        {
+            return false;
+        }
+
+        var baseProgressPerTick = ProgressPerTick;
+        if (baseProgressPerTick <= 0f)
+        {
+            return false;
+        }
+
+        var totalTicks = 0f;
+        var evaluatedStudentCount = 0;
+        foreach (var student in studyGroup.students)
+        {
+            if (student == null
+                || ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyTrack, targetTier))
+            {
+                continue;
+            }
+
+            var studentProgressPerTick = baseProgressPerTick * CalculateStudentScore(student);
+            if (studentProgressPerTick <= 0f)
+            {
+                continue;
+            }
+
+            var currentProgress = EducationManager.Instance.GetProficiencyClassProgress(student, proficiencyTrack, targetTier);
+            var progressRemaining = Mathf.Max(0f, studyGroup.semesterGoal - currentProgress);
+            totalTicks += progressRemaining / studentProgressPerTick;
+            evaluatedStudentCount++;
+        }
+
+        if (evaluatedStudentCount == 0)
+        {
+            return false;
+        }
+
+        averageTicksNeeded = Mathf.CeilToInt(totalTicks / evaluatedStudentCount);
+        var ticksPerSession = GenDate.TicksPerHour * studyGroup.Duration;
+        averageSessionsNeeded = Mathf.Ceil((float)averageTicksNeeded / ticksPerSession);
+        return true;
     }
 }
