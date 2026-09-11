@@ -19,6 +19,7 @@
   <PE_SemesterGoal>Semester goal</PE_SemesterGoal>
   <PE_ConfirmDeleteClass>Are you sure you would like to delete this class?</PE_ConfirmDeleteClass>
   <PE_StudyTimeNeeded>Continuous study time needed: {0}</PE_StudyTimeNeeded>
+  <PE_AverageStudyTimeNeeded>Average study time needed per student: {0}</PE_AverageStudyTimeNeeded>
   <PE_Requirements>Requirements</PE_Requirements>
   <PE_LearningBoard>learning board</PE_LearningBoard>
   <PE_Bell>bell</PE_Bell>
@@ -122,6 +123,7 @@
   <PE_PerSession>per session</PE_PerSession>
   <PE_ClassSpeed>Class speed</PE_ClassSpeed>
   <PE_StudySessionsNeeded>Estimated study sessions needed: {0}</PE_StudySessionsNeeded>
+  <PE_AverageStudySessionsNeeded>Average study sessions needed per student: {0}</PE_AverageStudySessionsNeeded>
   <PE_CannotSchedule>Cannot schedule: {0} is already scheduled at {1}h - {2}h in the {3} classroom.</PE_CannotSchedule>
   <PE_TooYoung>{0} is too young.</PE_TooYoung>
   <PE_EditClass>Edit class</PE_EditClass>

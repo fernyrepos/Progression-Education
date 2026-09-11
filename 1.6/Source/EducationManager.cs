@@ -21,6 +21,7 @@ public class EducationManager(World world) : WorldComponent(world)
     private List<Pawn> savedProgressPawns = [];
     private List<string> savedProgressKeys = [];
     private List<float> savedProgressValues = [];
+    private List<int> migratedLegacyProficiencyClassIds = [];
     public List<StudyGroup> studyGroups = [];
 
     public List<Classroom> Classrooms
@@ -101,6 +102,8 @@ public class EducationManager(World world) : WorldComponent(world)
             LookMode.Value);
         Scribe_Collections.Look(ref savedProgressValues, nameof(savedProgressValues),
             LookMode.Value);
+        Scribe_Collections.Look(ref migratedLegacyProficiencyClassIds, nameof(migratedLegacyProficiencyClassIds),
+            LookMode.Value);
         Scribe_Values.Look(ref nextClassroomId, nameof(nextClassroomId));
         Scribe_Values.Look(ref nextStudyGroupId, nameof(nextStudyGroupId));
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -110,7 +113,9 @@ public class EducationManager(World world) : WorldComponent(world)
             savedProgressPawns ??= [];
             savedProgressKeys ??= [];
             savedProgressValues ??= [];
+            migratedLegacyProficiencyClassIds ??= [];
             RebuildProficiencyProgress();
+            MigrateLegacyProficiencyClassProgress();
         }
     }
 
@@ -184,6 +189,51 @@ public class EducationManager(World world) : WorldComponent(world)
             }
 
             pawnProgress[key] = progress;
+        }
+    }
+
+    private void MigrateLegacyProficiencyClassProgress()
+    {
+        var activeStudyGroupIds = studyGroups
+            .Where(studyGroup => studyGroup != null)
+            .Select(studyGroup => studyGroup.id)
+            .ToHashSet();
+        migratedLegacyProficiencyClassIds.RemoveAll(id => !activeStudyGroupIds.Contains(id));
+
+        foreach (var studyGroup in studyGroups)
+        {
+            if (studyGroup?.subjectLogic is not ProficiencyClassLogic proficiencyLogic
+                || migratedLegacyProficiencyClassIds.Contains(studyGroup.id)
+                || proficiencyLogic.proficiencyTrack == null
+                || proficiencyLogic.targetTier == null
+                || studyGroup.semesterGoal <= 0
+                || studyGroup.currentProgress <= 0f)
+                || studyGroup.students.NullOrEmpty())
+            {
+                continue;
+            }
+
+            var classProgress = Mathf.Clamp(studyGroup.currentProgress, 0f, studyGroup.semesterGoal);
+            var activeStudents = studyGroup.students
+                .Where(student => student != null
+                                  && !ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier))
+                .ToList();
+            if (activeStudents.Count == 0)
+            {
+                continue;
+            }
+
+            foreach (var student in activeStudents)
+            {
+                if (GetProficiencyClassProgress(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier) > 0f)
+                {
+                    continue;
+                }
+
+                AddProficiencyClassProgress(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier, classProgress, studyGroup.semesterGoal);
+            }
+
+            migratedLegacyProficiencyClassIds.Add(studyGroup.id);
         }
     }
 
@@ -359,6 +409,7 @@ public class EducationManager(World world) : WorldComponent(world)
     public void RemoveStudyGroup(StudyGroup studyGroup)
     {
         studyGroups.Remove(studyGroup);
+        migratedLegacyProficiencyClassIds.Remove(studyGroup.id);
         var allParticipants = studyGroup.AllParticipants;
         EducationLog.Message($"EducationManager.RemoveStudyGroup Removing study group '{studyGroup.className}'. Cleaning up timetables for participants: {allParticipants.ToStringSafeEnumerable()}");
         TimeAssignmentUtility.ClearScheduleFromPawns(studyGroup,
