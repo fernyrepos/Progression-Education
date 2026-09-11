@@ -207,8 +207,7 @@ public class EducationManager(World world) : WorldComponent(world)
                 || proficiencyLogic.proficiencyTrack == null
                 || proficiencyLogic.targetTier == null
                 || studyGroup.semesterGoal <= 0
-                || studyGroup.currentProgress <= 0f
-                || studyGroup.currentProgress >= studyGroup.semesterGoal
+                || studyGroup.currentProgress <= 0f)
                 || studyGroup.students.NullOrEmpty())
             {
                 continue;
