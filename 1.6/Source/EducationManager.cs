@@ -194,6 +194,12 @@ public class EducationManager(World world) : WorldComponent(world)
 
     private void MigrateLegacyProficiencyClassProgress()
     {
+        var activeStudyGroupIds = studyGroups
+            .Where(studyGroup => studyGroup != null)
+            .Select(studyGroup => studyGroup.id)
+            .ToHashSet();
+        migratedLegacyProficiencyClassIds.RemoveAll(id => !activeStudyGroupIds.Contains(id));
+
         foreach (var studyGroup in studyGroups)
         {
             if (studyGroup?.subjectLogic is not ProficiencyClassLogic proficiencyLogic
