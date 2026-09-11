@@ -50,7 +50,7 @@ public class ScenPart_ForcedProficiencyTrait : ScenPart_PawnModifier
 
         if (trait != null)
         {
-            ProficiencyUtility.GrantProficiencyTrait(pawn, trait);
+            ProficiencyUtility.GrantProficiencyTrait(pawn, trait, true);
         }
     }
 

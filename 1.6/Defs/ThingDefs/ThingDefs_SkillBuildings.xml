@@ -26,7 +26,7 @@
         <hasInteractionCell>True</hasInteractionCell>
         <interactionCellOffset>(0,0,1)</interactionCellOffset>
         <researchPrerequisites>
-            <li>Stonecutting</li>
+            <li>Ferny_NeolithicEducation</li>
         </researchPrerequisites>
         <designationCategory>Ferny_Education</designationCategory>
         <placeWorkers>
@@ -106,7 +106,7 @@
             <li>Metallic</li>
         </stuffCategories>
         <researchPrerequisites>
-            <li>Ferny_IndustrialEducation</li>
+            <li>Ferny_FirearmStation</li>
         </researchPrerequisites>
         <costStuffCount>50</costStuffCount>
         <altitudeLayer>BuildingOnTop</altitudeLayer>

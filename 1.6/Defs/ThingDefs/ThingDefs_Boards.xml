@@ -43,7 +43,7 @@
             <PE_ClassSpeed>0.8</PE_ClassSpeed>
         </statBases>
         <researchPrerequisites>
-            <li>Stonecutting</li>
+            <li>Ferny_NeolithicEducation</li>
         </researchPrerequisites>
         <size>(2,1)</size>
         <costStuffCount>15</costStuffCount>
@@ -110,7 +110,7 @@
         </statBases>
         <size>(3,1)</size>
         <researchPrerequisites>
-            <li>Ferny_NeolithicEducation</li>
+            <li>Ferny_BasicEducation</li>
         </researchPrerequisites>
         <costStuffCount>20</costStuffCount>
         <uiOrder>3</uiOrder>

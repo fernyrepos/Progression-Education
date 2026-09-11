@@ -428,7 +428,7 @@ public static class ProficiencyUtility
         return Mathf.Clamp01(progress / requiredProgress);
     }
 
-    public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd)
+    public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd, bool allowDowngrade = false)
     {
         foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
         {
@@ -436,11 +436,43 @@ public static class ProficiencyUtility
             {
                 if (tier.traitDef == traitToAdd)
                 {
-                    GrantTier(pawn, track, tier);
+                    if (allowDowngrade || !HasTierAbove(pawn, track, tier))
+                    {
+                        GrantTier(pawn, track, tier);
+                    }
+
                     return;
                 }
             }
         }
+    }
+
+    public static bool HasTierAbove(Pawn pawn, ProficiencyDef track, ProficiencyTierDef tier)
+    {
+        if (pawn.CanHaveProficiencies() is false)
+        {
+            return false;
+        }
+
+        var currentTier = GetCurrentTier(pawn, track);
+        return currentTier != null
+               && track.tiers.IndexOf(currentTier) > track.tiers.IndexOf(tier);
+    }
+
+    public static bool CanBeBestowedProficiency(Pawn pawn, TraitDef traitToAdd)
+    {
+        foreach (var track in DefDatabase<ProficiencyDef>.AllDefsListForReading)
+        {
+            foreach (var tier in track.tiers)
+            {
+                if (tier.traitDef == traitToAdd)
+                {
+                    return !HasTierAbove(pawn, track, tier);
+                }
+            }
+        }
+
+        return false;
     }
 
     public static ProficiencyTierDef GetCurrentTier(Pawn pawn, ProficiencyDef track)

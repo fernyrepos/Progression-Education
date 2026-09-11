@@ -381,10 +381,22 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
 
     public void Notify_TeacherUnavailable()
     {
+        if (cancelledUntilTick > Find.TickManager.TicksGame)
+        {
+            return;
+        }
+
         Messages.Message(
             "PE_CannotAttendClass".Translate(className, teacher.LabelShort),
             MessageTypeDefOf.CautionInput);
-        Suspend(true);
+        CancelForToday();
+    }
+
+    public void CancelForToday()
+    {
+        TimeAssignmentUtility.ClearScheduleFromPawns(this, AllParticipants);
+        cancelledUntilTick = Find.TickManager.TicksGame + (Duration * GenDate.TicksPerHour);
+        CancelClass();
     }
 
     public void RemoveStudent(Pawn student)

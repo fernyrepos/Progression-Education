@@ -57,7 +57,7 @@
  <xpath>/Defs/ThingDef[defName="SchoolDesk"]/researchPrerequisites</xpath>
       <value>
         <researchPrerequisites>
-            <li>Ferny_NeolithicEducation</li>
+            <li>Ferny_SchoolDesk</li>
         </researchPrerequisites>
       </value>
     </match>
@@ -65,7 +65,7 @@
       <xpath>/Defs/ThingDef[defName="SchoolDesk"]</xpath>
       <value>
         <researchPrerequisites>
-            <li>Ferny_NeolithicEducation</li>
+            <li>Ferny_SchoolDesk</li>
         </researchPrerequisites>
       </value>
     </nomatch>
@@ -77,7 +77,7 @@
  <xpath>/Defs/ThingDef[defName="Blackboard"]/researchPrerequisites</xpath>
       <value>
         <researchPrerequisites>
-            <li>Ferny_NeolithicEducation</li>
+            <li>Ferny_BasicEducation</li>
         </researchPrerequisites>
       </value>
     </match>
@@ -85,7 +85,7 @@
       <xpath>/Defs/ThingDef[defName="Blackboard"]</xpath>
       <value>
         <researchPrerequisites>
-            <li>Ferny_NeolithicEducation</li>
+            <li>Ferny_BasicEducation</li>
         </researchPrerequisites>
       </value>
     </nomatch>

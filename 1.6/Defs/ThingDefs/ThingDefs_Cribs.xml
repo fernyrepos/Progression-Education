@@ -42,6 +42,7 @@
       <paintable>true</paintable>
     </building>
     <researchPrerequisites Inherit="False">
+      <li>Ferny_RoughCrib</li>
     </researchPrerequisites>
   </ThingDef>
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -32,8 +33,7 @@ public static class ResearchManager_FinishProject_Patch
             }
             else
             {
-                if (PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_OfPlayerFaction
-                    .Any(p => p.IsFreeColonist && !p.WorkTypeIsDisabled(WorkTypeDefOf.Research)))
+                if (Dialog_BestowProficiency.EligiblePawns(extension.trait).Any())
                 {
                     Find.WindowStack.Add(new Dialog_BestowProficiency(extension));
                 }

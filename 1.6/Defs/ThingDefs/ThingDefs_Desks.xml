@@ -44,7 +44,7 @@
         </statBases>
         <size>(2,1)</size>
         <researchPrerequisites>
-            <li>Stonecutting</li>
+            <li>Ferny_NeolithicEducation</li>
         </researchPrerequisites>
         <costStuffCount>40</costStuffCount>
         <stuffCategories>
@@ -107,7 +107,7 @@
         </statBases>
         <size>(2,1)</size>
         <researchPrerequisites>
-            <li>Ferny_SpacerEducation</li>
+            <li>Ferny_TouchscreenSchoolDesk</li>
         </researchPrerequisites>
         <costList>
             <ComponentSpacer>2</ComponentSpacer>

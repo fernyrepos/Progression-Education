@@ -34,7 +34,7 @@
     </thingCategories>
     <tickerType>Normal</tickerType>
     <researchPrerequisites>
-      <li>Ferny_IndustrialEducation</li>
+      <li>Ferny_Projector</li>
     </researchPrerequisites>
     <placeWorkers>
       <li>PlaceWorker_ShowFacilitiesConnections</li>

@@ -19,8 +19,8 @@ public static class Pawn_Kill_Patch
                 {
                     if (studyGroup.subjectLogic.IsInfinite)
                     {
-                        studyGroup.Suspend(true);
-                        EducationLog.Message($"Suspended study group {studyGroup.className} due to insufficient students after death of {__instance.LabelShort}.");
+                        studyGroup.CancelForToday();
+                        EducationLog.Message($"Cancelled today's session of study group {studyGroup.className} due to insufficient students after death of {__instance.LabelShort}.");
                     }
                     else
                     {
