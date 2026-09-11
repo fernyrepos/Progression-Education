@@ -51,20 +51,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
 
     public override float ProgressPerTick
     {
-        get
-        {
-            if (studyGroup.teacher == null
-                || studyGroup.classroom == null)
-            {
-                return 0f;
-            }
-
-            return Mathf.Max(0,
-                CalculateTeacherScore(studyGroup.teacher)
-                * studyGroup.classroom.ClassSpeed
-                * LearningSpeedModifier
-                * ProgressSpeedMultiplier);
-        }
+        get => CalculateTeacherProgressPerTick(studyGroup.teacher, requireTeachingJob: true);
     }
 
     public override float CalculateStudentScore(Pawn student)
@@ -129,6 +116,22 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         var techTraitModifier = CalculateTechTraitModifier(teacher);
         var progress = (social * 0.6f + intelligence * 0.4f) * socialImpact;
         return Mathf.Max(0, progress * techTraitModifier * 0.02f);
+    }
+
+    private float CalculateTeacherProgressPerTick(Pawn teacher, bool requireTeachingJob)
+    {
+        if (teacher == null
+            || studyGroup.classroom == null
+            || (requireTeachingJob && teacher.jobs?.curDriver is not JobDriver_Teach))
+        {
+            return 0f;
+        }
+
+        return Mathf.Max(0,
+            CalculateTeacherScore(teacher)
+            * studyGroup.classroom.ClassSpeed
+            * LearningSpeedModifier
+            * ProgressSpeedMultiplier);
     }
 
     public float CalculateTechTraitModifier(Pawn pawn)
@@ -365,7 +368,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
         AppendSkillLevel(SkillDefOf.Social, pawn, text);
         AppendSkillLevel(SkillDefOf.Intellectual, pawn, text);
         text.AppendLine();
-        var progressPerHour = CalculateTeacherScore(pawn) * studyGroup.classroom.ClassSpeed * LearningSpeedModifier * ProgressSpeedMultiplier;
+        var progressPerHour = CalculateTeacherProgressPerTick(pawn, requireTeachingJob: false);
         var xpPerHour = progressPerHour * GenDate.TicksPerHour;
         if (xpPerHour > 0)
         {
@@ -469,7 +472,7 @@ public class ProficiencyClassLogic : ClassSubjectLogic
             return false;
         }
 
-        var baseProgressPerTick = ProgressPerTick;
+        var baseProgressPerTick = CalculateTeacherProgressPerTick(studyGroup.teacher, requireTeachingJob: false);
         if (baseProgressPerTick <= 0f)
         {
             return false;
