@@ -507,6 +507,11 @@ public class ProficiencyClassLogic : ClassSubjectLogic
 
         averageTicksNeeded = Mathf.CeilToInt(totalTicks / evaluatedStudentCount);
         var ticksPerSession = GenDate.TicksPerHour * studyGroup.Duration;
+        if (ticksPerSession <= 0)
+        {
+            return false;
+        }
+
         averageSessionsNeeded = Mathf.Ceil((float)averageTicksNeeded / ticksPerSession);
         return true;
     }
