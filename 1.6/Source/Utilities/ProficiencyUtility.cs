@@ -20,6 +20,7 @@ public static class ProficiencyUtility
     private static FieldInfo typeField;
     private static readonly Texture2D CircleBrightTex = ContentFinder<Texture2D>.Get("UI/CircleBright");
     private static readonly Texture2D CircleDarkTex = ContentFinder<Texture2D>.Get("UI/CircleDark");
+    private const float TierIconPadding = 3f;
 
     public static bool AreVehicleModsActive => ModsConfig.OdysseyActive || ModsConfig.IsActive("MemeGoddess.GiddyUp") || ModsConfig.IsActive("SmashPhil.VehicleFramework");
 
@@ -315,15 +316,19 @@ public static class ProficiencyUtility
                 ApplyProficiencyTraitToPawn(pawn);
                 currentTier = GetCurrentTier(pawn, track);
             }
-            DrawProficiencyRow(new Rect(inner.x, curY, inner.width, 22f), track, currentTier);
+            DrawProficiencyRow(new Rect(inner.x, curY, inner.width, 22f), pawn, track, currentTier);
             curY += 24f;
         }
     }
 
-    private static void DrawProficiencyRow(Rect rect, ProficiencyDef track, ProficiencyTierDef currentTier)
+    private static void DrawProficiencyRow(Rect rect, Pawn pawn, ProficiencyDef track, ProficiencyTierDef currentTier)
     {
         if (currentTier == null) currentTier = track.tiers[0];
         int currentIndex = track.tiers.IndexOf(currentTier);
+        var nextTier = currentIndex + 1 < track.tiers.Count ? track.tiers[currentIndex + 1] : null;
+        var progressToNextTier = nextTier != null
+            ? GetProgressToNextTier(pawn, track)
+            : 1f;
 
         float dotAreaStartX = rect.x + 130f;
         var bubbleRect = new Rect(rect.x, rect.y, dotAreaStartX - rect.x - 6f, rect.height);
@@ -339,6 +344,10 @@ public static class ProficiencyUtility
         var desc = currentTier.traitDef.degreeDatas.Count > 0 ? currentTier.traitDef.degreeDatas[0].description : currentTier.traitDef.description;
         TooltipHandler.TipRegion(bubbleRect, new TipSignal($"{title.CapitalizeFirst()}\n\n{desc}"));
 
+        var progressDescription = nextTier != null
+            ? $"{"PE_ProgressToNextProficiency".Translate(nextTier.label.CapitalizeFirst())} {progressToNextTier.ToStringPercent()}"
+            : null;
+
         var spacing = 22f;
 
         float curX = dotAreaStartX;
@@ -346,16 +355,77 @@ public static class ProficiencyUtility
         {
             var tier = track.tiers[i];
             var dotRect = new Rect(curX, rect.y + 2f, 18f, 18f);
-            var bgTex = i == currentIndex ? CircleBrightTex : CircleDarkTex;
-            GUI.DrawTexture(dotRect, bgTex);
-            GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
-            GUI.DrawTexture(dotRect.ExpandedBy(-3), tier.icon);
-            GUI.color = Color.white;
             var dotData = tier.traitDef.degreeDatas[0];
-            TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}"));
+            if (i == currentIndex + 1 && nextTier != null)
+            {
+                DrawTierProgressIcon(dotRect, tier, nextTier, progressToNextTier);
+                TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}\n\n{progressDescription}"));
+            }
+            else
+            {
+                var bgTex = i == currentIndex ? CircleBrightTex : CircleDarkTex;
+                GUI.DrawTexture(dotRect, bgTex);
+                GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+                GUI.DrawTexture(dotRect.ExpandedBy(-TierIconPadding), tier.icon);
+                GUI.color = Color.white;
+                TooltipHandler.TipRegion(dotRect, new TipSignal($"{dotData.label.CapitalizeFirst()}\n\n{dotData.description}"));
+            }
             curX += spacing;
         }
         GUI.color = Color.white;
+    }
+
+    private static void DrawTierProgressIcon(Rect iconRect, ProficiencyTierDef currentTier, ProficiencyTierDef nextTier, float progressToNextTier)
+    {
+        // Draw dark (unfilled) state: dark circle background with dimmed icon
+        GUI.color = Color.white;
+        GUI.DrawTexture(iconRect, CircleDarkTex);
+        GUI.color = Color.white;
+
+        // At max tier show fully filled; otherwise fill based on progress to next tier
+        var progress = nextTier != null ? Mathf.Clamp01(progressToNextTier) : 1f;
+        if (progress > 0f)
+        {
+            // Clip a rect rising from the bottom of the icon proportional to progress
+            var fillHeight = iconRect.height * progress;
+            var clipRect = new Rect(iconRect.x, iconRect.yMax - fillHeight, iconRect.width, fillHeight);
+            GUI.BeginClip(clipRect);
+            // Within clip space the origin is at clipRect.position, so shift the draw position up
+            var dy = fillHeight - iconRect.height;
+            GUI.DrawTexture(new Rect(0f, dy, iconRect.width, iconRect.height), CircleBrightTex);
+            GUI.DrawTexture(new Rect(TierIconPadding, dy + TierIconPadding, iconRect.width - TierIconPadding * 2f, iconRect.height - TierIconPadding * 2f), currentTier.icon);
+            GUI.EndClip();
+        }
+
+        GUI.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+        GUI.DrawTexture(iconRect.ExpandedBy(-TierIconPadding), currentTier.icon);
+        GUI.color = Color.white;
+    }
+
+    public static float GetProgressToNextTier(Pawn pawn, ProficiencyDef track)
+    {
+        if (pawn == null
+            || track == null)
+        {
+            return 0f;
+        }
+
+        var currentTier = GetCurrentTier(pawn, track);
+        if (currentTier == null)
+        {
+            return 0f;
+        }
+
+        var currentIndex = track.tiers.IndexOf(currentTier);
+        if (currentIndex < 0 || currentIndex + 1 >= track.tiers.Count)
+        {
+            return 1f;
+        }
+
+        var nextTier = track.tiers[currentIndex + 1];
+        var requiredProgress = Mathf.Max(1f, nextTier.semesterGoal);
+        var progress = EducationManager.Instance.GetProficiencyClassProgress(pawn, track, nextTier);
+        return Mathf.Clamp01(progress / requiredProgress);
     }
 
     public static void GrantProficiencyTrait(Pawn pawn, TraitDef traitToAdd, bool allowDowngrade = false)

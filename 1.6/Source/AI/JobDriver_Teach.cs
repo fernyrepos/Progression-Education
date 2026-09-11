@@ -22,7 +22,8 @@ public class JobDriver_Teach : JobDriver_LessonBase
 
         pawn.skills?.Learn(SkillDefOf.Social, 0.1f * delta);
 
-        if (!StudyGroup.subjectLogic.IsInfinite)
+        if (!StudyGroup.subjectLogic.IsInfinite
+            && StudyGroup.subjectLogic is not ProficiencyClassLogic)
         {
             StudyGroup.AddProgress(StudyGroup.subjectLogic.ProgressPerTick * delta);
         }

@@ -96,7 +96,24 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
                                    : endHour - startHour
                            );
 
-    public bool IsCompleted => !subjectLogic.IsInfinite && currentProgress >= semesterGoal;
+    public bool IsCompleted
+    {
+        get
+        {
+            if (subjectLogic is ProficiencyClassLogic proficiencyLogic)
+            {
+                if (students.Count == 0)
+                {
+                    // Proficiency classes finish when all enrolled students have graduated/been removed.
+                    return !suspended && currentProgress >= semesterGoal;
+                }
+
+                return students.All(student => ProficiencyUtility.MeetsOrExceedsTier(student, proficiencyLogic.proficiencyTrack, proficiencyLogic.targetTier));
+            }
+
+            return !subjectLogic.IsInfinite && currentProgress >= semesterGoal;
+        }
+    }
 
     public Map Map => classroom?.LearningBoard?.parent?.Map;
 
@@ -249,6 +266,13 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
                     && lordJob.studyGroup == this)
             is { } lordToCancel)
         {
+            foreach (var draftedParticipant in lordToCancel.ownedPawns
+                         .Where(pawn => pawn.Drafted)
+                         .ToList())
+            {
+                lordToCancel.RemovePawn(draftedParticipant);
+            }
+
             lordToCancel.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
         }
     }
@@ -258,6 +282,11 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         if (students.NullOrEmpty())
         {
             return false;
+        }
+
+        if (subjectLogic is ProficiencyClassLogic)
+        {
+            return students.Any(IsStudentPresentAndAttending);
         }
 
         if (subjectLogic is DaycareClassLogic)
@@ -500,34 +529,15 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
         }
 
         var studentRole = GetStudentRole();
-        List<Pawn> studentsOffMap = [];
         List<Pawn> unqualifiedStudents = [];
 
         foreach (var student in students)
         {
-            if (!student.Spawned
-                || MapOrSourceMap(student) != learningBoardSourceMap)
-            {
-                if (student.Map?.Parent is PocketMapParent mapParent
-                    && mapParent.sourceMap == classroom.LearningBoard.parent.Map)
-                {
-                    continue;
-                }
-
-                studentsOffMap.Add(student);
-                continue;
-            }
-
             var studentQualification = studentRole.CanAcceptPawn(student);
             if (!studentQualification.Accepted)
             {
                 unqualifiedStudents.Add(student);
             }
-        }
-
-        if (studentsOffMap.Count > 0)
-        {
-            return new AcceptanceReport("PE_StudentsOffMap".Translate());
         }
 
         if (unqualifiedStudents.Count > 0)
@@ -537,6 +547,7 @@ public class StudyGroup : IExposable, ILoadReferenceable, IRenameable
 
         if (students.Count == 0)
         {
+            Suspend(true);
             return new AcceptanceReport("PE_NoStudents".Translate());
         }
 
