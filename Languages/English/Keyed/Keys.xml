@@ -19,6 +19,7 @@
   <PE_SemesterGoal>Semester goal</PE_SemesterGoal>
   <PE_ConfirmDeleteClass>Are you sure you would like to delete this class?</PE_ConfirmDeleteClass>
   <PE_StudyTimeNeeded>Continuous study time needed: {0}</PE_StudyTimeNeeded>
+  <PE_AverageStudyTimeNeeded>Average study time needed per student: {0}</PE_AverageStudyTimeNeeded>
   <PE_Requirements>Requirements</PE_Requirements>
   <PE_LearningBoard>learning board</PE_LearningBoard>
   <PE_Bell>bell</PE_Bell>
@@ -116,17 +117,17 @@
   <PE_AddedToDaycareOnAgeUp>{0} has aged up and has been automatically added to the "{1}" daycare.</PE_AddedToDaycareOnAgeUp>
   <PE_StudyGroupFull>Study group already has {0} students and cannot accept more.</PE_StudyGroupFull>
   <PE_CannotUnsuspendNoStudents>Cannot unsuspend class: No students</PE_CannotUnsuspendNoStudents>
-  <PE_StudentsOffMap>Students off map</PE_StudentsOffMap>
   <PE_DeleteClass>Delete class</PE_DeleteClass>
   <PE_TeacherSkillDisabled>{0}'s {1} skill is disabled and thus cannot teach.</PE_TeacherSkillDisabled>
   <PE_HourlyTeaching>Hourly teaching</PE_HourlyTeaching>
   <PE_PerSession>per session</PE_PerSession>
   <PE_ClassSpeed>Class speed</PE_ClassSpeed>
   <PE_StudySessionsNeeded>Estimated study sessions needed: {0}</PE_StudySessionsNeeded>
+  <PE_AverageStudySessionsNeeded>Average study sessions needed per student: {0}</PE_AverageStudySessionsNeeded>
   <PE_CannotSchedule>Cannot schedule: {0} is already scheduled at {1}h - {2}h in the {3} classroom.</PE_CannotSchedule>
   <PE_TooYoung>{0} is too young.</PE_TooYoung>
   <PE_EditClass>Edit class</PE_EditClass>
-  <PE_EditClassDesc>Update the roster of an ongoing class, rename it, or change the hours. Students can be freely removed, but if the class has made any progress, they cannot be added to it.</PE_EditClassDesc>
+  <PE_EditClassDesc>Update the roster of an ongoing class, rename it, or change the hours.</PE_EditClassDesc>
   <PE_SemesterProgress>Semester progress</PE_SemesterProgress>
   <PE_CannotAddOngoing>Cannot add to an ongoing class they are not part of.</PE_CannotAddOngoing>
   <PE_AsATeacher>As a teacher</PE_AsATeacher>
@@ -150,6 +151,8 @@
   <PE_BestowProficiencyDesc>Select a colonist to receive the researched proficiency. They must be capable of Intellectual work.</PE_BestowProficiencyDesc>
   <PE_BestowProficiencyDescWithProf>You have researched {0}. Select a colonist to receive the researched proficiency. They must be capable of Intellectual work.</PE_BestowProficiencyDescWithProf>
   <PE_Knowledge>Knowledge</PE_Knowledge>
+  <PE_ProgressToNextProficiency>Progress to {0}:</PE_ProgressToNextProficiency>
+  <PE_MaxProficiencyTier>Maximum proficiency tier reached</PE_MaxProficiencyTier>
   <PE_StudentMustBeOneTierBelow>All students must be {0}.</PE_StudentMustBeOneTierBelow>
   <PE_TeacherMustHaveProficiency>Teacher must have at least {0} proficiency.</PE_TeacherMustHaveProficiency>
   <PE_EnableKnowledgePanel>Enable knowledge panel? (Disable to show as standard traits)</PE_EnableKnowledgePanel>
@@ -164,4 +167,6 @@
   <PE_RequiredProficiencyStatDesc>The proficiency level required to effectively use this weapon.</PE_RequiredProficiencyStatDesc>
   <PE_RequiredProficiencyStatVehicleDesc>The proficiency level required to effectively use this vehicle.</PE_RequiredProficiencyStatVehicleDesc>
   <PE_CannotTradeMute>Cannot trade: {0} is mute</PE_CannotTradeMute>
+  <PE_BestProgress>Highest Progress</PE_BestProgress>
+  <PE_WorstProgress>Lowest Progress</PE_WorstProgress>
 </LanguageData>

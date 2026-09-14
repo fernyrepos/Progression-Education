@@ -12,6 +12,8 @@ public class MainTabWindow_Education : MainTabWindow
     private const float ClassRowHeight = 90f;
     private const float ElementPadding = 2f;
     private const float HeaderHeight = 35f;
+    private const float ProgressRangeBarVerticalInset = 3f;
+    private const float ProgressRangeOverlayAlpha = 0.18f;
     private const float TeacherPortraitSize = ClassRowHeight - WindowPadding;
     private const float ToolbarButtonSize = 30f;
     private const float WindowPadding = 12f;
@@ -25,6 +27,8 @@ public class MainTabWindow_Education : MainTabWindow
 
     private static readonly Texture2D ProgressBarFillTexture =
         SolidColorMaterials.NewSolidColorTexture(new Color(0.34f, 0.72f, 0.33f));
+
+    private static readonly Color ProgressRangeFillColor = new(0.37f, 0.62f, 0.63f, 0.95f);
 
     private static readonly Texture2D
         RenameIcon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename");
@@ -193,11 +197,11 @@ public class MainTabWindow_Education : MainTabWindow
         curX += progressRect.width + ElementPadding;
         if (!studyGroup.subjectLogic.IsInfinite)
         {
-            var progress = Mathf.Clamp01(studyGroup.ProgressPercentage);
-            Widgets.FillableBar(progressRect, progress,
-                ProgressBarFillTexture);
             if (studyGroup.subjectLogic is SkillClassLogic)
             {
+                var progress = Mathf.Clamp01(studyGroup.ProgressPercentage);
+                Widgets.FillableBar(progressRect, progress,
+                    ProgressBarFillTexture);
                 Widgets.Label(progressRect,
                     "PE_ProgressFormat".Translate(
                         studyGroup.currentProgress.ToString("F0"),
@@ -205,8 +209,13 @@ public class MainTabWindow_Education : MainTabWindow
             }
             else if (studyGroup.subjectLogic is ProficiencyClassLogic)
             {
-                Widgets.Label(progressRect,
-                    studyGroup.ProgressPercentage.ToStringPercent());
+                DrawProficiencyProgressRange(progressRect, studyGroup);
+            }
+            else
+            {
+                var progress = Mathf.Clamp01(studyGroup.ProgressPercentage);
+                Widgets.FillableBar(progressRect, progress,
+                    ProgressBarFillTexture);
             }
         }
         else if (studyGroup.subjectLogic.ShowAttendance)
@@ -225,6 +234,41 @@ public class MainTabWindow_Education : MainTabWindow
 
         Text.Font = restoreFont;
         Text.Anchor = restoreAnchor;
+    }
+
+    private static void DrawProficiencyProgressRange(Rect rect, StudyGroup studyGroup)
+    {
+        var logic = studyGroup.subjectLogic as ProficiencyClassLogic;
+        if (logic == null
+            || !logic.TryGetProgressRange(out var minProgress, out var maxProgress, out var minStudent, out var maxStudent)
+            || studyGroup.semesterGoal <= 0)
+        {
+            Widgets.FillableBar(rect, Mathf.Clamp01(studyGroup.ProgressPercentage),
+                ProgressBarFillTexture);
+            Widgets.Label(rect, studyGroup.ProgressPercentage.ToStringPercent());
+            return;
+        }
+
+        var goal = studyGroup.semesterGoal;
+        var minPercent = Mathf.Clamp01(minProgress / goal);
+        var maxPercent = Mathf.Clamp01(maxProgress / goal);
+        Widgets.FillableBar(rect, maxPercent, ProgressBarFillTexture);
+        var rangeWidth = rect.width * (maxPercent - minPercent);
+        if (rangeWidth > 0f)
+        {
+            var rangeStartX = rect.x + rect.width * minPercent;
+            Widgets.DrawBoxSolid(new Rect(rangeStartX, rect.y, rangeWidth, rect.height),
+                new Color(0f, 0f, 0f, ProgressRangeOverlayAlpha));
+            Widgets.DrawBoxSolid(new Rect(rangeStartX, rect.y + ProgressRangeBarVerticalInset, rangeWidth, rect.height - ProgressRangeBarVerticalInset * 2f),
+                ProgressRangeFillColor);
+            Widgets.Label(rect, $"{minPercent.ToStringPercent()} - {maxPercent.ToStringPercent()}");
+            TooltipHandler.TipRegion(rect, new TipSignal($"{"PE_BestProgress".Translate()}: {maxPercent.ToStringPercent()} ({maxStudent})\n\n{"PE_WorstProgress".Translate()}: {minPercent.ToStringPercent()} ({minStudent})"));
+        }
+        else
+        {
+            Widgets.Label(rect, $"{maxPercent.ToStringPercent()}");
+        }
+
     }
 
     private void DrawClassroomList(Rect rect)
