@@ -146,10 +146,10 @@ public static class ProficiencyUtility
         return DefsOf.PE_WeaponTrack.tiers.Last().traitDef;
     }
 
-    public static bool CanEquipItem(this Pawn pawn, Thing equipment)
+    public static bool CanEquipItem(this Pawn pawn, Thing equipment, bool runForNonPlayerFactionPawn = false)
     {
         if (pawn.CanHaveProficiencies() is false
-            || pawn.Faction != Faction.OfPlayerSilentFail
+            || (!runForNonPlayerFactionPawn && pawn.Faction != Faction.OfPlayerSilentFail)
             || PawnGenerator.IsBeingGenerated(pawn))
         {
             return true;
