@@ -42,6 +42,9 @@
         <li>brrainz.harmony</li>
         <li>OskarPotocki.VanillaFactionsExpanded.Core</li>
         <li>oskarpotocki.vanillavehiclesexpanded</li>
+		
+		<!-- ADDED PROFICIENCY CHECK IN HARMONY PATCH -->
+        <li>ferny.ProgressionAmmunition</li>
 
         <!-- MULTIPLE PATCHES -->
         <li>oskarpotocki.vfe.pirates</li>
