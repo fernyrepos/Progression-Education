@@ -46,6 +46,7 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
             foreach (var student in studyGroup.students
                          .Where(student =>
                              GatheringsUtility.PawnCanStartOrContinueGathering(student)
+                             && (student.GetLord() == null || student.GetLord() == lord)
                              && student.CurJob is Job job
                              && job.GetCachedDriverDirect is not JobDriver_AttendClass
                              && (student.mindState.IsIdle || studyGroup.classroom.interruptJobs)))
@@ -53,7 +54,7 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
                 student.jobs.StopAll();
                 EducationLog.Message($"-> Stopped job for student {student.LabelShort} because it was not PE_AttendClass");
 
-                if (lord.ownedPawns.Contains(student)
+                if (student.GetLord() != null
                     || !CanAddPawn(student))
                 {
                     continue;
@@ -68,7 +69,8 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
     public override void UpdateAllDuties()
     {
         EducationLog.Message($"LordToil_AttendClass.UpdateAllDuties called for class '{studyGroup.className}'");
-        if (!studyGroup.teacher.CanAttendClass())
+        if (studyGroup.teacher.GetLord() != lord
+            || !studyGroup.teacher.CanAttendClass())
         {
             lord.ReceiveMemo(LordJob_AttendClass.MemoClassCancelledTeacherIncapacitated);
             return;
@@ -80,6 +82,11 @@ public class LordToil_AttendClass(StudyGroup studyGroup) : LordToil
 
         foreach (var student in studyGroup.students)
         {
+            if (student.GetLord() != lord)
+            {
+                continue;
+            }
+
             if (!GatheringsUtility.PawnCanStartOrContinueGathering(student))
             {
                 lord.RemovePawn(student);
