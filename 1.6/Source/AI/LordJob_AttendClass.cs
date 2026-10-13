@@ -34,6 +34,7 @@ public class LordJob_AttendClass : LordJob
         foreach (var member in studyGroup.students
                      .Append(studyGroup.teacher)
                      .Where(m => GatheringsUtility.PawnCanStartOrContinueGathering(m)
+                                 && (m.GetLord() == null || m.GetLord() == lord)
                                  && m.CurJob?.def != DefsOf.PE_RingBell
                                  && (studyGroup.classroom.interruptJobs
                                      || CanInterruptJob(m)))
@@ -231,7 +232,7 @@ public class LordJob_AttendClass : LordJob
 
             var studentRole = studyGroup.GetStudentRole();
             foreach (var student in studyGroup.students
-                         .Where(s => !GatheringsUtility.PawnCanStartOrContinueGathering(s)
+                         .Where(s => GatheringsUtility.PawnCanStartOrContinueGathering(s)
                                      && s.GetLord() == null))
             {
                 if (!studentRole.CanAcceptPawn(student).Accepted)

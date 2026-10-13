@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+<!-- SIMPLE SLAVERY COLLARS GEAR PATCH -->
+
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/ThingDef[starts-with(defName, "Apparel_SlaveCollar_")]</xpath>
+    <value>
+      <li Class="ProgressionEducation.ItemProficiencyRequirement">
+        <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>

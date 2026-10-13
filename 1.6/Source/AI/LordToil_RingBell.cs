@@ -36,7 +36,8 @@ public class LordToil_RingBell(StudyGroup studyGroup) : LordToil
 
     public override void UpdateAllDuties()
     {
-        if (!GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
+        if (studyGroup.teacher.GetLord() != lord
+            || !GatheringsUtility.PawnCanStartOrContinueGathering(studyGroup.teacher))
         {
             EducationLog.Message($"-> but {studyGroup.teacher.LabelShort} is unavailable. Suspending class.");
             lord.ReceiveMemo(LordJob_AttendClass.MemoClassCancelled);
