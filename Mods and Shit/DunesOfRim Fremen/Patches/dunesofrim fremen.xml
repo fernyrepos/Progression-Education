@@ -4,7 +4,7 @@
 
     <!-- GEAR -->
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenKnife"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenKnife"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -13,7 +13,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenMace"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenMace"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -22,7 +22,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenAxe"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenAxe"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -31,7 +31,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenPick"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenPick"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -40,7 +40,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenSword"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenSword"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -49,7 +49,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenMonosword"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenMonosword"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -58,7 +58,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenPersonaMonosword"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenPersonaMonosword"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -67,7 +67,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenMonospear"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenMonospear"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
@@ -76,7 +76,7 @@
     </Operation>
 
     <Operation Class="PatchOperationAddModExtension">
-        <xpath>Defs/ThingDef/[defName="MeleeWeapon_FremenPersonaMonospear"]</xpath>
+        <xpath>Defs/ThingDef[defName="MeleeWeapon_FremenPersonaMonospear"]</xpath>
         <value>
             <li Class="ProgressionEducation.ItemProficiencyRequirement">
                 <requiredProficiency>PE_LowTechProficiency</requiredProficiency>
